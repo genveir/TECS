@@ -1,25 +1,27 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TECS.HDLSimulator.Chips;
 
 public class Chip
 {
-    private readonly Dictionary<string, Pin> _inputs;
-    private readonly Dictionary<string, Pin> _outputs;
+    public Dictionary<string, NandPinNode> Inputs { get; }
     
-    public string Name { get; }
+    public string OutputName { get; }
+    public INandTreeNode Output { get; }
 
-    internal Chip(string name, Dictionary<string, Pin> inputs, Dictionary<string, Pin> outputs)
+    public Chip(Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output)
     {
-        Name = name;
-        
-        _inputs = inputs;
-        _outputs = outputs;
+        Inputs = inputs;
+        OutputName = outputName;
+        Output = output;
     }
 
-    public void SetInput(string name, bool[] value) => _inputs[name].Value = value;
+    public void SetInput(string name, bool[] value)
+    {
+        Inputs[name].Value = value;
+    }
+    
+    public bool[] Evaluate() => Output.Value;
 
-    public bool[] ReadOutput(string name) => _outputs[name].Value;
+    public INandTreeNode GetTree() => Output;
 }
-

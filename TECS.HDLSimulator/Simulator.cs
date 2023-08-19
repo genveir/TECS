@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using TECS.HDLSimulator.Chips;
 
 namespace TECS.HDLSimulator;
 
@@ -15,6 +16,8 @@ public class Simulator
 
         var summaries = contents.Select(HdlParser.ParseSummary).ToArray();
 
+        
+        
         ;
     }
 }
