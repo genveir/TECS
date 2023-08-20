@@ -6,15 +6,20 @@ namespace TECS.HDLSimulator.Chips;
 
 public class ChipBlueprintFactory
 {
-    private readonly IEnumerable<ChipSummary> _summaries;
+    private readonly IEnumerable<ChipDescription> _descriptions;
     private readonly Dictionary<string, ChipBlueprint> _blueprints = new();
 
-    public ChipBlueprintFactory(IEnumerable<ChipSummary> summaries)
+    public ChipBlueprintFactory(IEnumerable<ChipDescription> descriptions)
     {
-        _summaries = summaries;
+        _descriptions = descriptions;
     }
 
     public void BuildBlueprints()
+    {
+        
+    }
+
+    public void BuildBlueprint(ChipDescription description)
     {
         
     }
@@ -31,6 +36,6 @@ public class ChipBlueprintFactory
             { "b", inputNodes.b }
         };
 
-        return new ChipBlueprint(inputs, "out", nandNode);
+        return new ChipBlueprint("Nand", inputs, "out", nandNode);
     }
 }

@@ -6,6 +6,7 @@ namespace TECS.HDLSimulator.Chips;
 
 public class ChipBlueprint
 {
+    public string Name { get; }
     public Dictionary<string, NandPinNode> Inputs { get; }
     
     public string OutputName { get; }
@@ -13,7 +14,7 @@ public class ChipBlueprint
 
     private bool _isPrefused;
 
-    public ChipBlueprint(Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output, bool fuse = true)
+    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output, bool fuse = true)
     {
         Inputs = inputs;
         OutputName = outputName;

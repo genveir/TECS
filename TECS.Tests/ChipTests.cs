@@ -70,7 +70,7 @@ public class ChipTests
             { "b", inputNodes.b }
         };
 
-        return new ChipBlueprint(inputs, "out", nandNode, false);
+        return new ChipBlueprint("Nand", inputs, "out", nandNode, false);
     }
 
     private ChipBlueprint NotBlueprintByHand()
@@ -99,7 +99,7 @@ public class ChipTests
         //out=out
         outPin.Parent = nandChip.Output;
 
-        return new ChipBlueprint(inputs, outputName, outPin, false);
+        return new ChipBlueprint("Not", inputs, outputName, outPin, false);
     }
 
     private ChipBlueprint AndChipByHand(bool preFuse = false)
@@ -142,6 +142,6 @@ public class ChipTests
         // out=mid
         midPin.Parent = nandChip.Output;
 
-        return new ChipBlueprint(inputs, outputName, outPin, preFuse);
+        return new ChipBlueprint("And", inputs, outputName, outPin, preFuse);
     }
 }

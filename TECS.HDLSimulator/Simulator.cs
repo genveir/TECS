@@ -14,7 +14,7 @@ public class Simulator
 
         var contents = files.Select(f => f.GetContents());
 
-        var summaries = contents.Select(HdlParser.ParseSummary).ToArray();
+        var summaries = contents.Select(HdlParser.ParseDescription).ToArray();
 
         
         

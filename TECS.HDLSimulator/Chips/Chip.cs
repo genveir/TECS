@@ -7,7 +7,7 @@ public class Chip
 {
     public Dictionary<string, NandPinNode> Inputs { get; }
 
-    public INandTreeNode Output;
+    public INandTreeNode Output { get; }
     
     public Chip(Dictionary<string, NandPinNode> inputs, INandTreeNode output)
     {

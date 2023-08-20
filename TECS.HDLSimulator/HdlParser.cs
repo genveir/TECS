@@ -8,12 +8,12 @@ namespace TECS.HDLSimulator;
 
 public static class HdlParser
 {
-    public static ChipSummary ParseSummary(string input)
+    public static ChipDescription ParseDescription(string input)
     {
         var lines = SplitAndSanitizeInput(input);
 
         int lineIndex = 0;
-        return ParseChipSummary(lines, ref lineIndex);
+        return ParseChipDescription(lines, ref lineIndex);
     }
 
     private static string[] SplitAndSanitizeInput(string input)
@@ -29,20 +29,20 @@ public static class HdlParser
         return lines;
     }
 
-    private static ChipSummary ParseChipSummary(string[] lines, ref int lineIndex)
+    private static ChipDescription ParseChipDescription(string[] lines, ref int lineIndex)
     {
         // CHIP name {
         var split = lines[lineIndex++].Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var name = split[1];
 
-        List<PinSummary> IN = ParsePinArray(lines, ref lineIndex);
-        List<PinSummary> OUT = ParsePinArray(lines, ref lineIndex);
-        List<PartSummary> PARTS = ParsePartsSummary(lines, ref lineIndex);
+        List<PinDescription> IN = ParsePinArray(lines, ref lineIndex);
+        List<PinDescription> OUT = ParsePinArray(lines, ref lineIndex);
+        List<PartDescription> PARTS = ParsePartsDescription(lines, ref lineIndex);
 
         return new(name, IN, OUT, PARTS);
     }
 
-    private static List<PinSummary> ParsePinArray(string[] lines, ref int lineIndex)
+    private static List<PinDescription> ParsePinArray(string[] lines, ref int lineIndex)
     {
         string pinData = "";
         string newLine = "";
@@ -56,11 +56,11 @@ public static class HdlParser
         return pinData
             .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
             .Skip(1)
-            .Select(ParsePinSummary)
+            .Select(ParsePinDescription)
             .ToList();
     }
 
-    private static PinSummary ParsePinSummary(string pinData)
+    private static PinDescription ParsePinDescription(string pinData)
     {
         if (pinData.Contains('['))
         {
@@ -76,21 +76,21 @@ public static class HdlParser
         }
     }
 
-    private static List<PartSummary> ParsePartsSummary(string[] lines, ref int lineIndex)
+    private static List<PartDescription> ParsePartsDescription(string[] lines, ref int lineIndex)
     {
-        List<PartSummary> parts = new();
+        List<PartDescription> parts = new();
 
         while (true)
         {
             if (lines[lineIndex].Contains("PARTS")) lineIndex++;
             if (lines[lineIndex].Contains('}')) return parts;
 
-            parts.Add(ParsePartSummary(lines, ref lineIndex));
+            parts.Add(ParsePartDescription(lines, ref lineIndex));
         }
 
     }
 
-    private static PartSummary ParsePartSummary(string[] lines, ref int lineIndex) {
+    private static PartDescription ParsePartDescription(string[] lines, ref int lineIndex) {
         string partData = "";
         string newLine = "";
         do
@@ -104,7 +104,7 @@ public static class HdlParser
             .Split(new[] { '(', ')', ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
         var name = splitData[0];
-        List<PinConnectionSummary> pinConnections = new();
+        List<PinConnectionDescription> pinConnections = new();
         
         for (int n = 1; n < splitData.Length; n++)
         {

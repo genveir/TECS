@@ -29,7 +29,7 @@ public class NandPinNode : INandTreeNode
         _cloneResult = newPin;
         return _cloneResult;
     }
-
+    
     private long _fuseId = -1;
     private INandTreeNode? _fuseResult;
     public INandTreeNode Fuse(long fuseId)
@@ -40,7 +40,7 @@ public class NandPinNode : INandTreeNode
         _fuseResult = Parent == null ? this : Parent.Fuse(fuseId);
         return _fuseResult;
     }
-
+    
     private int _countId = -1;
     public (int pins, int nands) CountNodes(int countId)
     {
