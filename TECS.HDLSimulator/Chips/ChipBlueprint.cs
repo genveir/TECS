@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips;
 
@@ -10,13 +11,24 @@ public class ChipBlueprint
     public string OutputName { get; }
     public INandTreeNode Output { get; private set; }
 
-    public ChipBlueprint(Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output)
+    private bool _isPrefused;
+
+    public ChipBlueprint(Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output, bool fuse = true)
     {
         Inputs = inputs;
         OutputName = outputName;
         Output = output;
+
+        if (fuse) Fuse();
     }
-    
+
+    public void Fuse()
+    {
+        _isPrefused = true;
+
+        Output = Output.Fuse(_cloneCounter++);
+    }
+
     private static long _cloneCounter;
     public Chip Fabricate()
     {
@@ -26,7 +38,8 @@ public class ChipBlueprint
             kvp => kvp.Key,
             kvp => kvp.Value.ClonePin(_cloneCounter));
 
-        output = output.Fuse(_cloneCounter);
+        if (!_isPrefused) 
+            output = output.Fuse(_cloneCounter);
         
         _cloneCounter++;
 
