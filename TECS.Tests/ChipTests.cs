@@ -1,6 +1,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.HDLSimulator.Chips;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.Tests;
 
@@ -14,6 +15,17 @@ public class ChipTests
         var (pins, nands) = andChip.Output.CountNodes(0);
 
         pins.Should().BeGreaterThan(2);
+        nands.Should().Be(2);
+    }
+
+    [Test]
+    public void CanBuildPrefusedAndChipBlueprintByHand()
+    {
+        var andChip = AndChipByHand(preFuse: true);
+
+        var (pins, nands) = andChip.Output.CountNodes(0);
+
+        pins.Should().Be(2);
         nands.Should().Be(2);
     }
 
@@ -58,7 +70,7 @@ public class ChipTests
             { "b", inputNodes.b }
         };
 
-        return new ChipBlueprint(inputs, "out", nandNode);
+        return new ChipBlueprint(inputs, "out", nandNode, false);
     }
 
     private ChipBlueprint NotBlueprintByHand()
@@ -87,10 +99,10 @@ public class ChipTests
         //out=out
         outPin.Parent = nandChip.Output;
 
-        return new ChipBlueprint(inputs, outputName, outPin);
+        return new ChipBlueprint(inputs, outputName, outPin, false);
     }
 
-    private ChipBlueprint AndChipByHand()
+    private ChipBlueprint AndChipByHand(bool preFuse = false)
     {
         // CHIP And
         
@@ -130,6 +142,6 @@ public class ChipTests
         // out=mid
         midPin.Parent = nandChip.Output;
 
-        return new ChipBlueprint(inputs, outputName, outPin);
+        return new ChipBlueprint(inputs, outputName, outPin, preFuse);
     }
 }

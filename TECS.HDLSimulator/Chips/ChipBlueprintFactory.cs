@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips;
 
