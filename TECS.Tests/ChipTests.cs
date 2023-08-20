@@ -36,9 +36,9 @@ public class ChipTests
     {
         var andChip = AndChipByHand();
 
-        andChip.Fuse();
+        andChip.Fuse(1);
 
-        var (pins, nands) = andChip.Output.CountNodes(1);
+        var (pins, nands) = andChip.Output.CountNodes(2);
 
         pins.Should().Be(2);
         nands.Should().Be(2);
@@ -72,7 +72,7 @@ public class ChipTests
             { "b", inputNodes.b }
         };
 
-        return new Chip(inputs, nandNode);
+        return new Chip(inputs, "out", nandNode);
     }
 
     private Chip NotChipByHand()
@@ -88,6 +88,7 @@ public class ChipTests
         
         //     OUT out;
         var outPin = new NandPinNode();
+        var outputName = "out";
         
         //     PARTS:
         //     Nand
@@ -100,7 +101,7 @@ public class ChipTests
         //out=out
         outPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outPin);
+        return new Chip(inputs, outputName, outPin);
     }
 
     private Chip AndChipByHand()
@@ -118,6 +119,7 @@ public class ChipTests
         
         //     OUT out;
         var outPin = new NandPinNode();
+        var outputName = "out";
         
         //     PARTS:
         //     Not
@@ -142,6 +144,6 @@ public class ChipTests
         // out=mid
         midPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outPin);
+        return new Chip(inputs, outputName, outPin);
     }
 }
