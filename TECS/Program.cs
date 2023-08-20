@@ -7,8 +7,6 @@ public static class Program
 {
      public static void Main(string[] args)
      {
-          new Simulator(Settings.DataFolder);
-
-          Console.ReadLine();
+          Console.WriteLine("Nothing to show here");
      }
 }

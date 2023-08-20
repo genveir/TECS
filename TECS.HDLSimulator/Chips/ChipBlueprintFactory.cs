@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TECS.HDLSimulator.Chips.NandTree;
 
@@ -9,12 +10,28 @@ public class ChipBlueprintFactory
     private readonly IEnumerable<ChipDescription> _descriptions;
     private readonly Dictionary<string, ChipBlueprint> _blueprints = new();
 
-    public ChipBlueprintFactory(IEnumerable<ChipDescription> descriptions)
+    public static ChipBlueprintFactory FromFilesystem(string dataFolder)
+    {
+        var folder = new HdlFolder(Path.Combine(dataFolder, "HDL"));
+
+        var files = folder.GetFiles();
+
+        var contents = files.Select(f => f.GetContents());
+
+        var descriptions = contents.Select(HdlParser.ParseDescription).ToArray();
+
+        return new ChipBlueprintFactory(descriptions);
+    }
+    
+    private ChipBlueprintFactory(IEnumerable<ChipDescription> descriptions)
     {
         _descriptions = descriptions;
         
         _blueprints.Add("Nand", NandBlueprint());
     }
+
+    public ChipDescription? GetChipDescription(string name) =>
+        _descriptions.SingleOrDefault(desc => desc.Name == name);
 
     public ChipBlueprint BuildBlueprint(ChipDescription description)
     {
