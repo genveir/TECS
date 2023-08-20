@@ -23,10 +23,10 @@ public class NandPinNode : INandTreeNode
     }
 
     private int _fuseId = -1;
-    private INandTreeNode _fuseResult;
+    private INandTreeNode? _fuseResult;
     public INandTreeNode Fuse(int fuseId)
     {
-        if (_fuseId == fuseId) return _fuseResult;
+        if (_fuseId == fuseId) return _fuseResult!;
         _fuseId = fuseId;
         
         _fuseResult = Parent == null ? this : Parent.Fuse(fuseId);
