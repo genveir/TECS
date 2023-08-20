@@ -9,16 +9,14 @@ public class ChipBlueprint
     public string Name { get; }
     public Dictionary<string, NandPinNode> Inputs { get; }
     
-    public string OutputName { get; }
-    public INandTreeNode Output { get; private set; }
+    public Dictionary<string, INandTreeNode> Outputs { get; }
 
     private bool _isPrefused;
 
-    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, string outputName, INandTreeNode output, bool fuse = true)
+    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, Dictionary<string, INandTreeNode> outputs, bool fuse = true)
     {
         Inputs = inputs;
-        OutputName = outputName;
-        Output = output;
+        Outputs = outputs;
 
         if (fuse) Fuse();
     }
@@ -27,23 +25,47 @@ public class ChipBlueprint
     {
         _isPrefused = true;
 
-        Output = Output.Fuse(_cloneCounter++);
+        FuseOutputs(Outputs);
+        
+        _cloneCounter++;
     }
 
     private static long _cloneCounter;
     public Chip Fabricate()
     {
-        var output = Output.Clone(_cloneCounter);
+        var cloned = Clone();
+
+        return new(cloned.Inputs, cloned.Outputs);
+    }
+
+    public ChipBlueprint Clone()
+    {
+        var outputs = Outputs.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.Clone(_cloneCounter));
 
         var inputs = Inputs.ToDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.ClonePin(_cloneCounter));
 
-        if (!_isPrefused) 
-            output = output.Fuse(_cloneCounter);
-        
+        if (!_isPrefused)
+        {
+            FuseOutputs(outputs);
+        }
+
         _cloneCounter++;
 
-        return new(inputs, output);
+        return new(Name, inputs, outputs, _isPrefused);
+    }
+
+    private static void FuseOutputs(Dictionary<string, INandTreeNode> outputs)
+    {
+        foreach (var output in outputs)
+        {
+            var name = output.Key;
+            var fusedOutput = output.Value.Fuse(_cloneCounter);
+
+            outputs[name] = fusedOutput;
+        }
     }
 }

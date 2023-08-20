@@ -12,7 +12,7 @@ public class ChipTests
     {
         var andChip = AndChipByHand();
         
-        var (pins, nands) = andChip.Output.CountNodes(0);
+        var (pins, nands) = andChip.Outputs["out"].CountNodes(0);
 
         pins.Should().BeGreaterThan(2);
         nands.Should().Be(2);
@@ -23,7 +23,7 @@ public class ChipTests
     {
         var andChip = AndChipByHand(preFuse: true);
 
-        var (pins, nands) = andChip.Output.CountNodes(0);
+        var (pins, nands) = andChip.Outputs["out"].CountNodes(0);
 
         pins.Should().Be(2);
         nands.Should().Be(2);
@@ -36,7 +36,7 @@ public class ChipTests
 
         var andChip = bluePrint.Fabricate();
 
-        var (pins, nands) = andChip.Output.CountNodes(2);
+        var (pins, nands) = andChip.Outputs["out"].CountNodes(2);
 
         pins.Should().Be(2);
         nands.Should().Be(2);
@@ -55,51 +55,43 @@ public class ChipTests
         andChip.Inputs["a"].Value = new[] { a };
         andChip.Inputs["b"].Value = new[] { b };
         
-        andChip.Evaluate().Should().BeEquivalentTo(new[] { a && b });
+        andChip.Evaluate("out").Should().BeEquivalentTo(new[] { a && b });
     }
 
-    private ChipBlueprint NandBlueprintByHand()
-    {
-        var nandNode = new NandNode();
-
-        nandNode.TryGetInputPins(out var inputNodes);
-        
-        var inputs = new Dictionary<string, NandPinNode>
-        {
-            { "a", inputNodes.a },
-            { "b", inputNodes.b }
-        };
-
-        return new ChipBlueprint("Nand", inputs, "out", nandNode, false);
-    }
+    private ChipBlueprint NandBlueprintByHand() => ChipBlueprintFactory.NandBlueprint();
 
     private ChipBlueprint NotBlueprintByHand()
     {
         // CHIP Not
         
         //     IN in;
-        var inPin = new NandPinNode();
         var inputs = new Dictionary<string, NandPinNode>
         {
-            { "in", inPin }
+            { "in", new() }
         };
         
         //     OUT out;
-        var outPin = new NandPinNode();
-        var outputName = "out";
+        var outputPins = new Dictionary<string, NandPinNode>()
+        {
+            { "out", new() }
+        };
         
         //     PARTS:
         //     Nand
         var nandChip = NandBlueprintByHand();
         // a=in
-        nandChip.Inputs["a"].Parent = inPin;
+        nandChip.Inputs["a"].Parent = inputs["in"];
         // b=in
-        nandChip.Inputs["b"].Parent = inPin;
+        nandChip.Inputs["b"].Parent = inputs["in"];
 
         //out=out
-        outPin.Parent = nandChip.Output;
+        outputPins["out"].Parent = nandChip.Outputs["out"];
+        
+        var outputs = outputPins.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value as INandTreeNode);
 
-        return new ChipBlueprint("Not", inputs, outputName, outPin, false);
+        return new ChipBlueprint("Not", inputs, outputs, false);
     }
 
     private ChipBlueprint AndChipByHand(bool preFuse = false)
@@ -107,41 +99,48 @@ public class ChipTests
         // CHIP And
         
         //     IN a, b;
-        var aPin = new NandPinNode();
-        var bPin = new NandPinNode();
         var inputs = new Dictionary<string, NandPinNode>
         {
-            { "a", aPin },
-            { "b", bPin }
+            { "a", new() },
+            { "b", new() }
         };
         
         //     OUT out;
-        var outPin = new NandPinNode();
-        var outputName = "out";
+        var outputPins = new Dictionary<string, NandPinNode>()
+        {
+            { "out", new() }
+        };
+
+        var internalPins = new Dictionary<string, NandPinNode>();
         
         //     PARTS:
         //     Not
         var notChip = NotBlueprintByHand();
         
         // in=mid
-        var midPin = new NandPinNode(); // first mention of mid, make a mid pin
-        notChip.Inputs["in"].Parent = midPin;
+        internalPins.Add("mid", new()); // first mention of mid, make a mid pin
+        
+        notChip.Inputs["in"].Parent = internalPins["mid"];
         
         // out=out
-        outPin.Parent = notChip.Output;
+        outputPins["out"].Parent = notChip.Outputs["out"];
         
         //     Nand
         var nandChip = NandBlueprintByHand();
         
         // a=a
-        nandChip.Inputs["a"].Parent = aPin;
+        nandChip.Inputs["a"].Parent = inputs["a"];
         
         // b=b
-        nandChip.Inputs["b"].Parent = bPin;
+        nandChip.Inputs["b"].Parent = inputs["b"];
         
         // out=mid
-        midPin.Parent = nandChip.Output;
+        internalPins["mid"].Parent = nandChip.Outputs["out"];
 
-        return new ChipBlueprint("And", inputs, outputName, outPin, preFuse);
+        var outputs = outputPins.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value as INandTreeNode);
+        
+        return new ChipBlueprint("And", inputs, outputs, preFuse);
     }
 }
