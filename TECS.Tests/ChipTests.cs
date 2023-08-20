@@ -20,19 +20,59 @@ public class ChipTests
         andChip.Evaluate().Should().BeEquivalentTo(new[] { a && b });
     }
 
+    [Test]
+    public void AndChipIsNotFusedByDefault()
+    {
+        var andChip = AndChipByHand();
+
+        var (pins, nands) = andChip.Output.CountNodes(0);
+
+        pins.Should().BeGreaterThan(2);
+        nands.Should().Be(2);
+    }
+    
+    [Test]
+    public void CanFuseAndChip()
+    {
+        var andChip = AndChipByHand();
+
+        andChip.Fuse();
+
+        var (pins, nands) = andChip.Output.CountNodes(1);
+
+        pins.Should().Be(2);
+        nands.Should().Be(2);
+    }
+
+    [TestCase(true, true)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(false, false)]
+    public void FusedAndChipFunctions(bool a, bool b)
+    {
+        var andChip = AndChipByHand();
+
+        andChip.Fuse();
+        
+        andChip.Inputs["a"].Value = new[] { a };
+        andChip.Inputs["b"].Value = new[] { b };
+        
+        andChip.Evaluate().Should().BeEquivalentTo(new[] { a && b });
+    }
+
     private Chip NandChipByHand()
     {
         var nandNode = new NandNode();
 
+        nandNode.TryGetInputPins(out var inputNodes);
+        
         var inputs = new Dictionary<string, NandPinNode>
         {
-            { "a", nandNode.A },
-            { "b", nandNode.B }
+            { "a", inputNodes.a },
+            { "b", inputNodes.b }
         };
 
-        var outputName = "out";
-
-        return new Chip(inputs, outputName, nandNode);
+        return new Chip(inputs, nandNode);
     }
 
     private Chip NotChipByHand()
@@ -48,7 +88,6 @@ public class ChipTests
         
         //     OUT out;
         var outPin = new NandPinNode();
-        var outputName = "out";
         
         //     PARTS:
         //     Nand
@@ -61,7 +100,7 @@ public class ChipTests
         //out=out
         outPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outputName, outPin);
+        return new Chip(inputs, outPin);
     }
 
     private Chip AndChipByHand()
@@ -79,7 +118,6 @@ public class ChipTests
         
         //     OUT out;
         var outPin = new NandPinNode();
-        var outputName = "out";
         
         //     PARTS:
         //     Not
@@ -104,6 +142,6 @@ public class ChipTests
         // out=mid
         midPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outputName, outPin);
+        return new Chip(inputs, outPin);
     }
 }
