@@ -6,7 +6,9 @@ public interface INandTreeNode
 {
     bool[] Value { get; }
 
-    INandTreeNode Fuse(int fuseId);
+    INandTreeNode Clone(long cloneId);
+
+    INandTreeNode Fuse(long fuseId);
 
     (int pins, int nands) CountNodes(int countId);
 }
@@ -22,9 +24,26 @@ public class NandPinNode : INandTreeNode
         set => _value = value;
     }
 
-    private int _fuseId = -1;
+    private long _cloneId = -1;
+    private NandPinNode? _cloneResult;
+    public INandTreeNode Clone(long cloneId) => ClonePin(cloneId);
+
+    public NandPinNode ClonePin(long cloneId)
+    {
+        if (_cloneId == cloneId) return _cloneResult!;
+        _cloneId = cloneId;
+        
+        var newPin = new NandPinNode();
+
+        if (Parent != null) newPin.Parent = Parent.Clone(cloneId);
+
+        _cloneResult = newPin;
+        return _cloneResult;
+    }
+
+    private long _fuseId = -1;
     private INandTreeNode? _fuseResult;
-    public INandTreeNode Fuse(int fuseId)
+    public INandTreeNode Fuse(long fuseId)
     {
         if (_fuseId == fuseId) return _fuseResult!;
         _fuseId = fuseId;
@@ -65,8 +84,25 @@ public class NandNode : INandTreeNode
     
     public bool[] Value => new[] { !(_a.Value[0] && _b.Value[0]) };
 
-    private int _fuseId = -1;
-    public INandTreeNode Fuse(int fuseId)
+    private long _cloneId = -1;
+    private INandTreeNode? _cloneResult;
+    public INandTreeNode Clone(long cloneId)
+    {
+        if (_cloneId == cloneId) return _cloneResult!;
+        _cloneId = cloneId;
+        
+        var newNand = new NandNode
+        {
+            _a = _a.Clone(cloneId),
+            _b = _b.Clone(cloneId)
+        };
+
+        _cloneResult = newNand;
+        return _cloneResult;
+    }
+
+    private long _fuseId = -1;
+    public INandTreeNode Fuse(long fuseId)
     {
         if (_fuseId == fuseId) return this;
         _fuseId = fuseId;

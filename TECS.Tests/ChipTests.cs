@@ -6,37 +6,23 @@ namespace TECS.Tests;
 
 public class ChipTests
 {
-    [TestCase(true, true)]
-    [TestCase(true, false)]
-    [TestCase(false, true)]
-    [TestCase(false, false)]
-    public void CanBuildAndChipByHand(bool a, bool b)
-    {
-        var andChip = AndChipByHand();
-
-        andChip.Inputs["a"].Value = new[] { a };
-        andChip.Inputs["b"].Value = new[] { b };
-
-        andChip.Evaluate().Should().BeEquivalentTo(new[] { a && b });
-    }
-
     [Test]
-    public void AndChipIsNotFusedByDefault()
+    public void CanBuildAndChipBlueprintByHand()
     {
         var andChip = AndChipByHand();
-
+        
         var (pins, nands) = andChip.Output.CountNodes(0);
 
         pins.Should().BeGreaterThan(2);
         nands.Should().Be(2);
     }
-    
-    [Test]
-    public void CanFuseAndChip()
-    {
-        var andChip = AndChipByHand();
 
-        andChip.Fuse(1);
+    [Test]
+    public void CanFabricateAndChipFromBlueprint()
+    {
+        var bluePrint = AndChipByHand();
+
+        var andChip = bluePrint.Fabricate();
 
         var (pins, nands) = andChip.Output.CountNodes(2);
 
@@ -48,11 +34,11 @@ public class ChipTests
     [TestCase(true, false)]
     [TestCase(false, true)]
     [TestCase(false, false)]
-    public void FusedAndChipFunctions(bool a, bool b)
+    public void AndChipFunctions(bool a, bool b)
     {
-        var andChip = AndChipByHand();
+        var bluePrint = AndChipByHand();
 
-        andChip.Fuse();
+        var andChip = bluePrint.Fabricate();
         
         andChip.Inputs["a"].Value = new[] { a };
         andChip.Inputs["b"].Value = new[] { b };
@@ -60,7 +46,7 @@ public class ChipTests
         andChip.Evaluate().Should().BeEquivalentTo(new[] { a && b });
     }
 
-    private Chip NandChipByHand()
+    private ChipBlueprint NandBlueprintByHand()
     {
         var nandNode = new NandNode();
 
@@ -72,10 +58,10 @@ public class ChipTests
             { "b", inputNodes.b }
         };
 
-        return new Chip(inputs, "out", nandNode);
+        return new ChipBlueprint(inputs, "out", nandNode);
     }
 
-    private Chip NotChipByHand()
+    private ChipBlueprint NotBlueprintByHand()
     {
         // CHIP Not
         
@@ -92,7 +78,7 @@ public class ChipTests
         
         //     PARTS:
         //     Nand
-        var nandChip = NandChipByHand();
+        var nandChip = NandBlueprintByHand();
         // a=in
         nandChip.Inputs["a"].Parent = inPin;
         // b=in
@@ -101,10 +87,10 @@ public class ChipTests
         //out=out
         outPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outputName, outPin);
+        return new ChipBlueprint(inputs, outputName, outPin);
     }
 
-    private Chip AndChipByHand()
+    private ChipBlueprint AndChipByHand()
     {
         // CHIP And
         
@@ -123,7 +109,7 @@ public class ChipTests
         
         //     PARTS:
         //     Not
-        var notChip = NotChipByHand();
+        var notChip = NotBlueprintByHand();
         
         // in=mid
         var midPin = new NandPinNode(); // first mention of mid, make a mid pin
@@ -133,7 +119,7 @@ public class ChipTests
         outPin.Parent = notChip.Output;
         
         //     Nand
-        var nandChip = NandChipByHand();
+        var nandChip = NandBlueprintByHand();
         
         // a=a
         nandChip.Inputs["a"].Parent = aPin;
@@ -144,6 +130,6 @@ public class ChipTests
         // out=mid
         midPin.Parent = nandChip.Output;
 
-        return new Chip(inputs, outputName, outPin);
+        return new ChipBlueprint(inputs, outputName, outPin);
     }
 }
