@@ -8,7 +8,7 @@ namespace TECS.HDLSimulator.Chips;
 public class ChipBlueprintFactory
 {
     private readonly IEnumerable<ChipDescription> _descriptions;
-    private readonly Dictionary<string, ChipBlueprint> _blueprints = new();
+    private readonly Dictionary<string, StoredBlueprint> _blueprints = new();
 
     public static ChipBlueprintFactory FromFilesystem(string dataFolder)
     {
@@ -33,7 +33,7 @@ public class ChipBlueprintFactory
     public ChipDescription? GetChipDescription(string name) =>
         _descriptions.SingleOrDefault(desc => desc.Name == name);
 
-    public ChipBlueprint BuildBlueprint(ChipDescription description)
+    public StoredBlueprint BuildBlueprint(ChipDescription description)
     {
         if (_blueprints.TryGetValue(description.Name, out var result)) 
             return result;
@@ -51,7 +51,7 @@ public class ChipBlueprintFactory
             kvp => kvp.Key,
             kvp => kvp.Value as INandTreeNode);
         
-        var bluePrint = new ChipBlueprint(description.Name, constructionPins.InputPins, outputs);
+        var bluePrint = new StoredBlueprint(description.Name, constructionPins.InputPins, outputs);
         _blueprints.Add(description.Name, bluePrint);
 
         return bluePrint;
@@ -59,11 +59,16 @@ public class ChipBlueprintFactory
 
     private ChipBlueprint ResolvePart(PartDescription description)
     {
-        if (_blueprints.TryGetValue(description.Name, out var blueprint)) return blueprint.Clone();
+        if (!_blueprints.TryGetValue(description.Name, out var result))
+        {
+            var chipDescription = _descriptions.Single(desc => desc.Name == description.Name);
 
-        var chipDescription = _descriptions.Single(desc => desc.Name == description.Name);
+            BuildBlueprint(chipDescription);
 
-        return BuildBlueprint(chipDescription);
+            result = _blueprints[description.Name];
+        }
+
+        return result.Copy();
     }
 
     private void LinkPart(PartDescription description, ChipBlueprint partBlueprint, ConstructionPins pins)
@@ -134,7 +139,7 @@ public class ChipBlueprintFactory
         return new(inputPins, outputPins, internalPins);
     }
 
-    internal static ChipBlueprint NandBlueprint()
+    internal static StoredBlueprint NandBlueprint()
     {
         var nandNode = new NandNode();
 
@@ -151,6 +156,6 @@ public class ChipBlueprintFactory
             { "out", nandNode }
         };
 
-        return new ChipBlueprint("Nand", inputs, outputs);
+        return new StoredBlueprint("Nand", inputs, outputs);
     }
 }

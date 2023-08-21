@@ -1,12 +1,13 @@
-using NUnit.Framework;
-using TECS.HDLSimulator;
+using System;
+using System.IO;
+using System.Linq;
 using TECS.HDLSimulator.Chips;
 
 namespace TECS.Tests;
 
 public static class TestDataFactory
 {
-    public static object[][] Create(string dataFolder)
+    public static object?[][] Create(string dataFolder)
     {
         var blueprintFactory = ChipBlueprintFactory.FromFilesystem(dataFolder);
 
@@ -14,7 +15,7 @@ public static class TestDataFactory
 
         var testfiles = Directory.GetFiles(hdlPath, "*.tst");
 
-        var data = new object[testfiles.Length][];
+        var data = new object?[testfiles.Length][];
         for (int n = 0; n < testfiles.Length; n++)
         {
             var testfile = testfiles[n];
@@ -27,11 +28,18 @@ public static class TestDataFactory
             var comparisonFileContent = File.ReadAllLines(comparisonFileName);
 
             var desc = blueprintFactory.GetChipDescription(typename);
-            var chip = blueprintFactory.BuildBlueprint(desc).Fabricate();
+            
+            if (desc == null) throw new InvalidOperationException("description does not exist");
+            var blueprint = blueprintFactory.BuildBlueprint(desc);
 
-            var newChipTestData = new object[]
+            Chip? chip = null;
+            if (!blueprint.ValidationErrors.Any())
+                chip = blueprint.Copy().Fabricate();
+
+            var newChipTestData = new object?[]
             {
                 typename,
+                blueprint.ValidationErrors,
                 chip,
                 new TestFile(testFileContent),
                 new ComparisonFile(comparisonFileContent)

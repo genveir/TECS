@@ -1,16 +1,40 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
 public class NandPinNode : INandTreeNode
 {
+    private static long _idCounter;
+    public readonly long Id = _idCounter++;
+    
     public INandTreeNode? Parent { get; set; }
 
-    private bool[] _value = Array.Empty<bool>();
-    public bool[] Value
+    private bool _value;
+    public bool Value
     {
-        get => Parent == null ? _value : Parent.Value;
+        get => Parent?.Value ?? _value;
         set => _value = value;
+    }
+
+    public long ValidatedInRun = -1;
+    public void Validate(List<ValidationError> errors, NandPinNode[] inputs, List<INandTreeNode> parentNodes, long validationId)
+    {
+        if (ValidatedInRun == validationId) return;
+        ValidatedInRun = validationId;
+        
+        if (parentNodes.Contains(this))
+        {
+            errors.Add(new($"Pin {Id} has cyclical connection"));
+            return;
+        }
+        var newParents = new List<INandTreeNode>(parentNodes);
+        newParents.Add(this);
+
+        if (!inputs.Any(i => i == this) && Parent == null)
+            errors.Add(new($"Non input pin {Id} has no parent"));
+
+        Parent?.Validate(errors, inputs, newParents, validationId);
     }
 
     private long _cloneId = -1;
@@ -51,5 +75,10 @@ public class NandPinNode : INandTreeNode
         
         var (parentPins, parentNands) = Parent.CountNodes(countId);
         return (parentPins + 1, parentNands);
+    }
+
+    public override string ToString()
+    {
+        return $"NandPinNode {Id}";
     }
 }

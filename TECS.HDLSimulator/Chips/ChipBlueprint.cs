@@ -11,61 +11,20 @@ public class ChipBlueprint
     
     public Dictionary<string, INandTreeNode> Outputs { get; }
 
-    private bool _isPrefused;
-
-    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, Dictionary<string, INandTreeNode> outputs, bool fuse = true)
+    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, Dictionary<string, INandTreeNode> outputs)
     {
+        Name = name;
         Inputs = inputs;
         Outputs = outputs;
-
-        if (fuse) Fuse();
     }
 
-    public void Fuse()
-    {
-        _isPrefused = true;
-
-        FuseOutputs(Outputs);
-        
-        _cloneCounter++;
-    }
-
-    private static long _cloneCounter;
     public Chip Fabricate()
     {
-        var cloned = Clone();
-
-        return new(cloned.Inputs, cloned.Outputs);
+        return new(Inputs, Outputs);
     }
 
-    public ChipBlueprint Clone()
+    public override string ToString()
     {
-        var outputs = Outputs.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.Clone(_cloneCounter));
-
-        var inputs = Inputs.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ClonePin(_cloneCounter));
-
-        if (!_isPrefused)
-        {
-            FuseOutputs(outputs);
-        }
-
-        _cloneCounter++;
-
-        return new(Name, inputs, outputs, _isPrefused);
-    }
-
-    private static void FuseOutputs(Dictionary<string, INandTreeNode> outputs)
-    {
-        foreach (var output in outputs)
-        {
-            var name = output.Key;
-            var fusedOutput = output.Value.Fuse(_cloneCounter);
-
-            outputs[name] = fusedOutput;
-        }
+        return $"ChipBlueprint {Name}";
     }
 }

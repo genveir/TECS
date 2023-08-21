@@ -1,7 +1,12 @@
+using System.Collections.Generic;
+
 namespace TECS.HDLSimulator.Chips.NandTree;
 
 public class NandNode : INandTreeNode
 {
+    private static long _idCounter;
+    private readonly long _id = _idCounter++;
+    
     private INandTreeNode _a = new NandPinNode();
     private INandTreeNode _b = new NandPinNode();
 
@@ -16,8 +21,30 @@ public class NandNode : INandTreeNode
         result = default;
         return false;
     }
+
+    private long _validatedInRun = -1;
+    public void Validate(List<ValidationError> errors, NandPinNode[] inputs, List<INandTreeNode> parentNodes, long validationId)
+    {
+        if (_validatedInRun == validationId) return;
+        _validatedInRun = validationId;
+        
+        if (parentNodes.Contains(this))
+        {
+            errors.Add(new($"Nand node {_id} has cyclical connection"));
+            return;
+        }
+
+        var newParents = new List<INandTreeNode>(parentNodes);
+        newParents.Add(this);
+
+        if (_a == null) errors.Add(new($"Nand node {_id} missing a-input"));
+        else _a.Validate(errors, inputs, newParents, validationId);
+        
+        if (_b == null) errors.Add(new($"Nand node {_id} missing b-input"));
+        else _b.Validate(errors, inputs, newParents, validationId);
+    }
     
-    public bool[] Value => new[] { !(_a.Value[0] && _b.Value[0]) };
+    public bool Value => !(_a.Value && _b.Value);
 
     private long _cloneId = -1;
     private INandTreeNode? _cloneResult;
@@ -58,5 +85,10 @@ public class NandNode : INandTreeNode
         var (bPins, bNands) = _b.CountNodes(countId);
 
         return (aPins + bPins, aNands + bNands + 1);
+    }
+
+    public override string ToString()
+    {
+        return $"NandNode {_id}";
     }
 }

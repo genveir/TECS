@@ -1,13 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.HDLSimulator.Chips;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.Tests;
 
-public class TestRunner
+public class ProvidedTestRunner
 {
     [TestCaseSource(typeof(TestDataFactory), nameof(TestDataFactory.Create), new object?[] {Settings.DataFolder})]
-    public void RunTest(string name, Chip chip, TestFile testFile, ComparisonFile comparisonFile)
+    public void RunProvidedTests(string name, List<ValidationError> errors, Chip? chip, TestFile testFile, ComparisonFile comparisonFile)
     {
         var lines = testFile.Lines;
         var index = 10;
@@ -15,11 +19,16 @@ public class TestRunner
         int comparisonLine = 1;
         while (index < lines.Length && !string.IsNullOrWhiteSpace(lines[index]))
         {
-            RunTest(lines, ref index, chip);
+            errors.Should().BeEmpty();
+
+            chip.Should().NotBeNull();
             
+            RunTest(lines, ref index, chip);
+
             CheckTest(comparisonFile.Lines[comparisonLine++], lines[8], chip);
         }
     }
+    
 
     private void RunTest(string[] lines, ref int index, Chip chip)
     {
@@ -31,7 +40,7 @@ public class TestRunner
                 var inputToSet = split[1];
                 var value = split[2].Select(c => c == '1').ToArray();
 
-                chip.Inputs[inputToSet].Value = value;
+                chip.Inputs[inputToSet].Value = value[0];
             }
 
             index++;
@@ -49,10 +58,10 @@ public class TestRunner
         var comparisonData = comparisonLine
             .Split('|', StringSplitOptions.RemoveEmptyEntries)
             .Select(s => s.Trim())
-            .Select(s => s.Select(c => c == '1'))
+            .Select(s => s.Select(c => c == '1').ToArray())
             .ToArray();
         
-        var allValues = new Dictionary<string, bool[]>();
+        var allValues = new Dictionary<string, bool>();
         foreach (var input in chip.Inputs)
             allValues.Add(input.Key, input.Value.Value);
 
@@ -62,7 +71,7 @@ public class TestRunner
         pinsToCheck.Length.Should().Be(comparisonData.Length);
         for (int n = 0; n < pinsToCheck.Length; n++)
         {
-            allValues[pinsToCheck[n]].Should().BeEquivalentTo(comparisonData[n]);
+            allValues[pinsToCheck[n]].Should().Be(comparisonData[n][0]);
         }
     }
 }

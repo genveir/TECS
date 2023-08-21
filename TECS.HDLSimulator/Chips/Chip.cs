@@ -16,9 +16,9 @@ public class Chip
         Outputs = outputs;
     }
 
-    public Dictionary<string, bool[]> EvaluateAll() => Outputs.ToDictionary(
+    public Dictionary<string, bool> EvaluateAll() => Outputs.ToDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.Value);
 
-    public bool[] Evaluate(string name) => Outputs[name].Value;
+    public bool Evaluate(string name) => Outputs[name].Value;
 }

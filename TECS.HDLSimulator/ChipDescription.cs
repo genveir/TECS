@@ -16,6 +16,11 @@ public class ChipDescription
         Out = pinsOut;
         Parts = parts;
     }
+
+    public override string ToString()
+    {
+        return $"ChipDescription {Name}";
+    }
 }
 
 public class PinDescription
@@ -27,6 +32,11 @@ public class PinDescription
     {
         Name = name;
         BitSize = bitSize;
+    }
+
+    public override string ToString()
+    {
+        return $"PinDescription {Name}[{BitSize}]";
     }
 }
 
@@ -40,6 +50,11 @@ public class PartDescription
         PinConnections = pinConnections;
         Name = name;
     }
+
+    public override string ToString()
+    {
+        return $"PartDescription {Name}";
+    }
 }
 
 public class PinConnectionDescription
@@ -51,5 +66,10 @@ public class PinConnectionDescription
     {
         Local = local;
         External = external;
+    }
+
+    public override string ToString()
+    {
+        return $"PinConnectionDescription {Local}={External}";
     }
 }
