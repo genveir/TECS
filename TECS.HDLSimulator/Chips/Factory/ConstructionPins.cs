@@ -29,8 +29,17 @@ internal class ConstructionPins
 
     public NamedNodeGroup CreateInternalNodeGroup(string name, int bitSize)
     {
-        if (name == "true") return TrueGroup;
-        if (name == "false") return FalseGroup;
+        if (name == "true")
+        {
+            if (bitSize == 1) return TrueGroup;
+            if (bitSize == 16) return TrueGroup16;
+        }
+
+        if (name == "false")
+        {
+            if (bitSize == 1) return TrueGroup;
+            if (bitSize == 16) return TrueGroup16;
+        }
         
         var newGroup = new NamedNodeGroup(name, bitSize);
         InternalPins.Add(name, newGroup);
@@ -46,6 +55,21 @@ internal class ConstructionPins
         }
     };
 
+    private static NamedNodeGroup? _true16 = null;
+    private static NamedNodeGroup TrueGroup16
+    {
+        get
+        {
+            if (_true16 == null)
+            {
+                _true16 = new NamedNodeGroup("true", 16);
+                for (int n = 0; n < 16; n++) _true16.Nodes[n] = ConstantPin.True;
+            }
+
+            return _true16;
+        }
+    }
+
     private static readonly NamedNodeGroup FalseGroup = new("false", 1)
     {
         Nodes =
@@ -53,4 +77,19 @@ internal class ConstructionPins
             [0] = ConstantPin.False
         }
     };
+    
+    private static NamedNodeGroup? _false16 = null;
+    private static NamedNodeGroup FalseGroup16
+    {
+        get
+        {
+            if (_false16 == null)
+            {
+                _false16 = new NamedNodeGroup("true", 16);
+                for (int n = 0; n < 16; n++) _false16.Nodes[n] = ConstantPin.False;
+            }
+
+            return _false16;
+        }
+    }
 }
