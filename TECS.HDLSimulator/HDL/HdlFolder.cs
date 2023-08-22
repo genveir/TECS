@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TECS.HDLSimulator;
+namespace TECS.HDLSimulator.HDL;
 
 internal class HdlFolder
 {
@@ -18,7 +18,7 @@ internal class HdlFolder
     {
         var fileNames = Directory.GetFiles(_path, "*.hdl");
 
-        return fileNames.Select(fn => new HdlFile(Path.GetFileNameWithoutExtension(fn), fn));
+        return fileNames.Select(fn => new HdlFile(fn));
     }
 
     public IEnumerable<HdlFile> GetFiles()

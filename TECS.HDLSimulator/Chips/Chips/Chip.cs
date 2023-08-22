@@ -7,8 +7,7 @@ public class Chip
 {
     public Dictionary<string, NamedNodeGroup> Inputs { get; }
     public Dictionary<string, NamedNodeGroup> Outputs { get; }
-
-
+    
     public Chip(Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
     {
         Inputs = inputs;

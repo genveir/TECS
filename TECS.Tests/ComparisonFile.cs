@@ -2,7 +2,7 @@ namespace TECS.Tests;
 
 public class ComparisonFile
 {
-    public string[] Lines;
+    public readonly string[] Lines;
 
     public ComparisonFile(string[] lines)
     {

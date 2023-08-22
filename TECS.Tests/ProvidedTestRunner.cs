@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using TECS.HDLSimulator.Chips;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
 
@@ -31,7 +30,6 @@ public class ProvidedTestRunner
         }
     }
     
-
     private void RunTest(string[] lines, ref int index, Chip chip)
     {
         do

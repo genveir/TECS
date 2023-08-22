@@ -4,14 +4,14 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class ChipBlueprint
 {
-    public string Name { get; }
+    private readonly string _name;
     public Dictionary<string, NamedNodeGroup> Inputs { get; }
     
     public Dictionary<string, NamedNodeGroup> Outputs { get; }
 
     public ChipBlueprint(string name, Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
     {
-        Name = name;
+        _name = name;
         Inputs = inputs;
         Outputs = outputs;
     }
@@ -23,6 +23,6 @@ public class ChipBlueprint
 
     public override string ToString()
     {
-        return $"ChipBlueprint {Name}";
+        return $"ChipBlueprint {_name}";
     }
 }

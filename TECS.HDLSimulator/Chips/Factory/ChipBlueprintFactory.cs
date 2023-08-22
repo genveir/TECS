@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
+using TECS.HDLSimulator.HDL;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 
@@ -133,26 +134,32 @@ public class ChipBlueprintFactory
         return new(inputGroups, outputGroups, internalGroups);
     }
 
-    internal static StoredBlueprint NandBlueprint()
+    private static StoredBlueprint NandBlueprint()
     {
         var nandNode = new NandNode();
 
         nandNode.TryGetInputPins(out var inputNodes);
 
-        var aGroup = new NamedNodeGroup("a", 1);
-        aGroup.Nodes[0] = inputNodes.a;
+        var aGroup = new NamedNodeGroup("a", 1)
+        {
+            Nodes = { [0] = inputNodes.a }
+        };
 
-        var bGroup = new NamedNodeGroup("b", 1);
-        bGroup.Nodes[0] = inputNodes.b;
-        
+        var bGroup = new NamedNodeGroup("b", 1)
+        {
+            Nodes = { [0] = inputNodes.b }
+        };
+
         var inputs = new Dictionary<string, NamedNodeGroup>
         {
             { "a", aGroup },
             { "b", bGroup }
         };
 
-        var outGroup = new NamedNodeGroup("out", 1);
-        outGroup.Nodes[0] = nandNode;
+        var outGroup = new NamedNodeGroup("out", 1)
+        {
+            Nodes = { [0] = nandNode }
+        };
 
         var outputs = new Dictionary<string, NamedNodeGroup>()
         {

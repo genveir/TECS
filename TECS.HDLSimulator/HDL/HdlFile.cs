@@ -1,18 +1,14 @@
 using System.IO;
 
-namespace TECS.HDLSimulator;
+namespace TECS.HDLSimulator.HDL;
 
 internal class HdlFile
 {
-    public string Name { get;}
-    
     private readonly string _path;
     private string? _fileContents;
     
-    public HdlFile(string name, string path)
+    public HdlFile(string path)
     {
-        Name = name;
-        
         _path = path;
     }
 

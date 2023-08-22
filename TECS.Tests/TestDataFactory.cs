@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using TECS.HDLSimulator.Chips;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Factory;
 

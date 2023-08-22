@@ -19,7 +19,7 @@ public class NamedNodeGroup
         for (int n = 0; n < Nodes.Length; n++) Nodes[n] = new NandPinNode();
     }
 
-    private bool[] _value;
+    private readonly bool[] _value;
     public bool[] Value
     {
         get

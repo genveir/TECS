@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TECS.HDLSimulator;
+namespace TECS.HDLSimulator.HDL;
 
 public static class HdlParser
 {
@@ -85,7 +85,6 @@ public static class HdlParser
 
             parts.Add(ParsePartDescription(lines, ref lineIndex));
         }
-
     }
 
     private static PartDescription ParsePartDescription(string[] lines, ref int lineIndex) {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TECS.HDLSimulator;
+namespace TECS.HDLSimulator.HDL;
 
 public class ChipDescription
 {
@@ -43,7 +43,7 @@ public class NamedPinGroupDescription
 public class PartDescription
 {
     public string Name { get; }
-    public List<PinConnectionDescription> PinConnections;
+    public readonly List<PinConnectionDescription> PinConnections;
 
     public PartDescription(List<PinConnectionDescription> pinConnections, string name)
     {
