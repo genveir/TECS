@@ -54,7 +54,7 @@ public static class HdlParser
         {
             newLine = lines[lineIndex++];
 
-            pinData = pinData + newLine;
+            pinData = pinData + " " + newLine;
         } while (!newLine.EndsWith(';'));
 
         return pinData

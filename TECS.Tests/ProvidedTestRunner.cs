@@ -19,14 +19,51 @@ public class ProvidedTestRunner
         if (chip == null) return;
         
         var lines = testFile.Lines;
-        var index = 10;
+        var index = ResolveLineNumberOfFirstSet(testFile);
+
+        var outputList = ResolveOutputList(testFile);
         
         int comparisonLine = 1;
         while (index < lines.Length && !string.IsNullOrWhiteSpace(lines[index]))
         {
             RunTest(lines, ref index, chip);
 
-            CheckTest(comparisonFile.Lines[comparisonLine++], lines[8], chip);
+            CheckTest(comparisonFile.Lines[comparisonLine++], outputList, chip);
+        }
+    }
+
+    private string ResolveOutputList(TestFile testFile)
+    {
+        string outputList = "";
+        bool atList = false;
+        for (int n = 0; n < testFile.Lines.Length; n++)
+        {
+            var line = testFile.Lines[n];
+            
+            if (line.StartsWith("output-list"))
+            {
+                atList = true;
+            }
+
+            if (atList)
+            {
+                outputList += line;
+                
+                if (line.Contains(';')) break;
+            }
+        }
+
+        return outputList;
+    }
+
+    private int ResolveLineNumberOfFirstSet(TestFile testFile)
+    {
+        int lineCounter = 0;
+
+        while (true)
+        {
+            if (testFile.Lines[lineCounter].StartsWith("set")) return lineCounter;
+            lineCounter++;
         }
     }
     

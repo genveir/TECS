@@ -29,9 +29,28 @@ internal class ConstructionPins
 
     public NamedNodeGroup CreateInternalNodeGroup(string name, int bitSize)
     {
+        if (name == "true") return TrueGroup;
+        if (name == "false") return FalseGroup;
+        
         var newGroup = new NamedNodeGroup(name, bitSize);
         InternalPins.Add(name, newGroup);
 
         return newGroup;
     }
+
+    private static readonly NamedNodeGroup TrueGroup = new("true", 1)
+    {
+        Nodes =
+        {
+            [0] = ConstantPin.True
+        }
+    };
+
+    private static readonly NamedNodeGroup FalseGroup = new("false", 1)
+    {
+        Nodes =
+        {
+            [0] = ConstantPin.False
+        }
+    };
 }
