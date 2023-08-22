@@ -13,17 +13,17 @@ public class ProvidedTestRunner
     [TestCaseSource(typeof(TestDataFactory), nameof(TestDataFactory.Create), new object?[] {Settings.DataFolder})]
     public void RunProvidedTests(string name, List<ValidationError> errors, Chip? chip, TestFile testFile, ComparisonFile comparisonFile)
     {
+        errors.Should().BeEmpty();
+
+        chip.Should().NotBeNull();
+        if (chip == null) return;
+        
         var lines = testFile.Lines;
         var index = 10;
         
         int comparisonLine = 1;
         while (index < lines.Length && !string.IsNullOrWhiteSpace(lines[index]))
         {
-            errors.Should().BeEmpty();
-
-            chip.Should().NotBeNull();
-            if (chip == null) return;
-            
             RunTest(lines, ref index, chip);
 
             CheckTest(comparisonFile.Lines[comparisonLine++], lines[8], chip);

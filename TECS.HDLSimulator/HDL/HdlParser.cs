@@ -18,13 +18,19 @@ public static class HdlParser
     {
         var lines = input
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Where(l => !l.Contains("//"))
-            .Where(l => !l.Contains("*"))
-            .Where(l => !string.IsNullOrWhiteSpace(l))
             .Select(l => l.Trim())
+            .Select(StripComments)
+            .Where(l => !string.IsNullOrWhiteSpace(l))
             .ToArray();
 
         return lines;
+    }
+
+    private static string StripComments(string line)
+    {
+        if (line.Contains('*')) return "";
+
+        return line.Contains("//") ? line[..line.IndexOf('/')].Trim() : line;
     }
 
     private static ChipDescription ParseChipDescription(string[] lines, ref int lineIndex)

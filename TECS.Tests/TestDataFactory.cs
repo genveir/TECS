@@ -21,9 +21,14 @@ public static class TestDataFactory
         {
             var testfile = testfiles[n];
 
-            var typename = Path.GetFileNameWithoutExtension(testfile);
-
             var testFileContent = File.ReadAllLines(testfile);
+
+            var testName = Path.GetFileNameWithoutExtension(testfile);
+            
+            var typename = testFileContent.Single(l => l.StartsWith("load"))
+                .Replace("load ", "")
+                .Replace(".hdl,", "")
+                .Trim();
 
             var comparisonFileName = testfile.Replace(".tst", ".cmp");
             var comparisonFileContent = File.ReadAllLines(comparisonFileName);
@@ -39,7 +44,7 @@ public static class TestDataFactory
 
             var newChipTestData = new object?[]
             {
-                typename,
+                testName,
                 blueprint.ValidationErrors,
                 chip,
                 new TestFile(testFileContent),
