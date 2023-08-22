@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using System.Linq;
-using TECS.HDLSimulator.Chips.NandTree;
 
-namespace TECS.HDLSimulator.Chips;
+namespace TECS.HDLSimulator.Chips.Chips;
 
 public class ChipBlueprint
 {
     public string Name { get; }
-    public Dictionary<string, NandPinNode> Inputs { get; }
+    public Dictionary<string, NamedNodeGroup> Inputs { get; }
     
-    public Dictionary<string, INandTreeNode> Outputs { get; }
+    public Dictionary<string, NamedNodeGroup> Outputs { get; }
 
-    public ChipBlueprint(string name, Dictionary<string, NandPinNode> inputs, Dictionary<string, INandTreeNode> outputs)
+    public ChipBlueprint(string name, Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
     {
         Name = name;
         Inputs = inputs;

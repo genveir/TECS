@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualBasic.CompilerServices;
-using TECS.HDLSimulator.Chips;
 
 namespace TECS.HDLSimulator;
 
@@ -12,14 +10,14 @@ public static class HdlParser
     {
         var lines = SplitAndSanitizeInput(input);
 
-        int lineIndex = 0;
+        var lineIndex = 0;
         return ParseChipDescription(lines, ref lineIndex);
     }
 
     private static string[] SplitAndSanitizeInput(string input)
     {
         var lines = input
-            .Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
             .Where(l => !l.Contains("//"))
             .Where(l => !l.Contains("*"))
             .Where(l => !string.IsNullOrWhiteSpace(l))
@@ -35,17 +33,17 @@ public static class HdlParser
         var split = lines[lineIndex++].Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var name = split[1];
 
-        List<PinDescription> IN = ParsePinArray(lines, ref lineIndex);
-        List<PinDescription> OUT = ParsePinArray(lines, ref lineIndex);
-        List<PartDescription> PARTS = ParsePartsDescription(lines, ref lineIndex);
+        List<NamedPinGroupDescription> inGroups = ParsePinGroupArray(lines, ref lineIndex);
+        List<NamedPinGroupDescription> outGroups = ParsePinGroupArray(lines, ref lineIndex);
+        List<PartDescription> parts = ParsePartsDescription(lines, ref lineIndex);
 
-        return new(name, IN, OUT, PARTS);
+        return new(name, inGroups, outGroups, parts);
     }
 
-    private static List<PinDescription> ParsePinArray(string[] lines, ref int lineIndex)
+    private static List<NamedPinGroupDescription> ParsePinGroupArray(string[] lines, ref int lineIndex)
     {
         string pinData = "";
-        string newLine = "";
+        string newLine;
         do
         {
             newLine = lines[lineIndex++];
@@ -60,7 +58,7 @@ public static class HdlParser
             .ToList();
     }
 
-    private static PinDescription ParsePinDescription(string pinData)
+    private static NamedPinGroupDescription ParsePinDescription(string pinData)
     {
         if (pinData.Contains('['))
         {
@@ -92,7 +90,7 @@ public static class HdlParser
 
     private static PartDescription ParsePartDescription(string[] lines, ref int lineIndex) {
         string partData = "";
-        string newLine = "";
+        string newLine;
         do
         {
             newLine = lines[lineIndex++];
@@ -109,11 +107,24 @@ public static class HdlParser
         for (int n = 1; n < splitData.Length; n++)
         {
             var splitPinConnection = splitData[n].Split('=');
-            var internalPin = splitPinConnection[0];
-            var externalPin = splitPinConnection[1];
-            pinConnections.Add(new(internalPin, externalPin));
+            var internalLink = ParsePinLinkGroup(splitPinConnection[0]);
+            var externalLink = ParsePinLinkGroup(splitPinConnection[1]);
+            pinConnections.Add(new(internalLink, externalLink));
         }
 
         return new(pinConnections, name);
+    }
+
+    private static PinLinkGroupDescription ParsePinLinkGroup(string stringRepresentation)
+    {
+        var split = stringRepresentation.Split(new[] { ' ', '[', ']', '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+        return split.Length switch
+        {
+            1 => new(split[0], null, null),
+            2 => new(split[0], int.Parse(split[1]), int.Parse(split[1])),
+            3 => new(split[0], int.Parse(split[1]), int.Parse(split[2])),
+            _ => throw new InvalidOperationException("link group is not defined")
+        };
     }
 }

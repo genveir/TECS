@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.HDLSimulator.Chips;
+using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.Tests;
@@ -22,6 +23,7 @@ public class ProvidedTestRunner
             errors.Should().BeEmpty();
 
             chip.Should().NotBeNull();
+            if (chip == null) return;
             
             RunTest(lines, ref index, chip);
 
@@ -40,7 +42,7 @@ public class ProvidedTestRunner
                 var inputToSet = split[1];
                 var value = split[2].Select(c => c == '1').ToArray();
 
-                chip.Inputs[inputToSet].Value = value[0];
+                chip.Inputs[inputToSet].Nodes[0].Value = value[0];
             }
 
             index++;
@@ -49,7 +51,7 @@ public class ProvidedTestRunner
 
     private void CheckTest(string comparisonLine, string outputList, Chip chip)
     {
-        var pinsToCheck = outputList
+        var pinGroupsToCheck = outputList
             .Split(new[] { ' ', ';' }, StringSplitOptions.RemoveEmptyEntries)
             .Skip(1)
             .Select(s => s.Substring(0, s.IndexOf('%')))
@@ -61,17 +63,17 @@ public class ProvidedTestRunner
             .Select(s => s.Select(c => c == '1').ToArray())
             .ToArray();
         
-        var allValues = new Dictionary<string, bool>();
+        var allValues = new Dictionary<string, bool[]>();
         foreach (var input in chip.Inputs)
             allValues.Add(input.Key, input.Value.Value);
 
         foreach (var output in chip.Outputs)
             allValues.Add(output.Key, output.Value.Value);
 
-        pinsToCheck.Length.Should().Be(comparisonData.Length);
-        for (int n = 0; n < pinsToCheck.Length; n++)
+        pinGroupsToCheck.Length.Should().Be(comparisonData.Length);
+        for (int n = 0; n < pinGroupsToCheck.Length; n++)
         {
-            allValues[pinsToCheck[n]].Should().Be(comparisonData[n][0]);
+            allValues[pinGroupsToCheck[n]].Should().BeEquivalentTo(comparisonData[n]);
         }
     }
 }

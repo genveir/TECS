@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using TECS.HDLSimulator.Chips;
+using TECS.HDLSimulator.Chips.Chips;
+using TECS.HDLSimulator.Chips.Factory;
 
 namespace TECS.Tests;
 
@@ -34,7 +36,7 @@ public static class TestDataFactory
 
             Chip? chip = null;
             if (!blueprint.ValidationErrors.Any())
-                chip = blueprint.Copy().Fabricate();
+                chip = blueprint.CopyToBlueprintInstance().Fabricate();
 
             var newChipTestData = new object?[]
             {

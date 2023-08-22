@@ -5,11 +5,11 @@ namespace TECS.HDLSimulator;
 public class ChipDescription
 {
     public string Name { get; }
-    public List<PinDescription> In { get; }
-    public List<PinDescription> Out { get; }
+    public List<NamedPinGroupDescription> In { get; }
+    public List<NamedPinGroupDescription> Out { get; }
     public List<PartDescription> Parts { get; }
 
-    public ChipDescription(string name, List<PinDescription> pinsIn, List<PinDescription> pinsOut, List<PartDescription> parts)
+    public ChipDescription(string name, List<NamedPinGroupDescription> pinsIn, List<NamedPinGroupDescription> pinsOut, List<PartDescription> parts)
     {
         Name = name;
         In = pinsIn;
@@ -23,12 +23,12 @@ public class ChipDescription
     }
 }
 
-public class PinDescription
+public class NamedPinGroupDescription
 {
     public string Name { get; }
     public int BitSize { get; }
 
-    public PinDescription(string name, int bitSize)
+    public NamedPinGroupDescription(string name, int bitSize)
     {
         Name = name;
         BitSize = bitSize;
@@ -36,7 +36,7 @@ public class PinDescription
 
     public override string ToString()
     {
-        return $"PinDescription {Name}[{BitSize}]";
+        return $"NamedPinGroupDescription {Name}[{BitSize}]";
     }
 }
 
@@ -59,10 +59,10 @@ public class PartDescription
 
 public class PinConnectionDescription
 {
-    public string Local { get; }
-    public string External { get; }
+    public PinLinkGroupDescription Local { get; }
+    public PinLinkGroupDescription External { get; }
 
-    public PinConnectionDescription(string local, string external)
+    public PinConnectionDescription(PinLinkGroupDescription local, PinLinkGroupDescription external)
     {
         Local = local;
         External = external;
@@ -71,5 +71,27 @@ public class PinConnectionDescription
     public override string ToString()
     {
         return $"PinConnectionDescription {Local}={External}";
+    }
+}
+
+public class PinLinkGroupDescription
+{
+    public string Name { get; }
+    public int? LowerBound { get; }
+    public int? UpperBound { get; }
+
+    public PinLinkGroupDescription(string name, int? lowerBound, int? upperBound)
+    {
+        Name = name;
+        LowerBound = lowerBound;
+        UpperBound = upperBound;
+    }
+
+    public override string ToString()
+    {
+        var lowerbound = LowerBound?.ToString() ?? "_";
+        var upperbound = UpperBound?.ToString() ?? "_";
+        
+        return $"PinLinkGroupDescription {Name}[{lowerbound}..{upperbound}]";
     }
 }

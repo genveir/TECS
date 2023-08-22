@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using TECS.HDLSimulator.Chips.NandTree;
 
-namespace TECS.HDLSimulator.Chips;
+namespace TECS.HDLSimulator.Chips.Chips;
 
 public class StoredBlueprint
 {
-    public string Name { get; }
-    private Dictionary<string, NandPinNode> Inputs { get; }
-    private Dictionary<string, INandTreeNode> Outputs { get; }
+    private string Name { get; }
+    private Dictionary<string, NamedNodeGroup> Inputs { get; }
+    private Dictionary<string, NamedNodeGroup> Outputs { get; }
 
     public List<ValidationError> ValidationErrors { get; } = new(); 
     
-    public StoredBlueprint(string name, Dictionary<string, NandPinNode> inputs, Dictionary<string, INandTreeNode> outputs)
+    public StoredBlueprint(string name, Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
     {
         Name = name;
         Inputs = inputs;
@@ -24,26 +24,28 @@ public class StoredBlueprint
         Validate();
     }
 
-    public void Validate()
+    private void Validate()
     {
-        var parentNodes = new List<INandTreeNode>();
+        foreach (var input in Inputs.Values)
+        {
+            input.SetAsInputForValidation(ValidationErrors, _copyCounter);
+        }
         
         foreach (var output in Outputs.Values)
         {
-            output.Validate(ValidationErrors, Inputs.Values.ToArray(), parentNodes, _copyCounter);
+            output.Validate(ValidationErrors, _copyCounter);
         }
 
         foreach (var input in Inputs.Values)
         {
-            if (input.ValidatedInRun != _copyCounter)
-                ValidationErrors.Add(new($"Pin {input.Id} is an unconnected input"));
+            input.IsValidatedInRun(ValidationErrors, _copyCounter);
         }
 
         _copyCounter++;
     }
     
     private static long _copyCounter;
-    public ChipBlueprint Copy()
+    public ChipBlueprint CopyToBlueprintInstance()
     {
         if (ValidationErrors.Any()) 
             throw new BlueprintValidationException(Name, ValidationErrors);
@@ -54,22 +56,26 @@ public class StoredBlueprint
 
         var inputs = Inputs.ToDictionary(
             kvp => kvp.Key,
-            kvp => kvp.Value.ClonePin(_copyCounter));
+            kvp => kvp.Value.Clone(_copyCounter));
 
         _copyCounter++;
 
         return new(Name, inputs, outputs);
     }
     
-    private static void FuseOutputs(Dictionary<string, INandTreeNode> outputs)
+    private static void FuseOutputs(Dictionary<string, NamedNodeGroup> outputs)
     {
         foreach (var output in outputs)
         {
-            var name = output.Key;
-            var fusedOutput = output.Value.Fuse(_copyCounter);
-
-            outputs[name] = fusedOutput;
+            output.Value.Fuse(_copyCounter);
         }
+
+        _copyCounter++;
+    }
+
+    public override string ToString()
+    {
+        return "StoredBlueprint {Name}";
     }
 }
 

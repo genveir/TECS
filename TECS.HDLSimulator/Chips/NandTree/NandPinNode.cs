@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
-public class NandPinNode : INandTreeNode
+public class NandPinNode : INandTreeElement
 {
     private static long _idCounter;
-    public readonly long Id = _idCounter++;
+    private readonly long _id = _idCounter++;
     
-    public INandTreeNode? Parent { get; set; }
+    public INandTreeElement? Parent { get; set; }
 
     private bool _value;
     public bool Value
@@ -16,32 +15,44 @@ public class NandPinNode : INandTreeNode
         get => Parent?.Value ?? _value;
         set => _value = value;
     }
-
-    public long ValidatedInRun = -1;
-    public void Validate(List<ValidationError> errors, NandPinNode[] inputs, List<INandTreeNode> parentNodes, long validationId)
+    
+    private long _isInputForRun = -1;
+    public void SetAsInputForValidation(List<ValidationError> errors, long validationId)
     {
-        if (ValidatedInRun == validationId) return;
-        ValidatedInRun = validationId;
+        if (Parent != null)
+            errors.Add(new($"{this} is an input but has parent {Parent}"));
+
+        _isInputForRun = validationId;
+    }
+
+    private long _validatedInRun = -1;
+    public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationId)
+    {
+        if (_validatedInRun == validationId) return;
+        _validatedInRun = validationId;
         
         if (parentNodes.Contains(this))
         {
-            errors.Add(new($"Pin {Id} has cyclical connection"));
+            errors.Add(new($"{this} has cyclical connection"));
             return;
         }
-        var newParents = new List<INandTreeNode>(parentNodes);
-        newParents.Add(this);
+        var newParents = new List<INandTreeElement>(parentNodes) { this };
 
-        if (!inputs.Any(i => i == this) && Parent == null)
-            errors.Add(new($"Non input pin {Id} has no parent"));
+        var isInput = _isInputForRun == validationId;
+        
+        if (!isInput && Parent == null)
+            errors.Add(new($"Non input {this} has no parent"));
 
-        Parent?.Validate(errors, inputs, newParents, validationId);
+        Parent?.Validate(errors, newParents, validationId);
     }
+
+    public bool IsValidatedInRun(long validationId) => _validatedInRun == validationId;
 
     private long _cloneId = -1;
     private NandPinNode? _cloneResult;
-    public INandTreeNode Clone(long cloneId) => ClonePin(cloneId);
+    public INandTreeElement Clone(long cloneId) => ClonePin(cloneId);
 
-    public NandPinNode ClonePin(long cloneId)
+    private NandPinNode ClonePin(long cloneId)
     {
         if (_cloneId == cloneId) return _cloneResult!;
         _cloneId = cloneId;
@@ -55,8 +66,8 @@ public class NandPinNode : INandTreeNode
     }
     
     private long _fuseId = -1;
-    private INandTreeNode? _fuseResult;
-    public INandTreeNode Fuse(long fuseId)
+    private INandTreeElement? _fuseResult;
+    public INandTreeElement Fuse(long fuseId)
     {
         if (_fuseId == fuseId) return _fuseResult!;
         _fuseId = fuseId;
@@ -79,6 +90,6 @@ public class NandPinNode : INandTreeNode
 
     public override string ToString()
     {
-        return $"NandPinNode {Id}";
+        return $"NandPinNode {_id}";
     }
 }
