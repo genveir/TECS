@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.FileAccess", "TECS.FileAccess\TECS.FileAccess.csproj", "{B6B079E2-EBB3-43B0-B0AA-9D0E8DF8D8E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.DataIntermediates", "TECS.DataIntermediates\TECS.DataIntermediates.csproj", "{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,9 @@ Global
 		{B6B079E2-EBB3-43B0-B0AA-9D0E8DF8D8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6B079E2-EBB3-43B0-B0AA-9D0E8DF8D8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6B079E2-EBB3-43B0-B0AA-9D0E8DF8D8E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

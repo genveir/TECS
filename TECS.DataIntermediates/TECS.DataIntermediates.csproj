@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TECS.DataIntermediates\TECS.DataIntermediates.csproj" />
+      <Folder Include="Test\" />
     </ItemGroup>
 
 </Project>
