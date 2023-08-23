@@ -42,5 +42,16 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+    AluPreset(in=x,zin=zx,nin=nx,out=x0);
+    AluPreset(in=y,zin=zy,nin=ny,out=y0);
+
+    And16(a=x0,b=y0,out=xandy);
+    Add16(a=x0,b=y0,out=xplusy);
+    Mux16(a=xandy,b=xplusy,sel=f,out=xy);
+
+    Neg16(in=xy,out=negxy);
+    Mux16(a=xy,b=negxy,sel=no,out=out);
+
+    Or(a=zx,b=zy,out=zr);
+    Or(a=zx,b=zy,out=ng);
 }

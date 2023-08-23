@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using TECS.FileAccess.FileAccessors;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
 
@@ -18,7 +19,7 @@ public class ProvidedTestRunner
         chip.Should().NotBeNull();
         if (chip == null) return;
         
-        var lines = testFile.Lines;
+        var lines = testFile.GetContents();
         var index = ResolveLineNumberOfFirstSet(testFile);
 
         var outputList = ResolveOutputList(testFile);
@@ -26,19 +27,22 @@ public class ProvidedTestRunner
         int comparisonLine = 1;
         while (index < lines.Length && !string.IsNullOrWhiteSpace(lines[index]))
         {
-            RunTest(lines, ref index, chip);
+            var hasTest = RunTest(lines, ref index, chip);
 
-            CheckTest(comparisonFile.Lines[comparisonLine++], outputList, chip);
+            if (hasTest)
+                CheckTest(comparisonFile.GetContents()[comparisonLine++], outputList, chip);
         }
     }
 
     private string ResolveOutputList(TestFile testFile)
     {
+        var lines = testFile.GetContents();
+        
         string outputList = "";
         bool atList = false;
-        for (int n = 0; n < testFile.Lines.Length; n++)
+        for (int n = 0; n < lines.Length; n++)
         {
-            var line = testFile.Lines[n];
+            var line = lines[n];
             
             if (line.StartsWith("output-list"))
             {
@@ -62,26 +66,31 @@ public class ProvidedTestRunner
 
         while (true)
         {
-            if (testFile.Lines[lineCounter].StartsWith("set")) return lineCounter;
+            if (testFile.GetContents()[lineCounter].StartsWith("set")) return lineCounter;
             lineCounter++;
         }
     }
     
-    private void RunTest(string[] lines, ref int index, Chip chip)
+    private bool RunTest(string[] lines, ref int index, Chip chip)
     {
+        bool hasTest = false;
         do
         {
             if (lines[index].StartsWith("set"))
             {
-                var split = lines[index].Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                hasTest = true;
+                var split = lines[index].Split(new[] { ' ', ',', '%', 'B' }, StringSplitOptions.RemoveEmptyEntries);
                 var inputToSet = split[1];
                 var value = split[2].Select(c => c == '1').ToArray();
 
-                chip.Inputs[inputToSet].Nodes[0].Value = value[0];
+                for (int n = 0; n < value.Length; n++)
+                    chip.Inputs[inputToSet].Nodes[n].Value = value[n];
             }
 
             index++;
-        } while (!string.IsNullOrWhiteSpace(lines[index]));
+        } while (index < lines.Length && !lines[index].Contains("output"));
+
+        return hasTest;
     }
 
     private void CheckTest(string comparisonLine, string outputList, Chip chip)

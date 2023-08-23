@@ -6,7 +6,7 @@ namespace TECS.HDLSimulator.HDL;
 
 public static class HdlParser
 {
-    public static ChipDescription ParseDescription(string input)
+    public static ChipDescription ParseDescription(string[] input)
     {
         var lines = SplitAndSanitizeInput(input);
 
@@ -14,13 +14,14 @@ public static class HdlParser
         return ParseChipDescription(lines, ref lineIndex);
     }
 
-    private static string[] SplitAndSanitizeInput(string input)
+    private static string[] SplitAndSanitizeInput(string[] input)
     {
         var lines = input
-            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(l => l.Trim())
-            .Select(StripComments)
-            .Where(l => !string.IsNullOrWhiteSpace(l))
+            .SelectMany(line => line
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.Trim())
+                .Select(StripComments)
+                .Where(l => !string.IsNullOrWhiteSpace(l)))
             .ToArray();
 
         return lines;

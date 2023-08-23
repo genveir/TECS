@@ -37,8 +37,8 @@ internal class ConstructionPins
 
         if (name == "false")
         {
-            if (bitSize == 1) return TrueGroup;
-            if (bitSize == 16) return TrueGroup16;
+            if (bitSize == 1) return FalseGroup;
+            if (bitSize == 16) return FalseGroup16;
         }
         
         var newGroup = new NamedNodeGroup(name, bitSize);
