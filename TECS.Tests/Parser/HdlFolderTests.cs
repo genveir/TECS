@@ -1,15 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.FileAccess;
 using TECS.FileAccess.FileAccessors;
-using TECS.HDLSimulator.HDL;
 
 namespace TECS.Tests.Parser;
 
-public class DataFolderTests
+public class HdlFolderTests
 {
     [Test]
     public void CanGetHdlFolder()
