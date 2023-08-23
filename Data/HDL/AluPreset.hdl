@@ -1,0 +1,15 @@
+// Implementation: the ALU presetter presets a register
+// In order:
+// if (zin == 1) set in = 0         // 16-bit constant
+// if (nin == 1) set in = !in       // bitwise not
+
+CHIP AluPreset {
+    IN in[16], zin, nin;
+
+    OUT out[16];
+
+    PARTS:
+    Mux16(a=in,b=false,sel=zin,out=m0);
+    Neg16(in=m0,out=m1);
+    Mux16(a=m0,b=m1,sel=nin,out=out);
+}

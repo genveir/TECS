@@ -1,0 +1,13 @@
+/**
+ * Neg gate:
+ * out = -in
+ */
+
+CHIP Neg16 {
+    IN in[16];
+    OUT out[16];
+
+    PARTS:
+    Not16(in=in,out=m0);
+    Inc16(in=m0,out=out);
+}
