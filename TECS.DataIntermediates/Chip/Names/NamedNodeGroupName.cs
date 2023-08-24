@@ -3,20 +3,19 @@ using System.Text.RegularExpressions;
 
 namespace TECS.DataIntermediates.Chip.Names;
 
-public class NamedNodeGroupName
+public class NamedNodeGroupName : TypedName
 {
-    public readonly string Value;
+    private const string NodeGroupNameRegex = @$"^{RegularNameRegex}(?:\[\d+\])?$";
 
-    private const string NodeGroupNameRegex = @"^\D+[a-zA-Z0-9]*(?:\[\d+\])?$";
-
-    public NamedNodeGroupName(string value)
+    public NamedNodeGroupName(string value) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
             throw new ArgumentException("named node group name can not be empty");
 
-        if (!Regex.IsMatch(value, NodeGroupNameRegex))
-            throw new ArgumentException("name {value} is not a valid node group name");
+        if (value == "true" || value == "false")
+            throw new ArgumentException($"{value} is not a valid node group name");
         
-        Value = value;
+        if (!Regex.IsMatch(value, NodeGroupNameRegex))
+            throw new ArgumentException($"name {value} is not a valid node group name");
     }
 }

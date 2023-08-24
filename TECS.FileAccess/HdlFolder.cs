@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess;
@@ -39,5 +40,14 @@ public class HdlFolder
         HdlFiles = hdlFiles.ToArray();
         TestFiles = testFiles.ToArray();
         ComparisonFiles = comparisonFiles.ToArray();
+    }
+
+    public (HdlFile? hdl, TestFile? tst, ComparisonFile? cmp) GetAllWithName(string name)
+    {
+        var hdl = HdlFiles.SingleOrDefault(hdl => hdl.Name == name);
+        var tst = TestFiles.SingleOrDefault(tst => tst.Name == name);
+        var cmp = ComparisonFiles.SingleOrDefault(cmp => cmp.Name == name);
+
+        return (hdl, tst, cmp);
     }
 }

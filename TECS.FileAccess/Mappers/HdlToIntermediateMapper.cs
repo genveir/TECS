@@ -75,7 +75,7 @@ public static class HdlToIntermediateMapper
                 .Replace("PARTS:", "")
                 .Replace(" ", "");
 
-            var splitPartArray = fullPartArray.Split(';');
+            var splitPartArray = fullPartArray.Split(';', StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var partInfo in splitPartArray)
             {
@@ -118,35 +118,88 @@ public static class HdlToIntermediateMapper
     private static bool GrabArray(string[] lines, ref int index, out string[] elements)
     {
         string fullString = "";
-        do
+        while (index < lines.Length && !lines[index].Contains(';'))
         {
             fullString += " " + lines[index];    
             index++;
-        } while (index < lines.Length && !lines[index].Contains(';'));
+        }
+
+        if (index >= lines.Length)
+        {
+            elements = Array.Empty<string>();
+            return false;
+        }
+
+        fullString += " " + lines[index];
         
         var split = fullString.Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
         elements = split.Skip(1).ToArray();
 
-        return index < lines.Length;
+        return true;
     }
 
-    private static string[] SanitizeInput(string[] input)
-    {
-        var lines = input
-            .Select(l => l.Trim())
-            .Select(StripComments)
+    private static string[] SanitizeInput(string[] input) =>
+        input
             .Select(StripCurlyBrackets)
+            .StripComments()
+            .Select(l => l.Trim())
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .ToArray();
 
-        return lines;
-    }
-    
-    private static string StripComments(string line)
+    private enum CommentToStrip { None, Inline, Block }
+    private static IEnumerable<string> StripComments(this IEnumerable<string> lines)
     {
-        if (line.Contains('*')) return "";
+        var asArray = lines.ToArray();
 
-        return line.Contains("//") ? line[..line.IndexOf('/')].Trim() : line;
+        for (int n = 0; n < asArray.Length; n++)
+        {
+            int inlineStart, blockStart;
+            do
+            {
+                var line = asArray[n];
+                
+                inlineStart = asArray[n].IndexOf("//", StringComparison.Ordinal);
+                blockStart = asArray[n].IndexOf("/*", StringComparison.Ordinal);
+
+                CommentToStrip commentToStrip = (inlineStart, blockStart) switch
+                {
+                    (< 0, < 0) => CommentToStrip.None,
+                    (< 0, >= 0) => CommentToStrip.Block,
+                    (>= 0, < 0) => CommentToStrip.Inline,
+                    (>= 0, >= 0) => (inlineStart < blockStart) ? CommentToStrip.Inline : CommentToStrip.Block
+                };
+
+                if (commentToStrip == CommentToStrip.Block) 
+                    RemoveBlock(asArray, n, blockStart, n);
+
+                if (commentToStrip == CommentToStrip.Inline)
+                    asArray[n] = asArray[n].Substring(0, inlineStart);
+
+            } while (inlineStart > -1 || blockStart > -1);
+        }
+
+        return asArray;
+    }
+
+    private static void RemoveBlock(string[] asArray, int blockStartLine, int blockStartIndex, int blockInitial)
+    {
+        var subString = asArray[blockStartLine].Substring(blockStartIndex);
+        var blockEndIndex = subString.IndexOf("*/", StringComparison.Ordinal);
+
+        var beforeBlock =  asArray[blockStartLine].Substring(0, blockStartIndex);
+        if (blockEndIndex == -1)
+        {
+            asArray[blockStartLine] = "";
+            asArray[blockInitial] += beforeBlock;
+            RemoveBlock(asArray, blockStartLine + 1, 0, blockInitial);
+        }
+        else
+        {
+            var afterBlock = asArray[blockStartLine].Substring(blockStartIndex + blockEndIndex + 2);
+            
+            asArray[blockStartLine] = "";
+            asArray[blockInitial] += beforeBlock + afterBlock;
+        }
     }
 
     private static string StripCurlyBrackets(string line) =>

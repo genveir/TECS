@@ -1,0 +1,24 @@
+CHIP Not { // comments behind lots of lines
+    I/*
+        another edge case 
+    */N 
+        in; // a[16];
+    OUT 
+        out //;
+        , out2; // this closes the out block
+
+    PARTS: /* inline block comment behind a line */ // comment behind the comment
+    Nand ( // /*
+        a=/* very important to support this */in,
+        b /*,*/
+        = /* /* */
+        in, // );
+                    /* lol */ out= /* lol */
+        ou/* o lol
+
+        this is even shittier */t,out
+        =out2
+        );
+}
+
+// comment behind

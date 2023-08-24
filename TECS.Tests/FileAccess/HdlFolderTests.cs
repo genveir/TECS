@@ -5,7 +5,7 @@ using NUnit.Framework;
 using TECS.FileAccess;
 using TECS.FileAccess.FileAccessors;
 
-namespace TECS.Tests.Parser;
+namespace TECS.Tests.FileAccess;
 
 public class HdlFolderTests
 {
@@ -22,8 +22,9 @@ public class HdlFolderTests
     {
         IEnumerable<HdlFile> hdlFiles = CreateFixture().HdlFolder.HdlFiles;
 
-        hdlFiles.Should().HaveCount(15);
-        hdlFiles.Any(f => f.ToString().Contains("ExtraTest")).Should().BeFalse();
+        hdlFiles.Should().HaveCount(16);
+        hdlFiles.Any(f => f.Name == "ExtraTest").Should().BeFalse();
+        hdlFiles.Any(f => f.Name == "WeirdNot").Should().BeTrue();
     }
 
     [Test]
@@ -33,6 +34,7 @@ public class HdlFolderTests
 
         testFiles.Should().HaveCount(16);
         testFiles.Any(f => f.Name == "ExtraTest").Should().BeTrue();
+        testFiles.Any(f => f.Name == "WeirdNot").Should().BeFalse();
     }
 
     [Test]
@@ -42,6 +44,7 @@ public class HdlFolderTests
 
         comparisonFiles.Should().HaveCount(16);
         comparisonFiles.Any(f => f.Name == "ExtraTest").Should().BeTrue();
+        comparisonFiles.Any(f => f.Name == "WeirdNot").Should().BeFalse();
     }
 
     private DataFolder CreateFixture()

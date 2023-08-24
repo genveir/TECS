@@ -13,7 +13,7 @@ public class LinkName : TypedName
         {
             if (value.StartsWith("true") || value.StartsWith("false"))
                 throw new ArgumentException("true and false can not have a bit indicator block");
-            
+
             if (value[0] == '[')
                 throw new ArgumentException("link name can not start with bit indicator block");
             if (!value.EndsWith(']'))
@@ -25,5 +25,7 @@ public class LinkName : TypedName
             if (!match.Success)
                 throw new ArgumentException($"{bitIndicatorBlock} is an invalid bit indicator block");
         }
+        else if (value.Contains(']'))
+            throw new ArgumentException("link name cannot have a closing bracket without an opening bracket");
     }
 }
