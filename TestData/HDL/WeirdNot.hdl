@@ -1,4 +1,4 @@
-CHIP Not { // comments behind lots of lines
+CHIP NotWeird { // comments behind lots of lines
     I/*
         another edge case 
     */N 
