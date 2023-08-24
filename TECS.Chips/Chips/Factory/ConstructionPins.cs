@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
@@ -55,7 +54,7 @@ internal class ConstructionPins
         }
     };
 
-    private static NamedNodeGroup? _true16 = null;
+    private static NamedNodeGroup? _true16;
     private static NamedNodeGroup TrueGroup16
     {
         get
@@ -78,7 +77,7 @@ internal class ConstructionPins
         }
     };
     
-    private static NamedNodeGroup? _false16 = null;
+    private static NamedNodeGroup? _false16;
     private static NamedNodeGroup FalseGroup16
     {
         get

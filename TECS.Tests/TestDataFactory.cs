@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using TECS.DataIntermediates.Chip.Mappers;
 using TECS.FileAccess;
@@ -25,8 +24,6 @@ public static class TestDataFactory
 
         var blueprintFactory = new ChipBlueprintFactory(parsedHdlData);
 
-        var hdlPath = Path.Join(dataFolder, "HDL");
-
         var testfiles = hdlFolder.TestFiles;
 
         var data = new object?[testfiles.Length][];
@@ -44,7 +41,6 @@ public static class TestDataFactory
                 .Trim();
 
             var comparisonFile = hdlFolder.ComparisonFiles.Single(cmp => cmp.Name == testName);
-            var comparisonFileContent = comparisonFile.GetContents();
 
             var desc = blueprintFactory.GetChipDescription(typename);
             

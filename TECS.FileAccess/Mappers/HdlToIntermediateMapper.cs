@@ -156,8 +156,6 @@ public static class HdlToIntermediateMapper
             int inlineStart, blockStart;
             do
             {
-                var line = asArray[n];
-                
                 inlineStart = asArray[n].IndexOf("//", StringComparison.Ordinal);
                 blockStart = asArray[n].IndexOf("/*", StringComparison.Ordinal);
 

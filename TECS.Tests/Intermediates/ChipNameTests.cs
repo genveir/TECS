@@ -26,6 +26,6 @@ public class ChipNameTests
         if (!isValid)
             Assert.Throws<ArgumentException>(() => _ = new ChipName(name));
         else
-            Assert.DoesNotThrow(() => new ChipName(name));
+            Assert.DoesNotThrow(() => _ = new ChipName(name));
     }
 }

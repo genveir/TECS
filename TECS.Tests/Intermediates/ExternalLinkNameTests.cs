@@ -1,8 +1,6 @@
 using System;
-using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Chip.Names;
-using TECS.FileAccess.Mappers;
 
 namespace TECS.Tests.Intermediates;
 
@@ -28,7 +26,7 @@ public class LinkNameTests
         if (!isValid)
             Assert.Throws<ArgumentException>(() => _ = new ExternalLinkName(name));
         else
-            Assert.DoesNotThrow(() => new ExternalLinkName(name));
+            Assert.DoesNotThrow(() => _ = new ExternalLinkName(name));
     }
     
     [TestCase("a", true)]
@@ -51,6 +49,6 @@ public class LinkNameTests
         if (!isValid)
             Assert.Throws<ArgumentException>(() => _ = new InternalLinkName(name));
         else
-            Assert.DoesNotThrow(() => new InternalLinkName(name));
+            Assert.DoesNotThrow(() => _ = new InternalLinkName(name));
     } 
 }

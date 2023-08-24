@@ -1,5 +1,4 @@
 ﻿using System;
-using TECS.HDLSimulator;
 
 namespace TECS;
 

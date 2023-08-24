@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Chip.Names;
@@ -77,7 +76,7 @@ public class ChipDataTests
             _ = new ChipPartData(ValidChipName, Array.Empty<LinkData>()));
     }
 
-    private int _nameCounter = 0;
+    private int _nameCounter;
     
     private ChipName ValidChipName => new("test" + _nameCounter++);
 

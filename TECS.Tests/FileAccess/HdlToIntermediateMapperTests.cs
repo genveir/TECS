@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Chip;

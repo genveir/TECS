@@ -26,6 +26,6 @@ public class NamedNodeGroupNameTests
         if (!isValid)
             Assert.Throws<ArgumentException>(() => _ = new NamedNodeGroupName(name));
         else
-            Assert.DoesNotThrow(() => new NamedNodeGroupName(name));
+            Assert.DoesNotThrow(() => _ = new NamedNodeGroupName(name));
     }
 }
