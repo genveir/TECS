@@ -7,6 +7,7 @@ using TECS.DataIntermediates.Chip.Names;
 using TECS.FileAccess;
 using TECS.FileAccess.FileAccessors;
 using TECS.FileAccess.Mappers;
+using TECS.Tests.Builders.ChipData;
 
 namespace TECS.Tests.FileAccess;
 
@@ -41,37 +42,27 @@ public class HdlToIntermediateMapperTests
         return hdlFolder.GetAllWithName(name).hdl ?? 
                throw new FileNotFoundException($"{name} hdl does not exist but is required for test");
     }
-    
-    private static ChipData ParsedNotIntermediate => new(
-        name: new("Not"),
-        inGroups: new List<NamedNodeGroupName> { new("in") },
-        outGroups: new List<NamedNodeGroupName> { new("out") },
-        parts: new List<ChipPartData>
-        {
-            new(
-                partName: new ChipName("Nand"),
-                links: new List<LinkData>()
-                {
-                    new(new("a"), new("in")),
-                    new(new("b"), new("in")),
-                    new(new("out"), new("out"))
-                })
-        });
-    
-    private static ChipData ParsedWeirdNotIntermediate => new(
-        name: new("Not"),
-        inGroups: new List<NamedNodeGroupName> { new("in") },
-        outGroups: new List<NamedNodeGroupName> { new("out"), new("out2") },
-        parts: new List<ChipPartData>
-        {
-            new(
-                partName: new ChipName("Nand"),
-                links: new List<LinkData>()
-                {
-                    new(new("a"), new("in")),
-                    new(new("b"), new("in")),
-                    new(new("out"), new("out")),
-                    new(new("out"), new("out2")) // this is illegal, but not at this level
-                })
-        });
+
+    private static ChipData ParsedNotIntermediate => new ChipDataBuilder()
+        .WithName("Not")
+        .WithInGroups("in")
+        .WithOutGroups("out")
+        .AddPart("Nand")
+            .AddLink("a", "in")
+            .AddLink("b", "in")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
+
+    private static ChipData ParsedWeirdNotIntermediate => new ChipDataBuilder()
+        .WithName("Not")
+        .WithInGroups("in")
+        .WithOutGroups("out", "out2")
+        .AddPart("Nand")
+            .AddLink("a", "in")
+            .AddLink("b", "in")
+            .AddLink("out", "out")
+            .AddLink("out", "out2")
+            .Build()
+        .Build();
 }
