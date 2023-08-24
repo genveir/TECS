@@ -9,4 +9,8 @@
       <Folder Include="Test\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TECS.Chips\TECS.Chips.csproj" />
+    </ItemGroup>
+
 </Project>

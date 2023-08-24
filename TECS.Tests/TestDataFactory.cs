@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using TECS.DataIntermediates.Chip.Mappers;
 using TECS.FileAccess;
+using TECS.FileAccess.Mappers;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Factory;
-using TECS.HDLSimulator.HDL;
 
 namespace TECS.Tests;
 
@@ -15,10 +16,12 @@ public static class TestDataFactory
         var hdlFolder = new DataFolder(dataFolder).HdlFolder;
 
         var hdlFiles = hdlFolder.HdlFiles;
-
-        var hdlData = hdlFiles.Select(hf => hf.GetContents());
-
-        var parsedHdlData = hdlData.Select(HdlParser.ParseDescription);
+        
+        var intermediates = 
+            hdlFiles.Select(HdlToIntermediateMapper.Map);
+        
+        var parsedHdlData = 
+            intermediates.Select(IntermediateToChipDescriptionMapper.Map);
 
         var blueprintFactory = new ChipBlueprintFactory(parsedHdlData);
 

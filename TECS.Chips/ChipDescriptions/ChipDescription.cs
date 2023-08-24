@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TECS.HDLSimulator.HDL;
+namespace TECS.HDLSimulator.ChipDescriptions;
 
 public class ChipDescription
 {

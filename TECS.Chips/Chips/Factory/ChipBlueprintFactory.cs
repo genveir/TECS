@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TECS.HDLSimulator.ChipDescriptions;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
-using TECS.HDLSimulator.HDL;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 
