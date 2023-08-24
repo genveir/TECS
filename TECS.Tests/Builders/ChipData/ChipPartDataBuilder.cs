@@ -11,8 +11,14 @@ public class ChipPartDataBuilder<TReceiver>
     private readonly List<LinkData> _links = new();
 
     private readonly Func<ChipPartData, TReceiver> _addPart;
-    
-    public ChipPartDataBuilder(string name, Func<ChipPartData, TReceiver> addPart)
+
+    public static ChipPartDataBuilder<ChipPartData> CreateBasic(string name) => 
+        new(name, cpd => cpd);
+
+    public static ChipPartDataBuilder<TReceiver> WithReceiver(string name, Func<ChipPartData, TReceiver> receiver) =>
+        new(name, receiver);
+
+    private ChipPartDataBuilder(string name, Func<ChipPartData, TReceiver> addPart)
     {
         _name = name;
         _addPart = addPart;
