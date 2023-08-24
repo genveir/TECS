@@ -11,7 +11,7 @@ public class ChipDataBuilder
     private string _name = "defaultName";
     private string[] _inGroups = Array.Empty<string>(); 
     private string[] _outGroups = Array.Empty<string>();
-    private List<ChipPartData> _parts = new(); 
+    private readonly List<ChipPartData> _parts = new(); 
     
     public ChipDataBuilder WithName(string name)
     {
@@ -39,7 +39,7 @@ public class ChipDataBuilder
         return new ChipPartDataBuilder<ChipDataBuilder>(name, AddPart);
     }
 
-    public ChipDataBuilder AddPart(ChipPartData chipPartData)
+    private ChipDataBuilder AddPart(ChipPartData chipPartData)
     {
         _parts.Add(chipPartData);
 
