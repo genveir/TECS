@@ -6,11 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.Tests", "TECS.Tests\TE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.Chips", "TECS.Chips\TECS.Chips.csproj", "{04E46240-5544-4FF6-AED6-44039E7A852B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{8E2795F9-BC4B-49DB-98CC-04A00E73E35A}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.FileAccess", "TECS.FileAccess\TECS.FileAccess.csproj", "{B6B079E2-EBB3-43B0-B0AA-9D0E8DF8D8E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TECS.DataIntermediates", "TECS.DataIntermediates\TECS.DataIntermediates.csproj", "{2DA0B3E6-5D81-4440-B9EE-FFEEBC62E9A2}"
