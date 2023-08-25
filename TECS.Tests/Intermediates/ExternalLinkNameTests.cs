@@ -1,6 +1,6 @@
 using System;
 using NUnit.Framework;
-using TECS.DataIntermediates.Chip.Names;
+using TECS.DataIntermediates.Names;
 
 namespace TECS.Tests.Intermediates;
 

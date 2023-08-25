@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TECS.DataIntermediates.Chip.Names;
+using TECS.DataIntermediates.Names;
 
 namespace TECS.DataIntermediates.Chip;
 

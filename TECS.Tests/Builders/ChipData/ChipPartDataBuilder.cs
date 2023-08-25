@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TECS.DataIntermediates.Chip;
-using TECS.DataIntermediates.Chip.Names;
+using TECS.DataIntermediates.Names;
 
 namespace TECS.Tests.Builders.ChipData;
 

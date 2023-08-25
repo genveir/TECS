@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Chip;
-using TECS.DataIntermediates.Chip.Names;
+using TECS.DataIntermediates.Names;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;

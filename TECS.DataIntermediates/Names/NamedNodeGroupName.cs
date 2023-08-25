@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace TECS.DataIntermediates.Chip.Names;
+namespace TECS.DataIntermediates.Names;
 
 public class NamedNodeGroupName : TypedName
 {

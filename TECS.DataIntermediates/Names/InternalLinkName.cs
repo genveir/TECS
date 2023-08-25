@@ -1,6 +1,6 @@
 using System;
 
-namespace TECS.DataIntermediates.Chip.Names;
+namespace TECS.DataIntermediates.Names;
 
 public class InternalLinkName : LinkName
 {

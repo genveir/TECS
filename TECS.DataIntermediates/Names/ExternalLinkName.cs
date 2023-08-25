@@ -1,4 +1,4 @@
-namespace TECS.DataIntermediates.Chip.Names;
+namespace TECS.DataIntermediates.Names;
 
 public class ExternalLinkName : LinkName
 {

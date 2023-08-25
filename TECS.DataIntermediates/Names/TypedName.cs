@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace TECS.DataIntermediates.Chip.Names;
+namespace TECS.DataIntermediates.Names;
 
 public abstract class TypedName
 {
