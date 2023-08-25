@@ -38,7 +38,7 @@ public class ChipPartDataBuilder<TReceiver>
 
     public TReceiver Build()
     {
-        var part = new ChipPartData(new(_name), _links);
+        var part = new ChipPartData(new(_name), _links.ToArray());
 
         return _addPart(part);
     }

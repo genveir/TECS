@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Names;
 
@@ -15,28 +14,24 @@ public class ChipData
     
     public ChipPartData[] Parts { get; }
 
-    public ChipData(ChipName name, IEnumerable<NamedNodeGroupName> inGroups, IEnumerable<NamedNodeGroupName> outGroups, 
-        IEnumerable<ChipPartData> parts)
+    public ChipData(ChipName name, NamedNodeGroupName[] inGroups, NamedNodeGroupName[] outGroups, 
+        ChipPartData[] parts)
     {
         Name = name;
 
-        var inGroupArray = inGroups.ToArray();
-        var outGroupArray = outGroups.ToArray();
-        var partsArray = parts.ToArray();
+        CheckGroupForDoubles(inGroups, "inputs");
+        CheckGroupForDoubles(outGroups, "outputs");
+        CheckGroupForDoubles(inGroups.Concat(outGroups).ToArray(), "inputs and outputs");
 
-        CheckGroupForDoubles(inGroupArray, "inputs");
-        CheckGroupForDoubles(outGroupArray, "outputs");
-        CheckGroupForDoubles(inGroupArray.Concat(outGroupArray).ToArray(), "inputs and outputs");
-
-        if (inGroupArray.Length == 0)
+        if (inGroups.Length == 0)
             throw new ArgumentException("chip has no inputs");
 
-        if (outGroupArray.Length == 0)
+        if (outGroups.Length == 0)
             throw new ArgumentException("chip has no outputs");
         
-        In = inGroupArray;
-        Out = outGroupArray;
-        Parts = partsArray;
+        In = inGroups;
+        Out = outGroups;
+        Parts = parts;
     }
 
     private void CheckGroupForDoubles(NamedNodeGroupName[] group, string groupName)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Names;
 
@@ -11,7 +10,7 @@ public class ChipPartData
     
     public LinkData[] Links { get; }
 
-    public ChipPartData(ChipName partName, IEnumerable<LinkData> links)
+    public ChipPartData(ChipName partName, LinkData[] links)
     {
         var linkArray = links.ToArray();
 

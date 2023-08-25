@@ -49,14 +49,14 @@ public class ChipDataBuilder
 
     public DataIntermediates.Chip.ChipData Build()
     {
-        var inGroups = _inGroups.Select(s => new NamedNodeGroupName(s));
-        var outGroups = _outGroups.Select(s => new NamedNodeGroupName(s));
+        var inGroups = _inGroups.Select(s => new NamedNodeGroupName(s)).ToArray();
+        var outGroups = _outGroups.Select(s => new NamedNodeGroupName(s)).ToArray();
         
         return new(
             name: new(_name),
             inGroups: inGroups,
             outGroups: outGroups,
-            _parts
+            _parts.ToArray()
         );
     }
 }

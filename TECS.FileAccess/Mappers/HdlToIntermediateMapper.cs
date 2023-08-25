@@ -39,29 +39,29 @@ public static class HdlToIntermediateMapper
         throw new MappingException("HDL file has no defined chip");
     }
 
-    private static IEnumerable<NamedNodeGroupName> MapIn(string[] lines, ref int index)
+    private static NamedNodeGroupName[] MapIn(string[] lines, ref int index)
     {
         if (LoopForwardTo(lines, ref index, l => l.StartsWith("IN")) &&
             GrabArray(lines, ref index, out string[] elements))
         {
-            return elements.Select(e => new NamedNodeGroupName(e));
+            return elements.Select(e => new NamedNodeGroupName(e)).ToArray();
         }
 
         throw new MappingException("HDL file has no defined inputs");
     }
 
-    private static IEnumerable<NamedNodeGroupName> MapOut(string[] lines, ref int index)
+    private static NamedNodeGroupName[] MapOut(string[] lines, ref int index)
     {
         if (LoopForwardTo(lines, ref index, l => l.StartsWith("OUT")) &&
             GrabArray(lines, ref index, out string[] elements))
         {
-            return elements.Select(e => new NamedNodeGroupName(e));
+            return elements.Select(e => new NamedNodeGroupName(e)).ToArray();
         }
 
         throw new MappingException("HDL file has no defined outputs");
     }
 
-    private static IEnumerable<ChipPartData> MapParts(string[] lines, ref int index)
+    private static ChipPartData[] MapParts(string[] lines, ref int index)
     {
         List<ChipPartData> chipParts = new();
         if (LoopForwardTo(lines, ref index, l => l.StartsWith("PARTS:")))
@@ -84,7 +84,7 @@ public static class HdlToIntermediateMapper
         }
 
         // we are okay with empty parts, it's the start state of every project HDL
-        return chipParts;
+        return chipParts.ToArray();
     }
 
     private static ChipPartData MapPart(string partInfo)
@@ -93,7 +93,7 @@ public static class HdlToIntermediateMapper
 
         ChipName name = new(splitPartInfo[0]);
 
-        var links =  splitPartInfo.Skip(1).Select(MapLink);
+        var links =  splitPartInfo.Skip(1).Select(MapLink).ToArray();
 
         return new(name, links);
     }

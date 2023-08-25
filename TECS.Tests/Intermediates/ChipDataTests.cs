@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
@@ -13,8 +12,8 @@ public class ChipDataTests
     {
         var chipName = ValidChipName;
 
-        var internalPins = new List<NamedNodeGroupName>() { ValidNodeGroupName, ValidNodeGroupName };
-        var externalPins = new List<NamedNodeGroupName>() { ValidNodeGroupName, ValidNodeGroupName };
+        var internalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
+        var externalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
 
         var parts = Array.Empty<ChipPartData>();
         
@@ -28,8 +27,8 @@ public class ChipDataTests
 
         var nodeGroupName = ValidNodeGroupName;
 
-        var interalPins = new List<NamedNodeGroupName> { nodeGroupName, nodeGroupName };
-        var externalPins = new List<NamedNodeGroupName> { ValidNodeGroupName, ValidNodeGroupName };
+        var interalPins = new[] { nodeGroupName, nodeGroupName };
+        var externalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
         
         var parts = Array.Empty<ChipPartData>();
 
@@ -44,8 +43,8 @@ public class ChipDataTests
 
         var nodeGroupName = ValidNodeGroupName;
 
-        var interalPins = new List<NamedNodeGroupName> { ValidNodeGroupName, ValidNodeGroupName };
-        var externalPins = new List<NamedNodeGroupName> { nodeGroupName, nodeGroupName };
+        var interalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
+        var externalPins = new[] { nodeGroupName, nodeGroupName };
         
         var parts = Array.Empty<ChipPartData>();
 
@@ -60,8 +59,8 @@ public class ChipDataTests
 
         var nodeGroupName = ValidNodeGroupName;
 
-        var interalPins = new List<NamedNodeGroupName> { nodeGroupName, ValidNodeGroupName };
-        var externalPins = new List<NamedNodeGroupName> { nodeGroupName, ValidNodeGroupName };
+        var interalPins = new[] { nodeGroupName, ValidNodeGroupName };
+        var externalPins = new[] { nodeGroupName, ValidNodeGroupName };
         
         var parts = Array.Empty<ChipPartData>();
 
