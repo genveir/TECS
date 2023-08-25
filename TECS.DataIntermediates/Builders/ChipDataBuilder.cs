@@ -34,10 +34,10 @@ public class ChipDataBuilder
         return this;
     }
 
-    public ChipPartDataBuilder<ChipDataBuilder> AddPart(string name)
+    public ChipPartDataBuilder<ChipDataBuilder> AddPart()
     {
         return ChipPartDataBuilder<ChipDataBuilder>
-            .WithReceiver(name, AddPart);
+            .WithReceiver(AddPart);
     }
 
     private ChipDataBuilder AddPart(ChipPartData chipPartData)

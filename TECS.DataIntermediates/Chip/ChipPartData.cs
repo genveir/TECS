@@ -10,7 +10,7 @@ public class ChipPartData
     
     public LinkData[] Links { get; }
 
-    public ChipPartData(ChipName partName, LinkData[] links)
+    internal ChipPartData(ChipName partName, LinkData[] links)
     {
         var linkArray = links.ToArray();
 

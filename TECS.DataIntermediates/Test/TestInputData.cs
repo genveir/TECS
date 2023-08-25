@@ -6,7 +6,7 @@ public class TestInputData
 
     public TestSetData[] SetData { get; }
 
-    public TestInputData(int order, TestSetData[] setData)
+    internal TestInputData(int order, TestSetData[] setData)
     {
         Order = order;
         SetData = setData;

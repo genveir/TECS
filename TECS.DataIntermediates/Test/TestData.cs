@@ -13,7 +13,7 @@ public class TestData
     
     public TestInputData[] Tests { get; }
 
-    public TestData(ChipName chipToTest, CompareData expectedValues, OutputListData[] outputList, TestInputData[] tests)
+    internal TestData(ChipName chipToTest, CompareData expectedValues, OutputListData[] outputList, TestInputData[] tests)
     {
         for (int n = 0; n < outputList.Length; n++)
         {

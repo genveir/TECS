@@ -8,7 +8,7 @@ public class OutputListData
     
     public BitSize BitSize { get; }
 
-    public OutputListData(NamedNodeGroupName group, BitSize bitSize)
+    internal OutputListData(NamedNodeGroupName group, BitSize bitSize)
     {
         Group = group;
         BitSize = bitSize;

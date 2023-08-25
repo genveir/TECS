@@ -8,7 +8,7 @@ public class TestSetData
     
     public BitValue ValueToSet { get; }
 
-    public TestSetData(NamedNodeGroupName group, BitValue valueToSet)
+    internal TestSetData(NamedNodeGroupName group, BitValue valueToSet)
     {
         Group = group;
         ValueToSet = valueToSet;

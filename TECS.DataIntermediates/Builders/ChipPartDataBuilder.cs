@@ -7,21 +7,27 @@ namespace TECS.DataIntermediates.Builders;
 
 public class ChipPartDataBuilder<TReceiver>
 {
-    private readonly string _name;
+    private string _name = "";
     private readonly List<LinkData> _links = new();
 
     private readonly Func<ChipPartData, TReceiver> _addPart;
 
-    public static ChipPartDataBuilder<ChipPartData> CreateBasic(string name) => 
-        new(name, cpd => cpd);
+    public static ChipPartDataBuilder<ChipPartData> CreateBasic() => 
+        new(cpd => cpd);
 
-    public static ChipPartDataBuilder<TReceiver> WithReceiver(string name, Func<ChipPartData, TReceiver> receiver) =>
-        new(name, receiver);
+    public static ChipPartDataBuilder<TReceiver> WithReceiver(Func<ChipPartData, TReceiver> receiver) =>
+        new(receiver);
 
-    private ChipPartDataBuilder(string name, Func<ChipPartData, TReceiver> addPart)
+    private ChipPartDataBuilder(Func<ChipPartData, TReceiver> addPart)
+    {
+        _addPart = addPart;
+    }
+
+    public ChipPartDataBuilder<TReceiver> WithName(string name)
     {
         _name = name;
-        _addPart = addPart;
+
+        return this;
     }
 
     public ChipPartDataBuilder<TReceiver> AddLink(string internalName, string externalName)

@@ -4,7 +4,7 @@ namespace TECS.DataIntermediates.Names;
 
 public class ExternalLinkName : LinkName
 {
-    public ExternalLinkName(string value) : base(value) {}
+    internal ExternalLinkName(string value) : base(value) {}
     
     public override int GetHashCode()
     {

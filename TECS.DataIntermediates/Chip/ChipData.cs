@@ -14,7 +14,7 @@ public class ChipData
     
     public ChipPartData[] Parts { get; }
 
-    public ChipData(ChipName name, NamedNodeGroupName[] inGroups, NamedNodeGroupName[] outGroups, 
+    internal ChipData(ChipName name, NamedNodeGroupName[] inGroups, NamedNodeGroupName[] outGroups, 
         ChipPartData[] parts)
     {
         Name = name;

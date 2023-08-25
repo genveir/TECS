@@ -12,7 +12,7 @@ public class CompareData
     
     public BitSize[] ColumnSizes { get; }
 
-    public CompareData(NamedNodeGroupName[] groupsToCheck, BitValue[][] values)
+    internal CompareData(NamedNodeGroupName[] groupsToCheck, BitValue[][] values)
     {
         if (groupsToCheck.Length == 0)
             throw new ArgumentException("compare data has no groups to check");

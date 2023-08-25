@@ -7,7 +7,7 @@ public class NamedNodeGroupName : TypedName
 {
     private const string NodeGroupNameRegex = @$"^{RegularNameRegex}(?:\[\d+\])?$";
 
-    public NamedNodeGroupName(string value) : base(value)
+    internal NamedNodeGroupName(string value) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
             throw new ArgumentException("named node group name can not be empty");

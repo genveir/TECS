@@ -8,7 +8,7 @@ public class LinkData
     
     public ExternalLinkName External { get; }
 
-    public LinkData(InternalLinkName internalLinkName, ExternalLinkName externalLinkName)
+    internal LinkData(InternalLinkName internalLinkName, ExternalLinkName externalLinkName)
     {
         Internal = internalLinkName;
         External = externalLinkName;
