@@ -4,7 +4,7 @@ using System.Linq;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 
-namespace TECS.Tests.Builders.ChipData;
+namespace TECS.DataIntermediates.Builders;
 
 public class ChipDataBuilder
 {
@@ -47,7 +47,7 @@ public class ChipDataBuilder
         return this;
     }
 
-    public DataIntermediates.Chip.ChipData Build()
+    public ChipData Build()
     {
         var inGroups = _inGroups.Select(s => new NamedNodeGroupName(s)).ToArray();
         var outGroups = _outGroups.Select(s => new NamedNodeGroupName(s)).ToArray();

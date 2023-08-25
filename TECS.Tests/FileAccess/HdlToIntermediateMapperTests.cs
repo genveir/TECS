@@ -1,11 +1,11 @@
 using System.IO;
 using FluentAssertions;
 using NUnit.Framework;
+using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
 using TECS.FileAccess;
 using TECS.FileAccess.FileAccessors;
 using TECS.FileAccess.Mappers;
-using TECS.Tests.Builders.ChipData;
 
 namespace TECS.Tests.FileAccess;
 

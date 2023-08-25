@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 
-namespace TECS.Tests.Builders.ChipData;
+namespace TECS.DataIntermediates.Builders;
 
 public class ChipPartDataBuilder<TReceiver>
 {
