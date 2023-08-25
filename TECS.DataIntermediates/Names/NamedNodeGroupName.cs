@@ -18,4 +18,18 @@ public class NamedNodeGroupName : TypedName
         if (!Regex.IsMatch(value, NodeGroupNameRegex))
             throw new ArgumentException($"name {value} is not a valid node group name");
     }
+
+    public override int GetHashCode()
+    {
+        return string.GetHashCode(Value, StringComparison.Ordinal) + 1;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        var other = obj as NamedNodeGroupName;
+
+        if (other == null) return false;
+        return other.Value.Equals(Value);
+    }
 }
