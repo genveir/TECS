@@ -75,26 +75,26 @@ public static class HdlToIntermediateMapper
 
             foreach (var partInfo in splitPartArray)
             {
-                MapPart(partInfo, builder.AddPart());
+                MapPart(partInfo, builder);
             }
         }
     }
 
-    private static void MapPart(string partInfo, ChipPartDataBuilder<ChipDataBuilder> builder)
+    private static void MapPart(string partInfo, ChipDataBuilder builder)
     {
         var splitPartInfo = partInfo.Split(new[] { '(', ',', ')' }, StringSplitOptions.RemoveEmptyEntries);
 
-        builder.WithName(splitPartInfo[0]);
+        var partBuilder = builder.AddPart(splitPartInfo[0]);
 
         var links = splitPartInfo.Skip(1).ToArray();
 
         foreach (var link in links)
         {
             var splitLink = link.Split('=');
-            builder.AddLink(splitLink[0], splitLink[1]);
+            partBuilder.AddLink(splitLink[0], splitLink[1]);
         }
 
-        builder.Build();
+        partBuilder.Build();
     }
 
     private static bool LoopForwardTo(string[] lines, ref int index, Func<string, bool> selector)
