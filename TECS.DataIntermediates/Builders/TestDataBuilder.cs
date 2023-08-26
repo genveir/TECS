@@ -37,12 +37,12 @@ public class TestDataBuilder
         return this;
     }
 
-    public CompareDataBuilder<TestDataBuilder> AddCompareData()
+    public CompareDataBuilder<TestDataBuilder> SetExpectedValues()
     {
-        return CompareDataBuilder<TestDataBuilder>.WithReceiver(AddCompareData);
+        return CompareDataBuilder<TestDataBuilder>.WithReceiver(SetExpectedValues);
     }
 
-    private TestDataBuilder AddCompareData(CompareData compareData)
+    private TestDataBuilder SetExpectedValues(CompareData compareData)
     {
         _expectedValue = compareData;
 

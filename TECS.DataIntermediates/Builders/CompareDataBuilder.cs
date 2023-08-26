@@ -37,7 +37,7 @@ public class CompareDataBuilder<TReceiver>
         return this;
     }
 
-    public CompareDataBuilder<TReceiver> AddValueRow(string[] values)
+    public CompareDataBuilder<TReceiver> AddValueRow(params string[] values)
     {
         bool[][] boolValues = new bool[values.Length][];
         for (int n = 0; n < values.Length; n++)

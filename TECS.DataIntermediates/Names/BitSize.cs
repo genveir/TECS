@@ -16,4 +16,20 @@ public class BitSize
 
         Value = value;
     }
+
+    public override string ToString()
+    {
+        return $"BitSize {Value}";
+    }
+
+    public override int GetHashCode() => Value + 5;
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        var other = obj as BitSize;
+
+        if (other == null) return false;
+        return other.Value == Value;
+    }
 }
