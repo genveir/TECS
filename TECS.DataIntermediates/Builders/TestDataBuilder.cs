@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
 
@@ -7,7 +8,7 @@ namespace TECS.DataIntermediates.Builders;
 
 public class TestDataBuilder
 {
-    private string? _chipToTest;
+    private ChipData? _chipToTest;
     private CompareData? _expectedValue;
     private readonly List<OutputListData> _outputs;
     private readonly List<TestInputData> _tests;
@@ -18,9 +19,9 @@ public class TestDataBuilder
         _tests = new();
     }
 
-    public TestDataBuilder WithChipToTest(string chipName)
+    public TestDataBuilder WithChipToTest(ChipData chipData)
     {
-        _chipToTest = chipName;
+        _chipToTest = chipData;
 
         return this;
     }
@@ -63,14 +64,15 @@ public class TestDataBuilder
 
     public TestData Build()
     {
-        var name = new ChipName(_chipToTest ?? "");
+        if (_chipToTest == null)
+            throw new BuilderException("cannot build test data without a chip to test");
         if (_expectedValue == null)
             throw new BuilderException("cannot build test data without compare data");
 
         var outputs = _outputs.ToArray();
         var tests = _tests.ToArray();
         
-        return new(name, _expectedValue, outputs, tests);
+        return new(_chipToTest, _expectedValue, outputs, tests);
     }
 }
 

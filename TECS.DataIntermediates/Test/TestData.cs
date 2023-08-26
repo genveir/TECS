@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 
 namespace TECS.DataIntermediates.Test;
 
 public class TestData
 {
-    public ChipName ChipToTest { get; }
+    public ChipData ChipToTest { get; }
     
     public CompareData ExpectedValues { get; }
     
@@ -15,7 +16,7 @@ public class TestData
     
     public TestInputData[] Tests { get; }
 
-    internal TestData(ChipName chipToTest, CompareData expectedValues, OutputListData[] outputList, TestInputData[] tests)
+    internal TestData(ChipData chipToTest, CompareData expectedValues, OutputListData[] outputList, TestInputData[] tests)
     {
         if (outputList.Length == 0)
             throw new ArgumentException("output list is empty");

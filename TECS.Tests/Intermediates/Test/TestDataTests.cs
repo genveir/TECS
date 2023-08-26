@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using TECS.DataIntermediates.Builders;
+using TECS.DataIntermediates.Chip;
 
 namespace TECS.Tests.Intermediates.Test;
 
@@ -10,7 +11,7 @@ public class TestDataTests
     public void CanCreateTestData()
     {
         _ = new TestDataBuilder()
-            .WithChipToTest("NotChip")
+            .WithChipToTest(NotIntermediate)
             .AddOutput("in", 1)
             .AddOutput("out", 1)
             .SetExpectedValues()
@@ -32,7 +33,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .SetExpectedValues()
                     .WithGroups("in", "out")
                     .AddValueRow("1", "0")
@@ -52,7 +53,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .AddOutput("in", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
@@ -68,7 +69,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                     .AddOutput("in", 1)
                     .AddOutput("in", 16)
                     .AddOutput("out", 1)
@@ -92,19 +93,19 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
-                .AddOutput("in", 1)
+                .WithChipToTest(AndIntermediate)
+                .AddOutput("a", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
-                    .WithGroups("in", "x")
+                    .WithGroups("a", "b")
                     .AddValueRow("1", "0")
                     .AddValueRow("0", "1")
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
+                    .AddInput("a", "1")
                     .Build()
                 .AddTest(1)
-                    .AddInput("in", "0")
+                    .AddInput("a", "0")
                     .Build()
                 .Build());
     }
@@ -113,7 +114,7 @@ public class TestDataTests
     public void CanCreateTestDataWithTestsWithEqualOrder()
     {
         _ = new TestDataBuilder()
-            .WithChipToTest("NotChip")
+            .WithChipToTest(NotIntermediate)
             .AddOutput("in", 1)
             .AddOutput("out", 1)
             .SetExpectedValues()
@@ -134,19 +135,22 @@ public class TestDataTests
     public void CanCreateTestDataWithLargerBitSizes()
     {
         _ = new TestDataBuilder()
-            .WithChipToTest("NotChip")
-            .AddOutput("in", 2)
+            .WithChipToTest(And16Intermediate)
+            .AddOutput("a", 16)
+            .AddOutput("b", 16)
             .AddOutput("out", 16)
             .SetExpectedValues()
-                .WithGroups("in", "out")
-                .AddValueRow("10", "0000111100001111")
-                .AddValueRow("01", "1111000011110000")
+                .WithGroups("a", "b", "out")
+                .AddValueRow("0000111100001111", "0000111100001111", "0000111100001111")
+                .AddValueRow("0000111100001111", "1111000011110000", "0000000000000000")
                 .Build()
             .AddTest(0)
-                .AddInput("in", "10")
+                .AddInput("a", "0000111100001111")
+                .AddInput("b", "0000111100001111")
                 .Build()
             .AddTest(1)
-                .AddInput("in", "01")
+                .AddInput("a", "0000111100001111")
+                .AddInput("b", "1111000011110000")
                 .Build()
             .Build();
     }
@@ -156,7 +160,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .AddOutput("in", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
@@ -178,21 +182,24 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
-                .AddOutput("in", 2)
+                .WithChipToTest(AndIntermediate)
+                .AddOutput("a", 1)
+                .AddOutput("b", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
-                    .WithGroups("in", "out")
-                    .AddValueRow("00", "0")
-                    .AddValueRow("01", "1")
-                    .AddValueRow("10", "1")
-                    .AddValueRow("11", "1")
+                    .WithGroups("a", "b", "out")
+                    .AddValueRow("0", "0", "0")
+                    .AddValueRow("0", "1", "0")
+                    .AddValueRow("1", "0", "0")
+                    .AddValueRow("1", "1", "1")
                 .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
+                    .AddInput("a", "0")
+                    .AddInput("b", "0")
                     .Build()
                 .AddTest(1)
-                    .AddInput("in", "0")
+                    .AddInput("a", "0")
+                    .AddInput("b", "1")
                     .Build()
                 .Build());
     }
@@ -202,7 +209,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .AddOutput("in", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
@@ -223,7 +230,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .AddOutput("in", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
@@ -246,7 +253,7 @@ public class TestDataTests
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
-                .WithChipToTest("NotChip")
+                .WithChipToTest(NotIntermediate)
                 .AddOutput("in", 1)
                 .AddOutput("out", 1)
                 .SetExpectedValues()
@@ -267,7 +274,7 @@ public class TestDataTests
     public void CanCreateTestWhereNotEveryValueIsSetEveryTest()
     {
         _ = new TestDataBuilder()
-            .WithChipToTest("AndChip")
+            .WithChipToTest(AndIntermediate)
             .AddOutput("a", 1)
             .AddOutput("b", 1)
             .AddOutput("out", 1)
@@ -299,7 +306,7 @@ public class TestDataTests
     public void CanSetInputThatIsNotInOutputList()
     {
         _ = new TestDataBuilder()
-            .WithChipToTest("NotChip")
+            .WithChipToTest(NotIntermediate)
             .AddOutput("out", 1)
             .SetExpectedValues()
                 .WithGroups("out")
@@ -307,11 +314,52 @@ public class TestDataTests
                 .AddValueRow("1")
                 .Build()
             .AddTest(0)
-                .AddInput("in", "1010")
+                .AddInput("in", "1")
                 .Build()
             .AddTest(1)
                 .AddInput("in", "0")
                 .Build()
             .Build();
     }
+    
+    private static ChipData NotIntermediate => new ChipDataBuilder()
+        .WithName("Not")
+        .WithInGroups("in")
+        .WithOutGroups("out")
+        .AddPart("Nand")
+            .AddLink("a", "in")
+            .AddLink("b", "in")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
+    
+    private static ChipData AndIntermediate => new ChipDataBuilder()
+        .WithName("And")
+        .WithInGroups("a", "b")
+        .WithOutGroups("out")
+        .AddPart("Nand")
+            .AddLink("a", "a")
+            .AddLink("b", "b")
+            .AddLink("out", "mid")
+            .Build()
+        .AddPart("Not")
+            .AddLink("in", "mid")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
+    
+    private static ChipData And16Intermediate => new ChipDataBuilder()
+        .WithName("And")
+        .WithInGroups("a[16]", "b[16]")
+        .WithOutGroups("out[16]")
+        .AddPart("Nand16")
+            .AddLink("a", "a")
+            .AddLink("b", "b")
+            .AddLink("out", "mid")
+            .Build()
+        .AddPart("Not16")
+            .AddLink("in", "mid")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
 }
