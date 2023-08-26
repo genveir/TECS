@@ -9,21 +9,29 @@ namespace TECS.FileAccess.Mappers;
 
 public static class HdlToIntermediateMapper
 {
+    private static readonly Dictionary<HdlFile, ChipData> Mapped = new();
+
     public static ChipData Map(HdlFile file)
     {
-        var lines = file.GetContents();
+        if (!Mapped.TryGetValue(file, out var chipData))
+        {
+            var lines = file.GetContents();
 
-        lines = SanitizeInput(lines);
-        var index = 0;
+            lines = SanitizeInput(lines);
+            var index = 0;
 
-        var builder = new ChipDataBuilder();
+            var builder = new ChipDataBuilder();
 
-        MapChipName(lines, ref index, builder);
-        MapIn(lines, ref index, builder);
-        MapOut(lines, ref index, builder);
-        MapParts(lines, ref index, builder);
+            MapChipName(lines, ref index, builder);
+            MapIn(lines, ref index, builder);
+            MapOut(lines, ref index, builder);
+            MapParts(lines, ref index, builder);
 
-        return builder.Build();
+            chipData = builder.Build();
+            Mapped[file] = chipData;
+        }
+
+        return chipData;
     }
 
     private static void MapChipName(string[] lines, ref int index, ChipDataBuilder builder)
