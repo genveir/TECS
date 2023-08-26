@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
 
-namespace TECS.Tests.Intermediates;
+namespace TECS.Tests.Intermediates.Names;
 
 public class NamedNodeGroupNameTests
 {

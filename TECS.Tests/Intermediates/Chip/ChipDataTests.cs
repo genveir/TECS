@@ -3,7 +3,7 @@ using NUnit.Framework;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 
-namespace TECS.Tests.Intermediates;
+namespace TECS.Tests.Intermediates.Chip;
 
 public class ChipDataTests
 {
