@@ -1,68 +1,119 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Chip.Mappers;
+using TECS.DataIntermediates.Test;
 using TECS.FileAccess;
+using TECS.FileAccess.FileAccessors;
 using TECS.FileAccess.Mappers;
+using TECS.HDLSimulator.ChipDescriptions;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Factory;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.Tests;
 
+
 public static class TestDataFactory
 {
-    public static object?[][] Create(string dataFolder)
+    private static ChipBlueprintFactory? _factory;
+
+    private static ChipBlueprintFactory GetFactory(string dataFolder)
+    {
+        if (_factory == null)
+        {
+            var hdlFolder = new DataFolder(dataFolder).HdlFolder;
+
+            List<ChipDescription> parseableChipDescriptions = new();
+            foreach (var hdlFile in hdlFolder.HdlFiles)
+            {
+                var chipData = GetChipData(hdlFile);
+                if (chipData != null)
+                {
+                    var desc = IntermediateToChipDescriptionMapper.Map(chipData);
+                    parseableChipDescriptions.Add(desc);
+                }
+            }
+
+            _factory = new ChipBlueprintFactory(parseableChipDescriptions);
+        }
+
+        return _factory;
+    }
+
+    private static ChipData? GetChipData(HdlFile file)
+    {
+        try
+        {
+            return HdlToIntermediateMapper.Map(file);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    } 
+    
+    public static object?[][] Create(string dataFolder, string name)
     {
         var hdlFolder = new DataFolder(dataFolder).HdlFolder;
 
-        var hdlFiles = hdlFolder.HdlFiles;
+        var factory = GetFactory(dataFolder);
         
-        var intermediates = 
-            hdlFiles.Select(HdlToIntermediateMapper.Map);
-        
-        var parsedHdlData = 
-            intermediates.Select(IntermediateToChipDescriptionMapper.Map);
+        var testFile = hdlFolder.TestFiles.SingleOrDefault(tst => tst.Name == name);
+        if (testFile == null)
+            return CreateFailedTestCreationResult($"could not find test file {name}");
 
-        var blueprintFactory = new ChipBlueprintFactory(parsedHdlData);
+        var testData = TstToIntermediateMapper.Map(hdlFolder, testFile);
 
-        var testfiles = hdlFolder.TestFiles;
+        var description = factory.GetChipDescription(testData.ChipToTest.Name.Value);
+        if (description == null)
+            return CreateFailedTestCreationResult($"could not find description for {testData.ChipToTest.Name.Value} in factory, likely it was not successfully mapped");
 
-        var data = new object?[testfiles.Length][];
-        for (int n = 0; n < testfiles.Length; n++)
+        var storedBlueprint = factory.BuildBlueprint(description);
+        if (storedBlueprint.ValidationErrors.Any())
+            return CreateFailedTestCreationResult(storedBlueprint.ValidationErrors);
+
+        var chip = storedBlueprint.CopyToBlueprintInstance().Fabricate();
+
+        List<object?[]> result = new();
+        for (int n = 0; n < testData.Tests.Length; n++)
         {
-            var testfile = testfiles[n];
-
-            var testFileContent = testfile.GetContents();
-
-            var testName = testfile.Name;
-            
-            var typename = testFileContent.Single(l => l.StartsWith("load"))
-                .Replace("load ", "")
-                .Replace(".hdl,", "")
-                .Trim();
-
-            var comparisonFile = hdlFolder.ComparisonFiles.Single(cmp => cmp.Name == testName);
-
-            var desc = blueprintFactory.GetChipDescription(typename);
-            
-            if (desc == null) throw new InvalidOperationException($"description {typename} does not exist");
-            var blueprint = blueprintFactory.BuildBlueprint(desc);
-
-            Chip? chip = null;
-            if (!blueprint.ValidationErrors.Any())
-                chip = blueprint.CopyToBlueprintInstance().Fabricate();
-
-            var newChipTestData = new object?[]
-            {
-                testName,
-                blueprint.ValidationErrors,
-                chip,
-                testfile,
-                comparisonFile
-            };
-
-            data[n] = newChipTestData;
+            result.Add(CreateSingleTest(new(), chip, testData, n));
         }
+        
+        return result.ToArray();
+    }
 
-        return data;
+    private static object?[][] CreateFailedTestCreationResult(string message)
+    {
+        List<ValidationError> errors = new() { new(message) };
+
+        return CreateFailedTestCreationResult(errors);
+    }
+    
+    private static object?[][] CreateFailedTestCreationResult(List<ValidationError> errors)
+    {
+        return new[]
+        {
+            new object?[]
+            {
+                errors,
+                null,
+                null,
+                0
+            }
+        };
+    }
+    
+    private static object?[] CreateSingleTest(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
+    {
+        return new object?[]
+        {
+            errors,
+            chip,
+            testData,
+            order
+        };
     }
 }
