@@ -111,24 +111,25 @@ public class TestDataTests
     }
 
     [Test]
-    public void CanCreateTestDataWithTestsWithEqualOrder()
+    public void CannotCreateTestDataWithTestsWithEqualOrder()
     {
-        _ = new TestDataBuilder()
-            .WithChipToTest(NotIntermediate)
-            .AddOutput("in", 1)
-            .AddOutput("out", 1)
-            .SetExpectedValues()
-                .WithGroups("in", "out")
-                .AddValueRow("1", "0")
-                .AddValueRow("0", "1")
-                .Build()
-            .AddTest(0)
-                .AddInput("in", "1")
-                .Build()
-            .AddTest(0)
-                .AddInput("in", "0")
-                .Build()
-            .Build();
+        Assert.Throws<ArgumentException>(() =>
+            _ = new TestDataBuilder()
+                .WithChipToTest(NotIntermediate)
+                .AddOutput("in", 1)
+                .AddOutput("out", 1)
+                .SetExpectedValues()
+                    .WithGroups("in", "out")
+                    .AddValueRow("1", "0")
+                    .AddValueRow("0", "1")
+                    .Build()
+                .AddTest(0)
+                    .AddInput("in", "1")
+                    .Build()
+                .AddTest(0)
+                    .AddInput("in", "0")
+                    .Build()
+                .Build());
     }
 
     [Test]

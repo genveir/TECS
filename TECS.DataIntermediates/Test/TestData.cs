@@ -47,6 +47,9 @@ public class TestData
         if (expectedValues.Values.Length != tests.Length)
             throw new ArgumentException("expected values count differs from number of tests");
 
+        if (tests.Length != tests.Select(t => t.Order).Distinct().Count())
+            throw new ArgumentException("orders on tests must be distinct");
+        
         var setters = tests.SelectMany(t => t.SetData).ToArray();
         for (int n = 0; n < setters.Length; n++)
         {
