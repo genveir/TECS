@@ -7,7 +7,7 @@ public static class IntermediateToChipDescriptionMapper
     public static ChipDescription Map(ChipData chipData)
     {
         return new(
-            "", 
+            chipData.Name.Value, 
             new(), 
             new(), 
             new());
