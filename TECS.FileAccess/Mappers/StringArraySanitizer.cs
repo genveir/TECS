@@ -14,6 +14,27 @@ public static class StringArraySanitizer
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .ToArray();
 
+    public static string[] UnifyTestLines(string[] input)
+    {
+        List<string> newLines = new();
+        string buffer = "";
+        for (int n = 0; n < input.Length; n++)
+        {
+            if (!input[n].EndsWith(',') && !input[n].EndsWith(';'))
+                buffer += " " + input[n];
+            else
+            {
+                var newLine = buffer + " " + input[n];
+                while (newLine.Contains("  ")) newLine.Replace("  ", " ");
+                
+                newLines.Add(newLine.Trim());
+                buffer = "";
+            }
+        }
+
+        return newLines.ToArray();
+    }
+
     private enum CommentToStrip { None, Inline, Block }
     private static IEnumerable<string> StripComments(this IEnumerable<string> lines)
     {
