@@ -321,11 +321,32 @@ public class TestDataTests
                 .Build()
             .Build();
     }
+
+    [Test]
+    public void CanCreateTestDataThatDoesNotMatchChip()
+    {
+        _ = new TestDataBuilder()
+            .WithChipToTest(And16Intermediate)
+            .AddOutput("in", 1)
+            .AddOutput("out", 1)
+            .SetExpectedValues()
+            .WithGroups("in", "out")
+            .AddValueRow("1", "0")
+            .AddValueRow("0", "1")
+            .Build()
+            .AddTest(0)
+            .AddInput("in", "1")
+            .Build()
+            .AddTest(1)
+            .AddInput("in", "0")
+            .Build()
+            .Build();
+    }
     
     private static ChipData NotIntermediate => new ChipDataBuilder()
         .WithName("Not")
-        .WithInGroups("in")
-        .WithOutGroups("out")
+        .AddInGroup("in", 1)
+        .AddOutGroup("out", 1)
         .AddPart("Nand")
             .AddLink("a", "in")
             .AddLink("b", "in")
@@ -335,8 +356,9 @@ public class TestDataTests
     
     private static ChipData AndIntermediate => new ChipDataBuilder()
         .WithName("And")
-        .WithInGroups("a", "b")
-        .WithOutGroups("out")
+        .AddInGroup("a", 1)
+        .AddInGroup("b", 1)
+        .AddOutGroup("out", 1)
         .AddPart("Nand")
             .AddLink("a", "a")
             .AddLink("b", "b")
@@ -350,8 +372,9 @@ public class TestDataTests
     
     private static ChipData And16Intermediate => new ChipDataBuilder()
         .WithName("And")
-        .WithInGroups("a[16]", "b[16]")
-        .WithOutGroups("out[16]")
+        .AddInGroup("a", 16)
+        .AddInGroup("b", 16)
+        .AddOutGroup("out", 16)
         .AddPart("Nand16")
             .AddLink("a", "a")
             .AddLink("b", "b")

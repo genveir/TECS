@@ -8,13 +8,13 @@ public class ChipData
 {
     public ChipName Name { get; }
     
-    public NamedNodeGroupName[] In { get; }
+    public NamedNodeGroupData[] In { get; }
     
-    public NamedNodeGroupName[] Out { get; }
+    public NamedNodeGroupData[] Out { get; }
     
     public ChipPartData[] Parts { get; }
 
-    internal ChipData(ChipName name, NamedNodeGroupName[] inGroups, NamedNodeGroupName[] outGroups, 
+    internal ChipData(ChipName name, NamedNodeGroupData[] inGroups, NamedNodeGroupData[] outGroups, 
         ChipPartData[] parts)
     {
         Name = name;
@@ -34,10 +34,10 @@ public class ChipData
         Parts = parts;
     }
 
-    private void CheckGroupForDoubles(NamedNodeGroupName[] group, string groupName)
+    private void CheckGroupForDoubles(NamedNodeGroupData[] group, string groupName)
     {
         var distinctCount = group
-            .Select(g => g.Value)
+            .Select(g => g.Name)
             .Distinct().Count();
 
         if (distinctCount != group.Length)

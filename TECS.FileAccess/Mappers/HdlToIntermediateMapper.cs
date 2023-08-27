@@ -52,7 +52,12 @@ public static class HdlToIntermediateMapper
             throw new MappingException("HDL file has no defined inputs");
         }
 
-        builder.WithInGroups(elements);
+        foreach (var element in elements)
+        {
+            var (name, size) = MapGroup(element);
+
+            builder.AddInGroup(name, size);
+        }
     }
 
     private static void MapOut(string[] lines, ref int index, ChipDataBuilder builder)
@@ -63,7 +68,24 @@ public static class HdlToIntermediateMapper
             throw new MappingException("HDL file has no defined outputs");
         }
 
-        builder.WithOutGroups(elements);
+        foreach (var element in elements)
+        {
+            var (name, size) = MapGroup(element);
+
+            builder.AddOutGroup(name, size);
+        }
+    }
+
+    private static (string name, int size) MapGroup(string element)
+    {
+        var elementSplit = element.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+        return elementSplit.Length switch
+        {
+            1 => (elementSplit[0], 1),
+            2 => (elementSplit[0], int.Parse(elementSplit[1])),
+            _ => throw new MappingException($"Group (element) can not be parsed")
+        };
     }
 
     private static void MapParts(string[] lines, ref int index, ChipDataBuilder builder)

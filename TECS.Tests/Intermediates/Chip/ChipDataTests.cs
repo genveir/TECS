@@ -12,8 +12,8 @@ public class ChipDataTests
     {
         var chipName = ValidChipName;
 
-        var internalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
-        var externalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
+        var internalPins = new[] { ValidNodeGroupData, ValidNodeGroupData };
+        var externalPins = new[] { ValidNodeGroupData, ValidNodeGroupData };
 
         var parts = Array.Empty<ChipPartData>();
         
@@ -25,15 +25,15 @@ public class ChipDataTests
     {
         var chipName = ValidChipName;
 
-        var nodeGroupName = ValidNodeGroupName;
+        var nodeGroupName = ValidNodeGroupData;
 
-        var interalPins = new[] { nodeGroupName, nodeGroupName };
-        var externalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
+        var internalPins = new[] { nodeGroupName, nodeGroupName };
+        var externalPins = new[] { ValidNodeGroupData, ValidNodeGroupData };
         
         var parts = Array.Empty<ChipPartData>();
 
         Assert.Throws<ArgumentException>(() => 
-            _ = new ChipData(chipName, interalPins, externalPins, parts));
+            _ = new ChipData(chipName, internalPins, externalPins, parts));
     }
     
     [Test]
@@ -41,15 +41,15 @@ public class ChipDataTests
     {
         var chipName = ValidChipName;
 
-        var nodeGroupName = ValidNodeGroupName;
+        var nodeGroupName = ValidNodeGroupData;
 
-        var interalPins = new[] { ValidNodeGroupName, ValidNodeGroupName };
+        var internalPins = new[] { ValidNodeGroupData, ValidNodeGroupData };
         var externalPins = new[] { nodeGroupName, nodeGroupName };
         
         var parts = Array.Empty<ChipPartData>();
 
         Assert.Throws<ArgumentException>(() => 
-            _ = new ChipData(chipName, interalPins, externalPins, parts));
+            _ = new ChipData(chipName, internalPins, externalPins, parts));
     }
     
     [Test]
@@ -57,15 +57,15 @@ public class ChipDataTests
     {
         var chipName = ValidChipName;
 
-        var nodeGroupName = ValidNodeGroupName;
+        var nodeGroupName = ValidNodeGroupData;
 
-        var interalPins = new[] { nodeGroupName, ValidNodeGroupName };
-        var externalPins = new[] { nodeGroupName, ValidNodeGroupName };
+        var internalPins = new[] { nodeGroupName, ValidNodeGroupData };
+        var externalPins = new[] { nodeGroupName, ValidNodeGroupData };
         
         var parts = Array.Empty<ChipPartData>();
 
         Assert.Throws<ArgumentException>(() => 
-            _ = new ChipData(chipName, interalPins, externalPins, parts));
+            _ = new ChipData(chipName, internalPins, externalPins, parts));
     }
 
     [Test]
@@ -79,5 +79,5 @@ public class ChipDataTests
     
     private ChipName ValidChipName => new("test" + _nameCounter++);
 
-    private NamedNodeGroupName ValidNodeGroupName => new("test" + _nameCounter++);
+    private NamedNodeGroupData ValidNodeGroupData => new(new("test" + _nameCounter++), new(1));
 }

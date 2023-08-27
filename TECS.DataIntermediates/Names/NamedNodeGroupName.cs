@@ -5,7 +5,7 @@ namespace TECS.DataIntermediates.Names;
 
 public class NamedNodeGroupName : TypedName
 {
-    private const string NodeGroupNameRegex = @$"^{RegularNameRegex}(?:\[\d+\])?$";
+    private const string NodeGroupNameRegex = @$"^{RegularNameRegex}$";
 
     internal NamedNodeGroupName(string value) : base(value)
     {
