@@ -25,7 +25,7 @@ public static class StringArraySanitizer
             else
             {
                 var newLine = buffer + " " + input[n];
-                while (newLine.Contains("  ")) newLine.Replace("  ", " ");
+                while (newLine.Contains("  ")) newLine = newLine.Replace("  ", " ");
                 
                 newLines.Add(newLine.Trim());
                 buffer = "";
