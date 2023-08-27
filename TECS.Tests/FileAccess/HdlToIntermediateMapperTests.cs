@@ -1,7 +1,6 @@
 using System.IO;
 using FluentAssertions;
 using NUnit.Framework;
-using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
 using TECS.FileAccess;
 using TECS.FileAccess.FileAccessors;
@@ -51,43 +50,7 @@ public class HdlToIntermediateMapperTests
                throw new FileNotFoundException($"{name} hdl does not exist but is required for test");
     }
 
-    private static ChipData NotIntermediate => new ChipDataBuilder()
-        .WithName("Not")
-        .AddInGroup("in", 1)
-        .AddOutGroup("out", 1)
-        .AddPart("Nand")
-            .AddLink("a", "in")
-            .AddLink("b", "in")
-            .AddLink("out", "out")
-            .Build()
-        .Build();
-
-    private static ChipData AndIntermediate => new ChipDataBuilder()
-        .WithName("And")
-        .AddInGroup("a", 1)
-        .AddInGroup("b", 1)
-        .AddOutGroup("out", 1)
-        .AddPart("Nand")
-            .AddLink("a", "a")
-            .AddLink("b", "b")
-            .AddLink("out", "mid")
-            .Build()
-        .AddPart("Not")
-            .AddLink("in", "mid")
-            .AddLink("out", "out")
-            .Build()
-        .Build();
-
-    private static ChipData WeirdNotIntermediate => new ChipDataBuilder()
-        .WithName("NotWeird")
-        .AddInGroup("in", 1)
-        .AddOutGroup("out", 1)
-        .AddOutGroup("out2", 1)
-        .AddPart("Nand")
-            .AddLink("a", "in")
-            .AddLink("b", "in")
-            .AddLink("out", "out")
-            .AddLink("out", "out2")
-            .Build()
-        .Build();
+    private static ChipData NotIntermediate => HandMadeIntermediates.NotIntermediate;
+    private static ChipData AndIntermediate => HandMadeIntermediates.AndIntermediate;
+    private static ChipData WeirdNotIntermediate => HandMadeIntermediates.WeirdNotIntermediate;
 }

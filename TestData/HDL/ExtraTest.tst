@@ -1,17 +1,20 @@
 // Extra test, tests Not with a different filename,
-// different formatting, and inverted order of testing
+// different formatting, some weird comments
 
-load Not.hdl,
-output-file Not.out,
+lo/* test if sanitation is done 
+*/ad 
+ Not.hdl,
+output-file
+Not.out,
 compare-to Not.cmp,
 output-list 
     in%B3.1.3 
     out%B3.1.3;
 
-set in 1,
+set in 0,
 eval,
 output;
 
-set in 0,
+set in 1,
 eval,
 output;

@@ -1,0 +1,95 @@
+using TECS.DataIntermediates.Builders;
+using TECS.DataIntermediates.Chip;
+using TECS.DataIntermediates.Test;
+
+namespace TECS.Tests.FileAccess;
+
+internal static class HandMadeIntermediates
+{
+    public static TestData NotTestIntermediate => new TestDataBuilder()
+        .WithChipToTest(NotIntermediate)
+        .AddOutput("in", 1)
+        .AddOutput("out", 1)
+        .SetExpectedValues()
+            .WithGroups("in", "out")
+            .AddValueRow("0", "1")
+            .AddValueRow("1", "0")
+        .Build()
+            .AddTest(0)
+            .AddInput("in", "0")
+        .Build()
+        .AddTest(1)
+            .AddInput("in", "1")
+            .Build()
+        .Build();
+    
+    public static ChipData NotIntermediate => new ChipDataBuilder()
+        .WithName("Not")
+        .AddInGroup("in", 1)
+        .AddOutGroup("out", 1)
+        .AddPart("Nand")
+            .AddLink("a", "in")
+            .AddLink("b", "in")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
+
+    public static TestData AndTestIntermediate => new TestDataBuilder()
+        .WithChipToTest(AndIntermediate)
+        .AddOutput("a", 1)
+        .AddOutput("b", 1)
+        .AddOutput("out", 1)
+        .SetExpectedValues()
+            .WithGroups("a", "b", "out")
+            .AddValueRow("0", "0", "0")
+            .AddValueRow("0", "1", "0")
+            .AddValueRow("1", "0", "0")
+            .AddValueRow("1", "1", "1")
+            .Build()
+        .AddTest(0)
+            .AddInput("a", "0")
+            .AddInput("b", "0")
+            .Build()
+        .AddTest(1)
+            .AddInput("a", "0")
+            .AddInput("b", "1")
+            .Build()
+        .AddTest(2)
+            .AddInput("a", "1")
+            .AddInput("b", "0")
+            .Build()
+        .AddTest(3)
+            .AddInput("a", "1")
+            .AddInput("b", "1")
+            .Build()
+        .Build();
+    
+    public static ChipData AndIntermediate => new ChipDataBuilder()
+        .WithName("And")
+        .AddInGroup("a", 1)
+        .AddInGroup("b", 1)
+        .AddOutGroup("out", 1)
+        .AddPart("Nand")
+            .AddLink("a", "a")
+            .AddLink("b", "b")
+            .AddLink("out", "mid")
+            .Build()
+        .AddPart("Not")
+            .AddLink("in", "mid")
+            .AddLink("out", "out")
+            .Build()
+        .Build();
+
+    public static ChipData WeirdNotIntermediate => new ChipDataBuilder()
+        .WithName("NotWeird")
+        .AddInGroup("in", 1)
+        .AddOutGroup("out", 1)
+        .AddOutGroup("out2", 1)
+        .AddPart("Nand")
+            .AddLink("a", "in")
+            .AddLink("b", "in")
+            .AddLink("out", "out")
+            .AddLink("out", "out2")
+            .Build()
+        .Build();
+}
