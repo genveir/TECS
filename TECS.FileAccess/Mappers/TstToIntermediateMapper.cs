@@ -9,14 +9,19 @@ public class TstToIntermediateMapper
 {
     private static readonly Dictionary<TestFile, TestData> Mapped = new();
 
-    public static TestData Map(HdlFolder hdlFolder, TestFile testFile)
+    public static TestData Map(HdlFolder hdlFolder, TestFile file)
     {
-        if (!Mapped.TryGetValue(testFile, out var testData))
+        if (!Mapped.TryGetValue(file, out var testData))
         {
+            var lines = file.GetContents();
+
+            lines = StringArraySanitizer.SanitizeInput(lines);
+            var index = 0;
+            
             var builder = new TestDataBuilder();
 
             testData = builder.Build();
-            Mapped[testFile] = testData;
+            Mapped[file] = testData;
         }
 
         return testData;
