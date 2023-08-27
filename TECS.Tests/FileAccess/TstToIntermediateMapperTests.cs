@@ -40,6 +40,16 @@ public class TstToIntermediateMapperTests
         intermediate.Should().BeEquivalentTo(AndIntermediate);
     }
     
+    [Test]
+    public void CanMap16BitAnd()
+    {
+        var (hdlFolder, testFile) = Get("And16");
+
+        var intermediate = TstToIntermediateMapper.Map(hdlFolder, testFile);
+
+        intermediate.Should().BeEquivalentTo(And16Intermediate);
+    }
+    
     private (HdlFolder, TestFile) Get(string name)
     {
         var datafolder = new DataFolder(Settings.TestDataFolder);
@@ -54,4 +64,5 @@ public class TstToIntermediateMapperTests
 
     private TestData NotIntermediate => HandMadeIntermediates.NotTestIntermediate;
     private TestData AndIntermediate => HandMadeIntermediates.AndTestIntermediate;
+    private TestData And16Intermediate => HandMadeIntermediates.And16TestIntermediate;
 }

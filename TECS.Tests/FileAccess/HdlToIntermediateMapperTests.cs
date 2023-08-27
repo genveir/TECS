@@ -31,6 +31,16 @@ public class HdlToIntermediateMapperTests
     }
 
     [Test]
+    public void CanMap16BitAnd()
+    {
+        var and16Hdl = Get("And16");
+
+        var intermediate = HdlToIntermediateMapper.Map(and16Hdl);
+
+        intermediate.Should().BeEquivalentTo(And16Intermediate);
+    }
+
+    [Test]
     public void CanMapWeirdNot()
     {
         var weirdNotHdl = Get("WeirdNot");
@@ -52,5 +62,6 @@ public class HdlToIntermediateMapperTests
 
     private static ChipData NotIntermediate => HandMadeIntermediates.NotIntermediate;
     private static ChipData AndIntermediate => HandMadeIntermediates.AndIntermediate;
+    private static ChipData And16Intermediate => HandMadeIntermediates.And16Intermediate;
     private static ChipData WeirdNotIntermediate => HandMadeIntermediates.WeirdNotIntermediate;
 }

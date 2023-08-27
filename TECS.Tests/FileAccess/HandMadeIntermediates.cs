@@ -92,4 +92,68 @@ internal static class HandMadeIntermediates
             .AddLink("out", "out2")
             .Build()
         .Build();
+
+    public static TestData And16TestIntermediate => new TestDataBuilder()
+        .WithChipToTest(And16Intermediate)
+        .AddOutput("a", 16)
+        .AddOutput("b", 16)
+        .AddOutput("out", 16)
+        .SetExpectedValues()
+            .WithGroups("a", "b", "out")
+            .AddValueRow("0000000000000000", "0000000000000000", "0000000000000000")
+            .AddValueRow("0000000000000000", "1111111111111111", "0000000000000000")
+            .AddValueRow("1111111111111111", "1111111111111111", "1111111111111111")
+            .AddValueRow("1010101010101010", "0101010101010101", "0000000000000000")
+            .AddValueRow("0011110011000011", "0000111111110000", "0000110011000000")
+            .AddValueRow("0001001000110100", "1001100001110110", "0001000000110100")
+            .Build()
+        .AddTest(0)
+            .AddInput("a", "0000000000000000")
+            .AddInput("b", "0000000000000000")
+            .Build()
+        .AddTest(1)
+            .AddInput("a", "0000000000000000")
+            .AddInput("b", "1111111111111111")
+            .Build()
+        .AddTest(2)
+            .AddInput("a", "1111111111111111")
+            .AddInput("b", "1111111111111111")
+            .Build()
+        .AddTest(3)
+            .AddInput("a", "1010101010101010")
+            .AddInput("b", "0101010101010101")
+            .Build()
+        .AddTest(4)
+            .AddInput("a", "0011110011000011")
+            .AddInput("b", "0000111111110000")
+            .Build()
+        .AddTest(5)
+            .AddInput("a", "0001001000110100")
+            .AddInput("b", "1001100001110110")
+            .Build()
+        .Build();
+    
+    public static ChipData And16Intermediate
+    {
+        get
+        {
+            var builder = new ChipDataBuilder()
+                .WithName("And16")
+                .AddInGroup("a", 16)
+                .AddInGroup("b", 16)
+                .AddOutGroup("out", 16);
+
+            for (int n = 0; n < 16; n++)
+            {
+                builder.AddPart("And")
+                    .AddLink($"a", $"a[{n}]")
+                    .AddLink($"b", $"b[{n}]")
+                    .AddLink($"out", $"out[{n}]")
+                    .Build();
+            }
+            
+            return builder.Build();
+        }
+    } 
+        
 }
