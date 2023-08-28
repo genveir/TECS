@@ -193,8 +193,8 @@ set no 1,
 eval,
 output;
 
-set x %B000000000010001,  // x = 17
-set y %B000000000000011;  // y =  3
+set x %B0000000000010001,  // x = 17
+set y %B0000000000000011;  // y =  3
 
 // Compute 0
 set zx 1,

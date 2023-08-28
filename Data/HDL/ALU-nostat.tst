@@ -187,8 +187,8 @@ set no 1,
 eval,
 output;
 
-set x %B101101110100000,
-set y %B001111011010010,
+set x %B0101101110100000,
+set y %B0001111011010010,
 
 set zx 1,
 set nx 0,
