@@ -5,7 +5,7 @@ namespace TECS.DataIntermediates.Names;
 
 public class ChipName : TypedName
 {
-    internal ChipName(string value) : base(value)
+    public ChipName(string value) : base(value)
     {
         if (!Regex.IsMatch(value, $"^{RegularNameRegex}$"))
             throw new ArgumentException($"{value} contains invalid characters or starts with a digit");

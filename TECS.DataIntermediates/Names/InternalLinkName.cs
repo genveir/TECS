@@ -4,7 +4,7 @@ namespace TECS.DataIntermediates.Names;
 
 public class InternalLinkName : LinkName
 {
-    internal InternalLinkName(string value) : base(value)
+    public InternalLinkName(string value) : base(value)
     {
         if (value =="true")
             throw new ArgumentException("internal pin can not be true");

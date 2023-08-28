@@ -5,8 +5,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\TECS.Chips\TECS.Chips.csproj" />
-    </ItemGroup>
-
 </Project>

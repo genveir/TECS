@@ -9,7 +9,7 @@ public class BitValue
     
     public BitSize Size { get; }
 
-    internal BitValue(bool[] value)
+    public BitValue(bool[] value)
     {
         if (value.Length == 0)
             throw new ArgumentException("bit value can not be empty");

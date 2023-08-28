@@ -6,4 +6,8 @@
         <RootNamespace>TECS.HDLSimulator</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TECS.DataIntermediates\TECS.DataIntermediates.csproj" />
+    </ItemGroup>
+
 </Project>

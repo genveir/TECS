@@ -9,7 +9,7 @@ public abstract class TypedName
 
     protected const string RegularNameRegex = @"\D[a-zA-Z0-9]*";
     
-    protected TypedName(string value)
+    public TypedName(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
             throw new ArgumentException("typed name can not be empty");

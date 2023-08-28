@@ -7,7 +7,7 @@ public class LinkName : TypedName
 {
     private const string BitBlockIndicatorRegex = @"^\[\d+(?:\.\.\d+)*\]$";
     
-    protected LinkName(string value) : base(value)
+    public LinkName(string value) : base(value)
     {
         if (value.Contains('['))
         {

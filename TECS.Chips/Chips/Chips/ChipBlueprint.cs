@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using TECS.DataIntermediates.Names;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 
 public class ChipBlueprint
 {
-    private readonly string _name;
-    public Dictionary<string, NamedNodeGroup> Inputs { get; }
+    private readonly ChipName _name;
+    public Dictionary<NamedNodeGroupName, NamedNodeGroup> Inputs { get; }
     
-    public Dictionary<string, NamedNodeGroup> Outputs { get; }
+    public Dictionary<NamedNodeGroupName, NamedNodeGroup> Outputs { get; }
 
-    public ChipBlueprint(string name, Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
+    public ChipBlueprint(ChipName name, Dictionary<NamedNodeGroupName, NamedNodeGroup> inputs, Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
     {
         _name = name;
         Inputs = inputs;

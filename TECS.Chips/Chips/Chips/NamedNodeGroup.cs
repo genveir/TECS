@@ -1,18 +1,19 @@
 using System.Collections.Generic;
+using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 
 public class NamedNodeGroup
 {
-    private string Name { get; }
+    private NamedNodeGroupName Name { get; }
     
     public INandTreeElement[] Nodes { get; }
 
-    public NamedNodeGroup(string name, int bitSize)
+    public NamedNodeGroup(NamedNodeGroupName name, BitSize bitSize)
     {
         Name = name;
-        Nodes = new INandTreeElement[bitSize];
+        Nodes = new INandTreeElement[bitSize.Value];
 
         _value = new bool[Nodes.Length];
         
@@ -33,9 +34,20 @@ public class NamedNodeGroup
         }
     }
 
+    public void SetValue(BitValue value)
+    {
+        if (value.Size.Value == Nodes.Length)
+        {
+            for (int n = 0; n < Nodes.Length; n++)
+            {
+                Nodes[n].Value = value.Value[n];
+            }
+        }
+    }
+
     public NamedNodeGroup Clone(long cloneId)
     {
-        var newGroup = new NamedNodeGroup(Name, Nodes.Length);
+        var newGroup = new NamedNodeGroup(Name, new(Nodes.Length));
 
         for (int n = 0; n < Nodes.Length; n++)
             newGroup.Nodes[n] = Nodes[n].Clone(cloneId);

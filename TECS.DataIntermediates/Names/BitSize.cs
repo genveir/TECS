@@ -6,7 +6,7 @@ public class BitSize
 {
     public int Value { get; }
 
-    internal BitSize(int value)
+    public BitSize(int value)
     {
         if (value < 1)
             throw new ArgumentException("bit size can not be 0 or empty");

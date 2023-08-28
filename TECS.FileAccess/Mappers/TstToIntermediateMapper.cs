@@ -111,7 +111,7 @@ public class TstToIntermediateMapper
         {
             var splitSetter = lines[index]
                 .Replace("%B", "")
-                .Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             testBuilder.AddInput(splitSetter[1], splitSetter[2]);
             

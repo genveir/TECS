@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 
 public class StoredBlueprint
 {
-    private string Name { get; }
-    private Dictionary<string, NamedNodeGroup> Inputs { get; }
-    private Dictionary<string, NamedNodeGroup> Outputs { get; }
+    private ChipName Name { get; }
+    private Dictionary<NamedNodeGroupName, NamedNodeGroup> Inputs { get; }
+    private Dictionary<NamedNodeGroupName, NamedNodeGroup> Outputs { get; }
 
     public List<ValidationError> ValidationErrors { get; } = new(); 
     
-    public StoredBlueprint(string name, Dictionary<string, NamedNodeGroup> inputs, Dictionary<string, NamedNodeGroup> outputs)
+    public StoredBlueprint(ChipName name, Dictionary<NamedNodeGroupName, NamedNodeGroup> inputs, Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
     {
         Name = name;
         Inputs = inputs;
@@ -63,7 +64,7 @@ public class StoredBlueprint
         return new(Name, inputs, outputs);
     }
     
-    private static void FuseOutputs(Dictionary<string, NamedNodeGroup> outputs)
+    private static void FuseOutputs(Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
     {
         foreach (var output in outputs)
         {
@@ -81,7 +82,7 @@ public class StoredBlueprint
 
 public class BlueprintValidationException : Exception
 {
-    public BlueprintValidationException(string name, List<ValidationError> errors) :
+    public BlueprintValidationException(ChipName name, List<ValidationError> errors) :
         base(
             $"Error validating " +
             $"{name} " +

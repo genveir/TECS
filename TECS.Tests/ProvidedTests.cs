@@ -5,18 +5,48 @@ using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
-using TECS.FileAccess.FileAccessors;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
+using TECS.Tests.Intermediates.Test;
 
 namespace TECS.Tests;
 
 public class ProvidedTests
 {
-    [TestCaseSource(typeof(TestDataFactory), nameof(TestDataFactory.Create), new object?[] {Settings.DataFolder, "Not"})]
-    public void Not(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
+    private class ProvidedTestAttribute : TestCaseSourceAttribute
     {
-        errors.Should().BeEmpty();
+        public ProvidedTestAttribute(string name) 
+            : base(
+                typeof(TestDataFactory), nameof(TestDataFactory.EntryPoint),
+                new object?[] { Settings.DataFolder, name }) 
+        {
+            
+        }
+    }
+
+    [ProvidedTest("Add16")]
+    [ProvidedTest("ALU")]
+    [ProvidedTest("ALU-nostat")]
+    [ProvidedTest("AluPreset")]
+    [ProvidedTest("And")]
+    [ProvidedTest("And16")]
+    [ProvidedTest("DMux")]
+    [ProvidedTest("DMux4Way")]
+    [ProvidedTest("DMux8Way")]
+    [ProvidedTest("FullAdder")]
+    [ProvidedTest("HalfAdder")]
+    [ProvidedTest("Inc16")]
+    [ProvidedTest("Mux")]
+    [ProvidedTest("Neg16")]
+    [ProvidedTest("Not")]
+    [ProvidedTest("Not16")]
+    [ProvidedTest("Or")]
+    [ProvidedTest("Or8Way")]
+    [ProvidedTest("Or16")]
+    [ProvidedTest("Xor")]
+    public void RunTest(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
+    {
+        errors.Should().BeEmpty(because: $"{errors.Count} errors: errors.First().Message [...]");
 
         chip.Should().NotBeNull();
         testData.Should().NotBeNull();
@@ -27,14 +57,20 @@ public class ProvidedTests
         
         foreach (var setData in inputs.SetData)
         {
-            var group = setData.Group.Value;
-            var value = setData.ValueToSet.Value;
+            var group = setData.Group;
+            var value = setData.ValueToSet;
 
-            for (int n = 0; n < value.Length; n++)
-                chip.Inputs[group].Nodes[n].Value = value[n];
+            try
+            {
+                chip.Inputs[group].SetValue(value);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
         }
         
-        var allValues = new Dictionary<string, bool[]>();
+        var allValues = new Dictionary<NamedNodeGroupName, bool[]>();
         foreach (var input in chip.Inputs)
             allValues.Add(input.Key, input.Value.Value);
         
@@ -49,7 +85,7 @@ public class ProvidedTests
             var groupToCheck = groupsToCheck[n];
             var expectedValue = valuesToCheck[n];
 
-            var actualValue = allValues[groupToCheck.Value];
+            var actualValue = allValues[groupToCheck];
 
             actualValue.Should().BeEquivalentTo(expectedValue.Value);
         }
