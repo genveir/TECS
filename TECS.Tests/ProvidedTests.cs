@@ -7,7 +7,6 @@ using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
-using TECS.Tests.Intermediates.Test;
 
 namespace TECS.Tests;
 
@@ -24,6 +23,7 @@ public class ProvidedTests
         }
     }
 
+    // ReSharper disable NotResolvedInText
     [ProvidedTest("Add16")]
     [ProvidedTest("ALU")]
     [ProvidedTest("ALU-nostat")]
@@ -44,6 +44,7 @@ public class ProvidedTests
     [ProvidedTest("Or8Way")]
     [ProvidedTest("Or16")]
     [ProvidedTest("Xor")]
+    // ReSharper restore NotResolvedInText
     public void RunTest(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
     {
         errors.Should().BeEmpty(because: $"{errors.Count} errors: errors.First().Message [...]");
