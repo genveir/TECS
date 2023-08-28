@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
-internal class NandPinNode : INandTreeElement
+internal class NandPinNode : ISettableElement
 {
     private static long _idCounter;
     private readonly long _id = _idCounter++;
@@ -10,12 +10,9 @@ internal class NandPinNode : INandTreeElement
     public INandTreeElement? Parent { get; set; }
 
     private bool _value;
-    public bool Value
-    {
-        get => Parent?.Value ?? _value;
-        set => _value = value;
-    }
-    
+    public bool GetValue() => Parent?.GetValue() ?? _value;
+    public void SetValue(bool value) => _value = value;
+
     private long _isInputForRun = -1;
     public void SetAsInputForValidation(List<ValidationError> errors, long validationId)
     {
@@ -51,6 +48,8 @@ internal class NandPinNode : INandTreeElement
     private long _cloneId = -1;
     private NandPinNode? _cloneResult;
     public INandTreeElement Clone(long cloneId) => ClonePin(cloneId);
+
+    public ISettableElement CloneAsSettable(long cloneId) => ClonePin(cloneId); 
 
     private NandPinNode ClonePin(long cloneId)
     {

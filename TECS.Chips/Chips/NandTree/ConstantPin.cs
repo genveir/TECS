@@ -4,9 +4,11 @@ namespace TECS.HDLSimulator.Chips.NandTree;
 
 internal class ConstantPin : INandTreeElement
 {
+    private readonly bool _value;
+    
     private ConstantPin(bool value)
     {
-        Value = value;
+        _value = value;
     }
 
     public static readonly ConstantPin True = new(true);
@@ -17,33 +19,17 @@ internal class ConstantPin : INandTreeElement
         return this;
     }
 
-    public bool Value
-    {
-        get; 
-        set; // TODO: fix wonky contract
-    }
+    public bool GetValue() => _value;
+
     public INandTreeElement Fuse(long fuseId)
     {
         return this;
-    }
-
-    private int _countId = 1;
-    public (int pins, int nands) CountNodes(int countId)
-    {
-        if (_countId == countId) return (0, 0);
-
-        return (1, 0);
     }
 
     private long _validationId = -1;
     public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationRun)
     {
         _validationId = validationRun;
-    }
-
-    public void SetAsInputForValidation(List<ValidationError> errors, long validationRun)
-    {
-        
     }
 
     public bool IsValidatedInRun(long validationRun)

@@ -10,30 +10,8 @@ internal class NandNode : INandTreeElement
     private INandTreeElement _a = new NandPinNode();
     private INandTreeElement _b = new NandPinNode();
 
-    public bool TryGetInputPins(out (NandPinNode a, NandPinNode b) result)
-    {
-        if (_a is NandPinNode aNode && _b is NandPinNode bNode)
-        {
-            result = (aNode, bNode);
-            return true;
-        }
-
-        result = default;
-        return false;
-    }
-
-    private long _setAsInputInRun = -1;
-
-    public void SetAsInputForValidation(List<ValidationError> errors, long validationRun)
-    {
-        if (_setAsInputInRun == validationRun) return;
-        _setAsInputInRun = validationRun;
-
-        errors.Add(new($"{this} is set as input"));
-    }
-
+    
     private long _validatedInRun = -1;
-
     public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationId)
     {
         if (_validatedInRun == validationId) return;
@@ -58,12 +36,9 @@ internal class NandNode : INandTreeElement
 
     public bool IsValidatedInRun(long validationId) => _validatedInRun == validationId;
 
-    public bool Value { 
-        get => !(_a.Value && _b.Value);
-        set {} // TODO: fix clunky types
-    }
-
-private long _cloneId = -1;
+    public bool GetValue() => !(_a.GetValue() && _b.GetValue()); 
+    
+    private long _cloneId = -1;
     private INandTreeElement? _cloneResult;
     public INandTreeElement Clone(long cloneId)
     {

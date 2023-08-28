@@ -23,8 +23,8 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
         if (_blueprints.TryGetValue(chipData.Name, out var blueprint))
             return blueprint;
         
-        var inputs = MapGroup(chipData.In);
-        var outputs = MapGroup(chipData.Out);
+        var inputs = MapInputGroup(chipData.In);
+        var outputs = MapOutputGroup(chipData.Out);
 
         blueprint = new StoredBlueprint(name, inputs, outputs);
 
@@ -32,6 +32,9 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
         return blueprint;
     }
 
-    private Dictionary<NamedNodeGroupName, NamedNodeGroup> MapGroup(NamedNodeGroupData[] data) => 
-        data.ToDictionary(d => d.Name, d => new NamedNodeGroup(d.Name, d.Size));
+    private Dictionary<NamedNodeGroupName, NamedInputNodeGroup> MapInputGroup(NamedNodeGroupData[] data) => 
+        data.ToDictionary(d => d.Name, d => new NamedInputNodeGroup(d.Name, d.Size));
+    
+    private Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> MapOutputGroup(NamedNodeGroupData[] data) => 
+        data.ToDictionary(d => d.Name, d => new NamedOutputNodeGroup(d.Name, d.Size));
 }

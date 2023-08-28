@@ -71,12 +71,12 @@ public class ProvidedTests
             }
         }
         
-        var allValues = new Dictionary<NamedNodeGroupName, bool[]>();
+        var allValues = new Dictionary<NamedNodeGroupName, BitValue>();
         foreach (var input in chip.Inputs)
-            allValues.Add(input.Key, input.Value.Value);
+            allValues.Add(input.Key, input.Value.GetValue());
         
         foreach (var output in chip.Outputs)
-            allValues.Add(output.Key, output.Value.Value);
+            allValues.Add(output.Key, output.Value.GetValue());
 
         var groupsToCheck = testData.ExpectedValues.GroupsToCheck;
         var valuesToCheck = testData.ExpectedValues.Values[order];
@@ -88,7 +88,7 @@ public class ProvidedTests
 
             var actualValue = allValues[groupToCheck];
 
-            actualValue.Should().BeEquivalentTo(expectedValue.Value);
+            actualValue.Should().BeEquivalentTo(expectedValue);
         }
     }
 }

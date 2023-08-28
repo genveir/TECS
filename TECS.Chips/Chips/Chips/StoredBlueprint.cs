@@ -9,12 +9,14 @@ namespace TECS.HDLSimulator.Chips.Chips;
 public class StoredBlueprint
 {
     private ChipName Name { get; }
-    private Dictionary<NamedNodeGroupName, NamedNodeGroup> Inputs { get; }
-    private Dictionary<NamedNodeGroupName, NamedNodeGroup> Outputs { get; }
+    private Dictionary<NamedNodeGroupName, NamedInputNodeGroup> Inputs { get; }
+    private Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> Outputs { get; }
 
     public List<ValidationError> ValidationErrors { get; } = new(); 
     
-    public StoredBlueprint(ChipName name, Dictionary<NamedNodeGroupName, NamedNodeGroup> inputs, Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
+    public StoredBlueprint(ChipName name, 
+        Dictionary<NamedNodeGroupName, NamedInputNodeGroup> inputs, 
+        Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> outputs)
     {
         Name = name;
         Inputs = inputs;
@@ -64,7 +66,7 @@ public class StoredBlueprint
         return new(Name, inputs, outputs);
     }
     
-    private static void FuseOutputs(Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
+    private static void FuseOutputs(Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> outputs)
     {
         foreach (var output in outputs)
         {

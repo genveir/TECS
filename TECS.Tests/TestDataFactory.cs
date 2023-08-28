@@ -48,8 +48,7 @@ public static class TestDataFactory
                 yield return testCaseData;
     }
 
-    private static IEnumerable<TestCaseData> Create(HdlFolder hdlFolder,
-        TestFile testFile, string name)
+    private static IEnumerable<TestCaseData> Create(HdlFolder hdlFolder, TestFile testFile, string name)
     {
         TestData? testData = null;
         Exception? thrown = null;

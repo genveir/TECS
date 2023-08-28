@@ -6,11 +6,13 @@ namespace TECS.HDLSimulator.Chips.Chips;
 public class ChipBlueprint
 {
     private readonly ChipName _name;
-    public Dictionary<NamedNodeGroupName, NamedNodeGroup> Inputs { get; }
+    public Dictionary<NamedNodeGroupName, NamedInputNodeGroup> Inputs { get; }
     
-    public Dictionary<NamedNodeGroupName, NamedNodeGroup> Outputs { get; }
+    public Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> Outputs { get; }
 
-    public ChipBlueprint(ChipName name, Dictionary<NamedNodeGroupName, NamedNodeGroup> inputs, Dictionary<NamedNodeGroupName, NamedNodeGroup> outputs)
+    public ChipBlueprint(ChipName name, 
+        Dictionary<NamedNodeGroupName, NamedInputNodeGroup> inputs, 
+        Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> outputs)
     {
         _name = name;
         Inputs = inputs;
