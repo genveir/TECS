@@ -8,7 +8,7 @@ public class NamedNodeGroup
 {
     private NamedNodeGroupName Name { get; }
     
-    public INandTreeElement[] Nodes { get; }
+    private INandTreeElement[] Nodes { get; }
 
     public NamedNodeGroup(NamedNodeGroupName name, BitSize bitSize)
     {

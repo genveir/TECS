@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
-public class NandNode : INandTreeElement
+internal class NandNode : INandTreeElement
 {
     private static long _idCounter;
     private readonly long _id = _idCounter++;
@@ -90,18 +90,6 @@ private long _cloneId = -1;
         _b = _b.Fuse(fuseId);
 
         return this;
-    }
-
-    private int _countId = -1;
-    public (int pins, int nands) CountNodes(int countId)
-    {
-        if (countId == _countId) return (0, 0);
-        _countId = countId;
-        
-        var (aPins, aNands) = _a.CountNodes(countId);
-        var (bPins, bNands) = _b.CountNodes(countId);
-
-        return (aPins + bPins, aNands + bNands + 1);
     }
 
     public override string ToString()

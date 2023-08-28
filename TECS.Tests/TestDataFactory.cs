@@ -15,37 +15,40 @@ namespace TECS.Tests;
 
 public static class TestDataFactory
 {
-    private static IChipBluePrintFactory? _factory;
+    private static ChipData[]? _allChipData;
+    private static IChipBlueprintFactory? _factory;
 
-    private static IChipBluePrintFactory GetFactory(string dataFolder)
+    private static IChipBlueprintFactory GetFactory()
     {
+        if (_allChipData == null)
+            throw new InvalidOperationException("cannot create factory without chip data");
+        
         if (_factory == null)
-            _factory = new VeryTemporaryFactory();
+            _factory = new ChipBlueprintFactory(_allChipData);
         
         return _factory;
     }
 
     public static IEnumerable<TestCaseData> EntryPoint(string dataFolder, string name)
     {
-        foreach (var testCaseData in Create(dataFolder, name))
+        var hdlFolder = new DataFolder(dataFolder).HdlFolder;
+        _allChipData = hdlFolder.HdlFiles.Select(HdlToIntermediateMapper.Map).ToArray();
+        
+        foreach (var testCaseData in Create(hdlFolder, name))
             yield return testCaseData;
     }
 
-    private static IEnumerable<TestCaseData> Create(string dataFolder, string name)
+    private static IEnumerable<TestCaseData> Create(HdlFolder hdlFolder, string name)
     {
-        var hdlFolder = new DataFolder(dataFolder).HdlFolder;
-
-        var factory = GetFactory(dataFolder);
-
         var testFile = hdlFolder.TestFiles.SingleOrDefault(tst => tst.Name == name);
         if (testFile == null)
             yield return CreateFailedTestCreationResult(name, $"could not find test file {name}");
         else
-            foreach (var testCaseData in Create(hdlFolder, factory, testFile, name))
+            foreach (var testCaseData in Create(hdlFolder, testFile, name))
                 yield return testCaseData;
     }
 
-    private static IEnumerable<TestCaseData> Create(HdlFolder hdlFolder, IChipBluePrintFactory factory,
+    private static IEnumerable<TestCaseData> Create(HdlFolder hdlFolder,
         TestFile testFile, string name)
     {
         TestData? testData = null;
@@ -64,19 +67,30 @@ public static class TestDataFactory
         else
         {
             if (testData == null) yield break;
-            foreach (var testCaseData in Create(factory, testData, name))
+            foreach (var testCaseData in Create(testData, name))
                 yield return testCaseData;
         }
     }
 
-    private static IEnumerable<TestCaseData> Create(IChipBluePrintFactory factory, TestData testData, string name)
+    private static IEnumerable<TestCaseData> Create(TestData testData, string name)
+    {
+        var factory = GetFactory();
+        
+        if (_factory == null)
+            yield return CreateFailedTestCreationResult(name, "Unable to create chip blueprint factory");
+        else
+            foreach (var testCaseData in Create(factory, testData, name))
+                yield return testCaseData;
+    }
+
+    private static IEnumerable<TestCaseData> Create(IChipBlueprintFactory factory, TestData testData, string name)
     {
         var storedBlueprint = factory.CreateBlueprint(testData.ChipToTest);
         if (storedBlueprint.ValidationErrors.Any())
             yield return CreateFailedTestCreationResult(name, storedBlueprint.ValidationErrors);
         else
             foreach (var testCaseData in Create(storedBlueprint, testData, name))
-                yield return testCaseData;
+                yield return testCaseData;        
     }
 
     private static IEnumerable<TestCaseData> Create(StoredBlueprint blueprint, TestData testData, string name)

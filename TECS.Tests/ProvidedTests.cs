@@ -47,7 +47,7 @@ public class ProvidedTests
     // ReSharper restore NotResolvedInText
     public void RunTest(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
     {
-        errors.Should().BeEmpty(because: $"{errors.Count} errors: errors.First().Message [...]");
+        errors.Should().BeEmpty();
 
         chip.Should().NotBeNull();
         testData.Should().NotBeNull();

@@ -3,7 +3,7 @@ using TECS.HDLSimulator.Chips.Chips;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 
-public interface IChipBluePrintFactory
+public interface IChipBlueprintFactory
 {
     StoredBlueprint CreateBlueprint(ChipData chipData);
 }

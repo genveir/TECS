@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using TECS.DataIntermediates.Names;
 
 namespace TECS.HDLSimulator.Chips.Chips;
@@ -14,8 +13,4 @@ public class Chip
         Inputs = inputs;
         Outputs = outputs;
     }
-    
-    public bool[] Evaluate(NamedNodeGroupName name) => Outputs[name].Nodes
-        .Select(p => p.Value)
-        .ToArray();
 }

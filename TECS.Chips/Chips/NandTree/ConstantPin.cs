@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
-public class ConstantPin : INandTreeElement
+internal class ConstantPin : INandTreeElement
 {
     private ConstantPin(bool value)
     {
