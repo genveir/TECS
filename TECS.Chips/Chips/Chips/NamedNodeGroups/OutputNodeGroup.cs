@@ -1,28 +1,23 @@
 using System;
 using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
+using TECS.HDLSimulator.Chips.Factory;
 using TECS.HDLSimulator.Chips.NandTree;
 
-namespace TECS.HDLSimulator.Chips.Chips;
+namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 
-public class NamedOutputNodeGroup : NamedNodeGroup<NamedOutputNodeGroup>
+public class OutputNodeGroup : NamedNodeGroup<OutputNodeGroup>
 {
     internal override ReadOnlySpan<INandTreeElement> Nodes => _nodes;
 
-    private INandTreeElement[] _nodes;
+    private readonly INandTreeElement[] _nodes;
 
-    public NamedOutputNodeGroup(NamedNodeGroupName name, BitSize bitSize) : base(name)
-    {
-        _nodes = new INandTreeElement[bitSize.Value];
-        
-        for (int n = 0; n < _nodes.Length; n++)
-            _nodes[n] = new NandPinNode();
-    }
-
-    private NamedOutputNodeGroup(NamedNodeGroupName name, INandTreeElement[] nodes) : base(name)
+    private OutputNodeGroup(NamedNodeGroupName name, INandTreeElement[] nodes) : base(name)
     {
         _nodes = nodes;
     }
+    
+    internal OutputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.CopyNodesToElements()) { }
 
     public void Fuse(long fuseId)
     {
@@ -47,7 +42,7 @@ public class NamedOutputNodeGroup : NamedNodeGroup<NamedOutputNodeGroup>
         }
     }
     
-    public override NamedOutputNodeGroup Clone(long cloneId)
+    internal override OutputNodeGroup Clone(long cloneId)
     {
         var newNodes = new INandTreeElement[_nodes.Length];
         for (int n = 0; n < newNodes.Length; n++)

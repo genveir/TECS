@@ -27,8 +27,5 @@ internal interface ISettableElement : INandTreeElement
     
     // Set the value of this node
     void SetValue(bool value);
-
-    // not pretty, but will usually just return the clone made by Clone
-    ISettableElement CloneAsSettable(long cloneId);
 }
 

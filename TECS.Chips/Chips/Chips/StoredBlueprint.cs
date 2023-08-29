@@ -2,21 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Names;
+using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 
-public class StoredBlueprint
+internal class StoredBlueprint
 {
     private ChipName Name { get; }
-    private Dictionary<NamedNodeGroupName, NamedInputNodeGroup> Inputs { get; }
-    private Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> Outputs { get; }
+    private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
+    private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
 
     public List<ValidationError> ValidationErrors { get; } = new(); 
     
     public StoredBlueprint(ChipName name, 
-        Dictionary<NamedNodeGroupName, NamedInputNodeGroup> inputs, 
-        Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> outputs)
+        Dictionary<NamedNodeGroupName, InputNodeGroup> inputs, 
+        Dictionary<NamedNodeGroupName, OutputNodeGroup> outputs)
     {
         Name = name;
         Inputs = inputs;
@@ -66,7 +67,7 @@ public class StoredBlueprint
         return new(Name, inputs, outputs);
     }
     
-    private static void FuseOutputs(Dictionary<NamedNodeGroupName, NamedOutputNodeGroup> outputs)
+    private static void FuseOutputs(Dictionary<NamedNodeGroupName, OutputNodeGroup> outputs)
     {
         foreach (var output in outputs)
         {

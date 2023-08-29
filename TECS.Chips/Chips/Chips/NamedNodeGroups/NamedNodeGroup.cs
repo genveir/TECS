@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.NandTree;
 
-namespace TECS.HDLSimulator.Chips.Chips;
+namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 
 public abstract class NamedNodeGroup<TImplementingType>
 {
@@ -28,16 +28,7 @@ public abstract class NamedNodeGroup<TImplementingType>
     }
 
     // cloneId is used to not re-clone the inputs, but use the ones from the cloned tree
-    public abstract TImplementingType Clone(long cloneId);
-
-    public void IsValidatedInRun(List<ValidationError> errors, long validationRun)
-    {
-        foreach (var node in Nodes)
-        {
-            if (!node.IsValidatedInRun(validationRun))
-                errors.Add(new($"{node} is an unconnected input"));
-        }
-    }
+    internal abstract TImplementingType Clone(long cloneId);
 
     public override string ToString()
     {

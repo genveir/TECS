@@ -49,9 +49,7 @@ internal class NandPinNode : ISettableElement
     private NandPinNode? _cloneResult;
     public INandTreeElement Clone(long cloneId) => ClonePin(cloneId);
 
-    public ISettableElement CloneAsSettable(long cloneId) => ClonePin(cloneId); 
-
-    private NandPinNode ClonePin(long cloneId)
+    public NandPinNode ClonePin(long cloneId)
     {
         if (_cloneId == cloneId) return _cloneResult!;
         _cloneId = cloneId;

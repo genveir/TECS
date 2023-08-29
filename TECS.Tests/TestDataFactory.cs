@@ -84,17 +84,18 @@ public static class TestDataFactory
 
     private static IEnumerable<TestCaseData> Create(IChipBlueprintFactory factory, TestData testData, string name)
     {
-        var storedBlueprint = factory.CreateBlueprint(testData.ChipToTest);
-        if (storedBlueprint.ValidationErrors.Any())
-            yield return CreateFailedTestCreationResult(name, storedBlueprint.ValidationErrors);
+        var chipBlueprintResult = factory.GetBlueprint(testData.ChipToTest.Name);
+        
+        if (!chipBlueprintResult.Success)
+            yield return CreateFailedTestCreationResult(name, chipBlueprintResult.Errors);
         else
-            foreach (var testCaseData in Create(storedBlueprint, testData, name))
+            foreach (var testCaseData in Create(chipBlueprintResult.Result!, testData, name))
                 yield return testCaseData;        
     }
 
-    private static IEnumerable<TestCaseData> Create(StoredBlueprint blueprint, TestData testData, string name)
+    private static IEnumerable<TestCaseData> Create(ChipBlueprint blueprint, TestData testData, string name)
     {
-        var chip = blueprint.CopyToBlueprintInstance().Fabricate();
+        var chip = blueprint.Fabricate();
 
         for (int n = 0; n < testData.Tests.Length; n++)
         {
