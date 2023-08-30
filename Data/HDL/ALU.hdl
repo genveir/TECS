@@ -45,13 +45,17 @@ CHIP ALU {
     AluPreset(in=x,zin=zx,nin=nx,out=x0);
     AluPreset(in=y,zin=zy,nin=ny,out=y0);
 
-    And16(a=x0,b=y0,out=xandy);
-    Add16(a=x0,b=y0,out=xplusy);
-    Mux16(a=xandy,b=xplusy,sel=f,out=xy);
+    AluCombiner(x=x0,y=y0,f=f,out=xy);
 
-    Neg16(in=xy,out=negxy);
-    Mux16(a=xy,b=negxy,sel=no,out=out);
+    Not16(in=xy,out=negxy);
+    Mux16(a=xy,b=negxy,sel=no,out=nxy);
 
-    Or(a=zx,b=zy,out=zr);
-    Or(a=zx,b=zy,out=ng);
+    Pass16(in=nxy,out=out);
+
+    Or8Way(in=nxy[0..7],out=zr0);
+    Or8Way(in=nxy[8..15],out=zr1);
+    Or(a=zr0,b=zr1,out=nzr);
+    Not(in=nzr,out=zr);
+
+    Pass(in=nxy[15],out=ng);
 }

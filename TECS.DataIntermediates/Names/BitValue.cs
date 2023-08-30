@@ -9,6 +9,10 @@ public class BitValue
     
     public BitSize Size { get; }
 
+    public static BitValue True => new(new[] { true });
+
+    public static BitValue False => new(new[] { false });
+    
     public BitValue(bool[] value)
     {
         if (value.Length == 0)

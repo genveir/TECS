@@ -1,0 +1,22 @@
+CHIP Pass16 {
+    IN in[16];
+    OUT out[16];
+
+    PARTS:
+    Pass(in=in[0],out=out[0]);
+    Pass(in=in[1],out=out[1]);
+    Pass(in=in[2],out=out[2]);
+    Pass(in=in[3],out=out[3]);
+    Pass(in=in[4],out=out[4]);
+    Pass(in=in[5],out=out[5]);
+    Pass(in=in[6],out=out[6]);
+    Pass(in=in[7],out=out[7]);
+    Pass(in=in[8],out=out[8]);
+    Pass(in=in[9],out=out[9]);
+    Pass(in=in[10],out=out[10]);
+    Pass(in=in[11],out=out[11]);
+    Pass(in=in[12],out=out[12]);
+    Pass(in=in[13],out=out[13]);
+    Pass(in=in[14],out=out[14]);
+    Pass(in=in[15],out=out[15]);
+}

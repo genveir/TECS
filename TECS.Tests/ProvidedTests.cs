@@ -50,6 +50,7 @@ public class ProvidedTests
     [ProvidedTest("Add16")]
     [ProvidedTest("ALU")]
     [ProvidedTest("ALU-nostat")]
+    [ProvidedTest("AluCombiner")]
     [ProvidedTest("AluPreset")]
     [ProvidedTest("FullAdder")]
     [ProvidedTest("HalfAdder")]

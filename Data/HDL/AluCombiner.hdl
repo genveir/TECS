@@ -1,0 +1,12 @@
+// if (f == 1)  set out = x + y  // integer 2's complement addition
+// if (f == 0)  set out = x & y  // bitwise and
+
+CHIP AluCombiner {
+    IN x[16], y[16], f;
+    OUT out[16];
+
+    PARTS:
+    And16(a=x,b=y,out=xandy);
+    Add16(a=x,b=y,out=xplusy);
+    Mux16(a=xandy,b=xplusy,sel=f,out=out);
+}

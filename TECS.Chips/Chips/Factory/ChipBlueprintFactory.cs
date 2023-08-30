@@ -22,6 +22,7 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
         _storedBlueprintFactory = new(this);
 
         _blueprints.Add(new("Nand"), NandByHand());
+        _blueprints.Add(new("Pass"), PassByHand());
     }
 
     public FactoryResult<ChipBlueprint> GetBlueprint(ChipName name)
@@ -76,5 +77,24 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
         };
 
         return new(new("Nand"), inputs, outputs);
+    }
+
+    private static StoredBlueprint PassByHand()
+    {
+        var input = new InputNodeGroup(new(new("in"), new BitSize(1)));
+        var outPin = new PinBoard(new("out"), new BitSize(1));
+        outPin.Nodes[0].Parent = input.Nodes[0];
+        var output = new OutputNodeGroup(outPin);
+
+        var inputs = new Dictionary<NamedNodeGroupName, InputNodeGroup>
+        {
+            { new("in"), input }
+        };
+        var outputs = new Dictionary<NamedNodeGroupName, OutputNodeGroup>
+        {
+            { new("out"), output }
+        };
+
+        return new(new("Pass"), inputs, outputs);
     }
 }

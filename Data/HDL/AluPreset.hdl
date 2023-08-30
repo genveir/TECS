@@ -10,6 +10,6 @@ CHIP AluPreset {
 
     PARTS:
     Mux16(a=in,b=false,sel=zin,out=m0);
-    Neg16(in=m0,out=m1);
+    Not16(in=m0,out=m1);
     Mux16(a=m0,b=m1,sel=nin,out=out);
 }
