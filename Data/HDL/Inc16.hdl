@@ -13,20 +13,20 @@ CHIP Inc16 {
     OUT out[16];
 
     PARTS:
-    HalfAdder(a=in[15],b=true,sum=out[15],carry=m0);
-    HalfAdder(a=in[14],b=m0,sum=out[14],carry=m1);
-    HalfAdder(a=in[13],b=m1,sum=out[13],carry=m2);
-    HalfAdder(a=in[12],b=m2,sum=out[12],carry=m3);
-    HalfAdder(a=in[11],b=m3,sum=out[11],carry=m4);
-    HalfAdder(a=in[10],b=m4,sum=out[10],carry=m5);
-    HalfAdder(a=in[9],b=m5,sum=out[9],carry=m6);
-    HalfAdder(a=in[8],b=m6,sum=out[8],carry=m7);
-    HalfAdder(a=in[7],b=m7,sum=out[7],carry=m8);
-    HalfAdder(a=in[6],b=m8,sum=out[6],carry=m9);
-    HalfAdder(a=in[5],b=m9,sum=out[5],carry=m10);
-    HalfAdder(a=in[4],b=m10,sum=out[4],carry=m11);
-    HalfAdder(a=in[3],b=m11,sum=out[3],carry=m12);
-    HalfAdder(a=in[2],b=m12,sum=out[2],carry=m13);
-    HalfAdder(a=in[1],b=m13,sum=out[1],carry=m14);
-    HalfAdder(a=in[0],b=m14,sum=out[0]);
+    HalfAdder(a=in[0],b=true,sum=out[0],carry=m0);
+    HalfAdder(a=in[1],b=m0,sum=out[1],carry=m1);
+    HalfAdder(a=in[2],b=m1,sum=out[2],carry=m2);
+    HalfAdder(a=in[3],b=m2,sum=out[3],carry=m3);
+    HalfAdder(a=in[4],b=m3,sum=out[4],carry=m4);
+    HalfAdder(a=in[5],b=m4,sum=out[5],carry=m5);
+    HalfAdder(a=in[6],b=m5,sum=out[6],carry=m6);
+    HalfAdder(a=in[7],b=m6,sum=out[7],carry=m7);
+    HalfAdder(a=in[8],b=m7,sum=out[8],carry=m8);
+    HalfAdder(a=in[9],b=m8,sum=out[9],carry=m9);
+    HalfAdder(a=in[10],b=m9,sum=out[10],carry=m10);
+    HalfAdder(a=in[11],b=m10,sum=out[11],carry=m11);
+    HalfAdder(a=in[12],b=m11,sum=out[12],carry=m12);
+    HalfAdder(a=in[13],b=m12,sum=out[13],carry=m13);
+    HalfAdder(a=in[14],b=m13,sum=out[14],carry=m14);
+    HalfAdder(a=in[15],b=m14,sum=out[15]);
 }

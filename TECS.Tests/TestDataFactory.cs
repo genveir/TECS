@@ -97,10 +97,7 @@ public static class TestDataFactory
     {
         var chip = blueprint.Fabricate();
 
-        for (int n = 0; n < testData.Tests.Length; n++)
-        {
-            yield return CreateSingleTest($"{name}_{n}", new(), chip, testData, n);
-        }
+        yield return CreateSingleTest(name, new(), chip, testData);
     }
 
     private static TestCaseData CreateFailedTestCreationResult(string name, string message)
@@ -116,18 +113,16 @@ public static class TestDataFactory
             new TestCaseData(
                 errors,
                 null,
-                null,
-                0).SetName(name);
+                null).SetName(name);
     }
 
     private static TestCaseData CreateSingleTest(string name, List<ValidationError> errors, Chip? chip,
-        TestData? testData, int order)
+        TestData? testData)
     {
         return
             new TestCaseData(
                 errors,
                 chip,
-                testData,
-                order).SetName(name);
+                testData).SetName(name);
     }
 }

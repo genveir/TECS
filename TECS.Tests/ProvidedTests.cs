@@ -10,16 +10,16 @@ using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.Tests;
 
+// ReSharper disable NotResolvedInText
 public class ProvidedTests
 {
     private class ProvidedTestAttribute : TestCaseSourceAttribute
     {
-        public ProvidedTestAttribute(string name) 
+        public ProvidedTestAttribute(string name)
             : base(
                 typeof(TestDataFactory), nameof(TestDataFactory.EntryPoint),
-                new object?[] { Settings.DataFolder, name }) 
+                new object?[] { Settings.DataFolder, name })
         {
-            
         }
     }
 
@@ -29,33 +29,36 @@ public class ProvidedTests
             typeof(TestDataFactory), nameof(TestDataFactory.EntryPoint),
             new object?[] { Settings.Test2Folder, name })
         {
-            
         }
     }
     
-    // ReSharper disable NotResolvedInText
-    [ProvidedTest("Add16")]
-    [ProvidedTest("ALU")]
-    [ProvidedTest("ALU-nostat")]
-    [ProvidedTest("AluPreset")]
     [ProvidedTest("And")]
     [ProvidedTest("And16")]
     [ProvidedTest("DMux")]
     [ProvidedTest("DMux4Way")]
     [ProvidedTest("DMux8Way")]
-    [ProvidedTest("FullAdder")]
-    [ProvidedTest("HalfAdder")]
-    [ProvidedTest("Inc16")]
     [ProvidedTest("Mux")]
-    [ProvidedTest("Neg16")]
     [ProvidedTest("Not")]
     [ProvidedTest("Not16")]
     [ProvidedTest("Or")]
     [ProvidedTest("Or8Way")]
     [ProvidedTest("Or16")]
     [ProvidedTest("Xor")]
-    // ReSharper restore NotResolvedInText
-    public void RunTest(List<ValidationError> errors, Chip? chip, TestData? testData, int order)
+    public void Chapter1(List<ValidationError> errors, Chip? chip, TestData? testData) =>
+        RunTests(errors, chip, testData);
+    
+    [ProvidedTest("Add16")]
+    [ProvidedTest("ALU")]
+    [ProvidedTest("ALU-nostat")]
+    [ProvidedTest("AluPreset")]
+    [ProvidedTest("FullAdder")]
+    [ProvidedTest("HalfAdder")]
+    [ProvidedTest("Inc16")]
+    [ProvidedTest("Neg16")]
+    public void Chapter2(List<ValidationError> errors, Chip? chip, TestData? testData) =>
+        RunTests(errors, chip, testData);
+    
+    private void RunTests(List<ValidationError> errors, Chip? chip, TestData? testData)
     {
         errors.Should().BeEmpty();
 
@@ -64,8 +67,21 @@ public class ProvidedTests
         if (chip == null) return;
         if (testData == null) return;
 
-        var inputs = testData.Tests.Single(t => t.Order == order);
-        
+        var inputs = testData.Tests;
+
+        var ordered = inputs.OrderBy(i => i.Order).ToArray();
+
+        for (int n = 0; n < inputs.Length; n++)
+        {
+            var groupsToCheck = testData.ExpectedValues.GroupsToCheck;
+            var valuesToCheck = testData.ExpectedValues.Values[n];
+            
+            RunTest(chip, ordered[n], groupsToCheck, valuesToCheck);
+        }
+    }
+
+    private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, BitValue[] valuesToCheck)
+    {
         foreach (var setData in inputs.SetData)
         {
             var group = setData.Group;
@@ -80,16 +96,13 @@ public class ProvidedTests
                 Assert.Fail(e.Message);
             }
         }
-        
+
         var allValues = new Dictionary<NamedNodeGroupName, BitValue>();
         foreach (var input in chip.Inputs)
             allValues.Add(input.Key, input.Value.GetValue());
-        
+
         foreach (var output in chip.Outputs)
             allValues.Add(output.Key, output.Value.GetValue());
-
-        var groupsToCheck = testData.ExpectedValues.GroupsToCheck;
-        var valuesToCheck = testData.ExpectedValues.Values[order];
 
         for (int n = 0; n < groupsToCheck.Length; n++)
         {

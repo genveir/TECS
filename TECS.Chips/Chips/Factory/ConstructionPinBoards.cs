@@ -4,6 +4,8 @@ using System.Linq;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.Chips;
+using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 
@@ -41,20 +43,38 @@ internal class ConstructionPinBoards
         var inputUpperBound = link.Internal.UpperPin ?? inputGroup.Nodes.Length - 1;
 
         var externalName = link.External.Name as NamedNodeGroupName;
+
+        if (externalName.Value == "true" || externalName.Value == "false")
+            LinkConstant(inputGroup, inputLowerBound, inputUpperBound, externalName.Value == "true");
+        else
+            LinkPinBoardInput(inputGroup, inputLowerBound, inputUpperBound, link.External);
+    }
+
+    private void LinkConstant(InputNodeGroup inputGroup, int inputLowerBound, int inputUpperBound, bool constantValue)
+    {
+        for (int n = inputLowerBound; n <= inputUpperBound; n++)
+        {
+            inputGroup.Pins[n].Parent = constantValue ? ConstantPin.True : ConstantPin.False;
+        }
+    }
+
+    private void LinkPinBoardInput(InputNodeGroup inputGroup, int inputLowerBound, int inputUpperBound, ExternalLinkData externalLink)
+    {
+        var externalName = externalLink.Name;
         
         if (!Inputs.TryGetValue(externalName, out PinBoard? externalGroup) && 
             !Internals.TryGetValue(externalName, out externalGroup))
         {
             if (Outputs.ContainsKey(externalName))
                 throw new InvalidOperationException(
-                    $"Cannot link part input {link.Internal.Name} to external output {link.External.Name}");
+                    $"Cannot link part input {inputGroup.Name} to external output {externalName}");
 
             externalGroup = new PinBoard(externalName, size: new(inputUpperBound - inputLowerBound + 1));
             
-            Internals.Add(link.External.Name, externalGroup);
+            Internals.Add(externalName, externalGroup);
         }
         
-        var externalLowerBound = link.External.LowerPin ?? 0;
+        var externalLowerBound = externalLink.LowerPin ?? 0;
         var offset = externalLowerBound - inputLowerBound;
         
         for (int n = inputLowerBound; n <= inputUpperBound; n++)

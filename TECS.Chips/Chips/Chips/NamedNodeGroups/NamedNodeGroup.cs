@@ -7,7 +7,7 @@ namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 
 public abstract class NamedNodeGroup<TImplementingType>
 {
-    protected NamedNodeGroupName Name { get; }
+    public NamedNodeGroupName Name { get; }
     
     internal abstract ReadOnlySpan<INandTreeElement> Nodes { get; }
 
