@@ -8,31 +8,31 @@ namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 
 public class InputNodeGroup : NamedNodeGroup<InputNodeGroup>
 {
-    internal override ReadOnlySpan<INandTreeElement> Nodes => _nodes;
+    internal override ReadOnlySpan<INandTreeElement> Nodes => Pins;
     
-    private readonly NandPinNode[] _nodes;
+    internal readonly NandPinNode[] Pins;
     
-    private InputNodeGroup(NamedNodeGroupName name, NandPinNode[] nodes) : base(name)
+    private InputNodeGroup(NamedNodeGroupName name, NandPinNode[] pins) : base(name)
     {
-        _nodes = nodes;
+        Pins = pins;
     }
     
     internal InputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.Nodes) { }
     
     public void SetValue(BitValue value)
     {
-        if (value.Size.Value == _nodes.Length)
+        if (value.Size.Value == Pins.Length)
         {
-            for (int n = 0; n < _nodes.Length; n++)
+            for (int n = 0; n < Pins.Length; n++)
             {
-                _nodes[n].SetValue(value.Value[n]);
+                Pins[n].SetValue(value.Value[n]);
             }
         }
     }
 
     public void SetAsInputForValidation(List<ValidationError> errors, long validationRun)
     {
-        foreach (var node in _nodes)
+        foreach (var node in Pins)
         {
             node.SetAsInputForValidation(errors, validationRun);
         }
@@ -49,10 +49,10 @@ public class InputNodeGroup : NamedNodeGroup<InputNodeGroup>
 
     internal override InputNodeGroup Clone(long cloneId)
     {
-        var newNodes = new NandPinNode[_nodes.Length];
+        var newNodes = new NandPinNode[Pins.Length];
         for (int n = 0; n < newNodes.Length; n++)
         {
-            newNodes[n] = _nodes[n].ClonePin(cloneId);
+            newNodes[n] = Pins[n].ClonePin(cloneId);
         }
 
         return new(Name, newNodes);

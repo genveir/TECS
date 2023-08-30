@@ -1,0 +1,9 @@
+CHIP LinkTest {
+    IN a[16];
+    OUT out[16];
+
+    PARTS:
+    Simple(in=a,ex=out);
+    SpecifiedPin(in[1]=a[5],ex[10]=out[5]);
+    SpecifiedRange(in[1..5]=a[5..9],ex[3..10]=out[5..12]);
+}

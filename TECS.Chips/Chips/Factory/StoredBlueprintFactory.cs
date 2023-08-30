@@ -1,5 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TECS.DataIntermediates.Chip;
+using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.Chips;
+using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 
@@ -28,7 +34,14 @@ internal class StoredBlueprintFactory
             LinkPart(constructionPinBoards, partData, partBlueprint!);
         }
 
-        var blueprint = new StoredBlueprint(name, new(), new());
+        var inputs = constructionPinBoards.Inputs.ToDictionary(
+            kvp => kvp.Key,
+            kvp => new InputNodeGroup(kvp.Value));
+        var outputs = constructionPinBoards.Outputs.ToDictionary(
+            kvp => kvp.Key,
+            kvp => new OutputNodeGroup(kvp.Value));
+
+        var blueprint = new StoredBlueprint(name, inputs, outputs);
 
         return FactoryResult<StoredBlueprint>.Succeed(blueprint);
     }

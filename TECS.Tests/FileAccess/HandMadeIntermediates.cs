@@ -14,15 +14,15 @@ internal static class HandMadeIntermediates
             .WithGroups("in", "out")
             .AddValueRow("0", "1")
             .AddValueRow("1", "0")
-        .Build()
-            .AddTest(0)
+            .Build()
+        .AddTest(0)
             .AddInput("in", "0")
-        .Build()
+            .Build()
         .AddTest(1)
             .AddInput("in", "1")
             .Build()
         .Build();
-    
+
     public static ChipData NotIntermediate => new ChipDataBuilder()
         .WithName("Not")
         .AddInGroup("in", 1)
@@ -63,7 +63,7 @@ internal static class HandMadeIntermediates
             .AddInput("b", "1")
             .Build()
         .Build();
-    
+
     public static ChipData AndIntermediate => new ChipDataBuilder()
         .WithName("And")
         .AddInGroup("a", 1)
@@ -99,7 +99,7 @@ internal static class HandMadeIntermediates
         .AddOutput("b", 16)
         .AddOutput("out", 16)
         .SetExpectedValues()
-            .WithGroups("a", "b", "out")
+        .WithGroups("a", "b", "out")
             .AddValueRow("0000000000000000", "0000000000000000", "0000000000000000")
             .AddValueRow("0000000000000000", "1111111111111111", "0000000000000000")
             .AddValueRow("1111111111111111", "1111111111111111", "1111111111111111")
@@ -132,7 +132,7 @@ internal static class HandMadeIntermediates
             .AddInput("b", "1001100001110110")
             .Build()
         .Build();
-    
+
     public static ChipData And16Intermediate
     {
         get
@@ -146,14 +146,58 @@ internal static class HandMadeIntermediates
             for (int n = 0; n < 16; n++)
             {
                 builder.AddPart("And")
-                    .AddLink($"a", $"a[{n}]")
-                    .AddLink($"b", $"b[{n}]")
-                    .AddLink($"out", $"out[{n}]")
+                    .AddLink()
+                        .WithInternal("a")
+                        .WithExternal("a", n, n)
+                        .Build()
+                    .AddLink()
+                        .WithInternal("b")
+                        .WithExternal("b", n, n)
+                        .Build()
+                    .AddLink()
+                        .WithInternal("out")
+                        .WithExternal("out", n, n)
+                        .Build()
                     .Build();
             }
-            
+
             return builder.Build();
         }
-    } 
-        
+    }
+
+    public static ChipData LinkTestIntermediate =>new ChipDataBuilder()
+        .WithName("LinkTest")
+        .AddInGroup("a", 16)
+        .AddOutGroup("out", 16)
+        .AddPart("Simple")
+            .AddLink()
+                .WithInternal("in", null, null)
+                .WithExternal("a", null, null)
+                .Build()
+            .AddLink()
+                .WithInternal("ex", null, null)
+                .WithExternal("out", null, null)
+                .Build()
+            .Build()
+        .AddPart("SpecifiedPin")
+            .AddLink()
+                .WithInternal("in", 1, 1)
+                .WithExternal("a", 5,5)
+                .Build()
+            .AddLink()
+                .WithInternal("ex", 10, 10)
+                .WithExternal("out", 5, 5)
+                .Build()
+            .Build()
+        .AddPart("SpecifiedRange")
+            .AddLink()
+                .WithInternal("in", 1, 5)
+                .WithExternal("a", 5, 9)
+                .Build()
+            .AddLink()
+                .WithInternal("ex", 3, 10)
+                .WithExternal("out", 5, 12)
+                .Build()
+            .Build()
+        .Build();
 }

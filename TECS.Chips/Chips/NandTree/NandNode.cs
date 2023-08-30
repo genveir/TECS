@@ -7,9 +7,14 @@ internal class NandNode : INandTreeElement
     private static long _idCounter;
     private readonly long _id = _idCounter++;
 
-    private INandTreeElement _a = new NandPinNode();
-    private INandTreeElement _b = new NandPinNode();
-
+    private readonly INandTreeElement _a;
+    private readonly INandTreeElement _b;
+    
+    public NandNode(INandTreeElement a, INandTreeElement b)
+    {
+        _a = a;
+        _b = b;
+    }
     
     private long _validatedInRun = -1;
     public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationId)
@@ -46,10 +51,10 @@ internal class NandNode : INandTreeElement
         _cloneId = cloneId;
         
         var newNand = new NandNode
-        {
-            _a = _a.Clone(cloneId),
-            _b = _b.Clone(cloneId)
-        };
+        (
+            _a.Clone(cloneId),
+            _b.Clone(cloneId)
+        );
 
         _cloneResult = newNand;
         return _cloneResult;
@@ -60,11 +65,8 @@ internal class NandNode : INandTreeElement
     {
         if (_fuseId == fuseId) return this;
         _fuseId = fuseId;
-        
-        _a = _a.Fuse(fuseId);
-        _b = _b.Fuse(fuseId);
 
-        return this;
+        return new NandNode(_a.Fuse(fuseId), _b.Fuse(fuseId));
     }
 
     public override string ToString()

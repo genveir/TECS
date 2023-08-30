@@ -43,4 +43,9 @@ public class ChipData
         if (distinctCount != group.Length)
             throw new ArgumentException($"{groupName} contain double entry");
     }
+
+    public override string ToString()
+    {
+        return $"ChipData {Name}";
+    }
 }

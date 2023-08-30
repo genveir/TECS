@@ -22,7 +22,7 @@ public class HdlFolderTests
     {
         IEnumerable<HdlFile> hdlFiles = CreateFixture().HdlFolder.HdlFiles;
 
-        hdlFiles.Should().HaveCount(16);
+        hdlFiles.Should().HaveCount(17);
         hdlFiles.Any(f => f.Name == "ExtraTest").Should().BeFalse();
         hdlFiles.Any(f => f.Name == "WeirdNot").Should().BeTrue();
     }

@@ -20,4 +20,9 @@ public class ChipPartData
         PartName = partName;
         Links = linkArray;
     }
+
+    public override string ToString()
+    {
+        return $"ChipPartData {PartName}";
+    }
 }

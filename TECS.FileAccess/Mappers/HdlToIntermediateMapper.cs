@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
+using TECS.DataIntermediates.Names;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;
@@ -120,10 +121,37 @@ public static class HdlToIntermediateMapper
 
         foreach (var link in links)
         {
-            var splitLink = link.Split('=');
-            partBuilder.AddLink(splitLink[0], splitLink[1]);
+            MapLink(link, partBuilder);
         }
 
         partBuilder.Build();
+    }
+
+    private static void MapLink(string linkInfo, ChipPartDataBuilder<ChipDataBuilder> builder)
+    {
+        var splitLink = linkInfo.Split('=');
+
+        var linkBuilder = builder.AddLink();
+
+        var (name, lowerBound, upperBound) = ParseLink(splitLink[0]);
+        linkBuilder.WithInternal(name, lowerBound, upperBound);
+        
+        (name, lowerBound, upperBound) = ParseLink(splitLink[1]);
+        linkBuilder.WithExternal(name, lowerBound, upperBound);
+
+        linkBuilder.Build();
+    }
+
+    private static (string name, int? lowerBound, int? upperBound) ParseLink(string link)
+    {
+        var splitInfo = link.Split(new[] { '[', '.', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+        return splitInfo.Length switch
+        {
+            1 => (splitInfo[0], null, null),
+            2 => (splitInfo[0], int.Parse(splitInfo[1]), int.Parse(splitInfo[1])),
+            3 => (splitInfo[0], int.Parse(splitInfo[1]), int.Parse(splitInfo[2])),
+            _ => throw new MappingException("link {link} is not formatted correctly")
+        };
     }
 }

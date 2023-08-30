@@ -19,6 +19,8 @@ public class OutputNodeGroup : NamedNodeGroup<OutputNodeGroup>
     
     internal OutputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.CopyNodesToElements()) { }
 
+    internal static OutputNodeGroup NandGroup(NandNode node) => new(new("out"), new[] { node });
+    
     public void Fuse(long fuseId)
     {
         for (int n = 0; n < _nodes.Length; n++)

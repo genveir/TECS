@@ -24,13 +24,19 @@ public class ChipPartDataBuilder<TReceiver>
         _addPart = addPart;
     }
 
-    public ChipPartDataBuilder<TReceiver> AddLink(string internalName, string externalName)
+    public LinkBuilder<ChipPartDataBuilder<TReceiver>> AddLink()
     {
-        var intName = new InternalLinkName(internalName);
-        var extName = new ExternalLinkName(externalName);
+        return LinkBuilder<ChipPartDataBuilder<TReceiver>>.WithReceiver(AddLink);
+    }
 
-        var linkData = new LinkData(intName, extName);
-        
+    public ChipPartDataBuilder<TReceiver> AddLink(string internalName, string externalName) =>
+        AddLink()
+            .WithInternal(internalName)
+            .WithExternal(externalName)
+            .Build();
+
+    private ChipPartDataBuilder<TReceiver> AddLink(LinkData linkData)
+    {
         _links.Add(linkData);
 
         return this;

@@ -1,14 +1,12 @@
-using TECS.DataIntermediates.Names;
-
 namespace TECS.DataIntermediates.Chip;
 
 public class LinkData
 {
-    public InternalLinkName Internal { get; }
+    public InternalLinkData Internal { get; }
     
-    public ExternalLinkName External { get; }
+    public ExternalLinkData External { get; }
 
-    internal LinkData(InternalLinkName internalLinkName, ExternalLinkName externalLinkName)
+    internal LinkData(InternalLinkData internalLinkName, ExternalLinkData externalLinkName)
     {
         Internal = internalLinkName;
         External = externalLinkName;

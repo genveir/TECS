@@ -50,6 +50,16 @@ public class HdlToIntermediateMapperTests
         intermediate.Should().BeEquivalentTo(WeirdNotIntermediate);
     }
 
+    [Test]
+    public void CanMapLinkTest()
+    {
+        var linkTestHdl = Get("LinkTest");
+
+        var intermediate = HdlToIntermediateMapper.Map(linkTestHdl);
+
+        intermediate.Should().BeEquivalentTo(LinkTestIntermediate);
+    }
+
     private HdlFile Get(string name)
     {
         var datafolder = new DataFolder(Settings.TestDataFolder);
@@ -64,4 +74,5 @@ public class HdlToIntermediateMapperTests
     private static ChipData AndIntermediate => HandMadeIntermediates.AndIntermediate;
     private static ChipData And16Intermediate => HandMadeIntermediates.And16Intermediate;
     private static ChipData WeirdNotIntermediate => HandMadeIntermediates.WeirdNotIntermediate;
+    private static ChipData LinkTestIntermediate => HandMadeIntermediates.LinkTestIntermediate;
 }

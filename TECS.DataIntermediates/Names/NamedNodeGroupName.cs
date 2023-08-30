@@ -6,13 +6,13 @@ namespace TECS.DataIntermediates.Names;
 public class NamedNodeGroupName : TypedName
 {
     private const string NodeGroupNameRegex = @$"^{RegularNameRegex}$";
-
-    public NamedNodeGroupName(string value) : base(value)
+    
+    public NamedNodeGroupName(string value, bool cannotBeBoolean = true) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
             throw new ArgumentException("named node group name can not be empty");
-
-        if (value == "true" || value == "false")
+        
+        if (cannotBeBoolean && (value == "true" || value == "false"))
             throw new ArgumentException($"{value} is not a valid node group name");
         
         if (!Regex.IsMatch(value, NodeGroupNameRegex))

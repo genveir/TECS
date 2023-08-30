@@ -79,7 +79,7 @@ internal class StoredBlueprint
 
     public override string ToString()
     {
-        return "StoredBlueprint {Name}";
+        return $"StoredBlueprint {Name}";
     }
 }
 
