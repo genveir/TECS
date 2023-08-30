@@ -41,7 +41,7 @@ public class TestInputDataBuilder<TReceiver>
         if (!value.All(c => c is '0' or '1'))
             throw new ArgumentException($"string value row {value} contains characters that are not 0 or 1");
 
-        var asBools = value.Select(c => c == '1').ToArray();
+        var asBools = value.Select(c => c == '1').Reverse().ToArray();
 
         return AddInput(inputToSet, asBools);
     }
