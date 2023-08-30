@@ -16,7 +16,6 @@ public class AluTests
 
     private const string Zero = "0000000000000000";
     private const string Ten = "0000000000001010";
-    private const string MinusTen = "1111111111110110";
     private const string Ones = "1111111111111111";
     private const string SomeValue = "1110111100111111";
 
@@ -84,8 +83,6 @@ public class AluTests
     [Test]
     public void CanSetYToValue()
     {
-        var alu = GetChip();
-
         SetValues(x: Zero, y: SomeValue, f: true);
 
         GetInternal("y0").Should().Be(SomeValue);
