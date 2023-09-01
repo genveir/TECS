@@ -6,6 +6,11 @@ internal class NandPinNode : ISettableElement
 {
     private static long _idCounter;
     private readonly long _id = _idCounter++;
+
+    public NandPinNode()
+    {
+        _fuseResult = this;
+    }
     
     public INandTreeElement? Parent { get; set; }
 
@@ -63,13 +68,15 @@ internal class NandPinNode : ISettableElement
     }
     
     private long _fuseId = -1;
-    private INandTreeElement? _fuseResult;
+    private INandTreeElement _fuseResult;
     public INandTreeElement Fuse(long fuseId)
     {
-        if (_fuseId == fuseId) return _fuseResult!;
-        _fuseId = fuseId;
-        
-        _fuseResult = Parent == null ? this : Parent.Fuse(fuseId);
+        if (_fuseId != fuseId)
+        {
+            _fuseId = fuseId;
+            _fuseResult = Parent?.Fuse(fuseId) ?? this;
+        }
+
         return _fuseResult;
     }
 

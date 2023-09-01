@@ -7,8 +7,8 @@ internal class NandNode : INandTreeElement
     private static long _idCounter;
     private readonly long _id = _idCounter++;
 
-    private readonly INandTreeElement _a;
-    private readonly INandTreeElement _b;
+    private INandTreeElement _a;
+    private INandTreeElement _b;
 
     public NandNode(INandTreeElement a, INandTreeElement b)
     {
@@ -78,10 +78,14 @@ internal class NandNode : INandTreeElement
 
     public INandTreeElement Fuse(long fuseId)
     {
-        if (_fuseId == fuseId) return this;
-        _fuseId = fuseId;
+        if (_fuseId != fuseId)
+        {
+            _fuseId = fuseId;
+            _a = _a.Fuse(fuseId);
+            _b = _b.Fuse(fuseId);
+        }
 
-        return new NandNode(_a.Fuse(fuseId), _b.Fuse(fuseId));
+        return this;
     }
 
     public override string ToString()
