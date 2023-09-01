@@ -22,26 +22,53 @@ public class AluTests
     private const string True = "1";
     private const string False = "0";
 
+    // ReSharper disable InconsistentNaming
+    private static class Inputs
+    {
+        public static readonly NamedNodeGroupName X = new("x");
+        public static readonly NamedNodeGroupName Y = new("y");
+        public static readonly NamedNodeGroupName ZX = new("zx");
+        public static readonly NamedNodeGroupName NX = new("nx");
+        public static readonly NamedNodeGroupName ZY = new("zy");
+        public static readonly NamedNodeGroupName NY = new("ny");
+        public static readonly NamedNodeGroupName F = new("f");
+        public static readonly NamedNodeGroupName NO = new("no");
+
+        public static readonly NamedNodeGroupName[] All = new[] { X, Y, ZX, NX, ZY, NY, F, NO };
+    }
+
+    private static class Outputs
+    {
+        public static readonly NamedNodeGroupName OUT = new("out");
+        public static readonly NamedNodeGroupName NG = new("ng");
+        public static readonly NamedNodeGroupName ZR = new("zr");
+
+        public static readonly NamedNodeGroupName[] All = new[] { OUT, NG, ZR };
+    }
+
+    // not exhaustive, but makes sure we can test that the internals we use in tests
+    // are still in the chip implementation
+    private static class Internals
+    {
+        public static readonly NamedNodeGroupName X0 = new("x0");
+        public static readonly NamedNodeGroupName Y0 = new("y0");
+        public static readonly NamedNodeGroupName XY = new("xy");
+
+        public static readonly NamedNodeGroupName[] AllSpecified = new[] { X0, Y0, XY };
+    }
+    // ReSharper enable InconsistentNaming
+    
     [Test]
     public void CanConstructAluDebugChip()
     {
         _alu.Should().NotBeNull();
-        _alu.Inputs.Should().HaveCount(8);
-        _alu.Inputs.Should().ContainKey(new("x"));
-        _alu.Inputs.Should().ContainKey(new("y"));
-        _alu.Inputs.Should().ContainKey(new("zx"));
-        _alu.Inputs.Should().ContainKey(new("nx"));
-        _alu.Inputs.Should().ContainKey(new("zy"));
-        _alu.Inputs.Should().ContainKey(new("ny"));
-        _alu.Inputs.Should().ContainKey(new("f"));
-        _alu.Inputs.Should().ContainKey(new("no"));
+        _alu.InputNames.Should().HaveCount(8);
+        _alu.InputNames.Should().Contain(Inputs.All);
 
-        _alu.Outputs.Should().ContainKey(new("out"));
-        _alu.Outputs.Should().ContainKey(new("zr"));
-        _alu.Outputs.Should().ContainKey(new("ng"));
+        _alu.OutputNames.Should().HaveCount(3);
+        _alu.OutputNames.Should().Contain(Outputs.All);
 
-        _alu.Internals.Should().ContainKey(new("x0"));
-        _alu.Internals.Should().ContainKey(new("y0"));
+        _alu.InternalNames.Should().Contain(Internals.AllSpecified);
     }
 
     [Test]
@@ -49,12 +76,12 @@ public class AluTests
     {
         SetValues(x: SomeValue, y: Ten, zx: true, nx: false, zy: true, ny: false, f: true, no: false);
 
-        GetInternal("x0").Should().Be(Zero);
-        GetInternal("y0").Should().Be(Zero);
-        GetInternal("xy").Should().Be(Zero);
-        GetOutput("out").Should().Be(Zero);
-        GetOutput("zr").Should().Be(True);
-        GetOutput("ng").Should().Be(False);
+        GetInternal(Internals.X0).Should().Be(Zero);
+        GetInternal(Internals.Y0).Should().Be(Zero);
+        GetInternal(Internals.XY).Should().Be(Zero);
+        GetOutput(Outputs.OUT).Should().Be(Zero);
+        GetOutput(Outputs.ZR).Should().Be(True);
+        GetOutput(Outputs.NG).Should().Be(False);
     }
 
     [Test]
@@ -62,12 +89,12 @@ public class AluTests
     {
         SetValues(x: SomeValue, y: Ten, zx: true, nx: true, zy: true, ny: true, f: true, no: true);
 
-        GetInternal("x0").Should().Be(Ones);
-        GetInternal("y0").Should().Be(Ones);
-        GetInternal("xy").Should().Be("1111111111111110");
-        GetOutput("out").Should().Be("0000000000000001");
-        GetOutput("zr").Should().Be(False);
-        GetOutput("ng").Should().Be(False);
+        GetInternal(Internals.X0).Should().Be(Ones);
+        GetInternal(Internals.Y0).Should().Be(Ones);
+        GetInternal(Internals.XY).Should().Be("1111111111111110");
+        GetOutput(Outputs.OUT).Should().Be("0000000000000001");
+        GetOutput(Outputs.ZR).Should().Be(False);
+        GetOutput(Outputs.NG).Should().Be(False);
     }
 
     [Test]
@@ -75,9 +102,9 @@ public class AluTests
     {
         SetValues(x: SomeValue, y: Zero, f: true);
 
-        GetInternal("x0").Should().Be(SomeValue);
-        GetInternal("xy").Should().Be(SomeValue);
-        GetOutput("out").Should().Be(SomeValue);
+        GetInternal(Internals.X0).Should().Be(SomeValue);
+        GetInternal(Internals.XY).Should().Be(SomeValue);
+        GetOutput(Outputs.OUT).Should().Be(SomeValue);
     }
 
     [Test]
@@ -85,32 +112,29 @@ public class AluTests
     {
         SetValues(x: Zero, y: SomeValue, f: true);
 
-        GetInternal("y0").Should().Be(SomeValue);
-        GetInternal("xy").Should().Be(SomeValue);
-        GetOutput("out").Should().Be(SomeValue);
+        GetInternal(Internals.Y0).Should().Be(SomeValue);
+        GetInternal(Internals.XY).Should().Be(SomeValue);
+        GetOutput(Outputs.OUT).Should().Be(SomeValue);
     }
 
     private void SetValues(string x = "0000000000000000", string y = "0000000000000000", bool zx = false,
         bool nx = false, bool zy = false, bool ny = false, bool f = false, bool no = false)
     {
-        _alu.Inputs[new("x")].SetValue(ConvertString(x));
-        _alu.Inputs[new("y")].SetValue(ConvertString(y));
-        _alu.Inputs[new("zx")].SetValue(zx ? BitValue.True : BitValue.False);
-        _alu.Inputs[new("nx")].SetValue(nx ? BitValue.True : BitValue.False);
-        _alu.Inputs[new("zy")].SetValue(zy ? BitValue.True : BitValue.False);
-        _alu.Inputs[new("ny")].SetValue(ny ? BitValue.True : BitValue.False);
-        _alu.Inputs[new("f")].SetValue(f ? BitValue.True : BitValue.False);
-        _alu.Inputs[new("no")].SetValue(no ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.X, ConvertString(x));
+        _alu.SetInput(Inputs.Y, ConvertString(y));
+        _alu.SetInput(Inputs.ZX, zx ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.NX, nx ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.ZY, zy ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.NY, ny ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.F, f ? BitValue.True : BitValue.False);
+        _alu.SetInput(Inputs.NO, no ? BitValue.True : BitValue.False);
     }
 
-    private static string GetInput(string name) =>
-        ConvertBitValue(_alu.Inputs[new(name)].GetValue());
+    private static string GetInternal(NamedNodeGroupName name) =>
+        ConvertBitValue(_alu.GetInternal(name));
 
-    private static string GetInternal(string name) =>
-        ConvertBitValue(_alu.Internals[new(name)].GetValue());
-
-    private static string GetOutput(string name) =>
-        ConvertBitValue(_alu.Outputs[new(name)].GetValue());
+    private static string GetOutput(NamedNodeGroupName name) =>
+        ConvertBitValue(_alu.GetOutput(name));
 
     private static BitValue ConvertString(string input) => new(input.Select(c => c == '1').Reverse().ToArray());
 

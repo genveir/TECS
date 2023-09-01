@@ -19,7 +19,7 @@ public class InputNodeGroup : NamedNodeGroup<InputNodeGroup>
     
     internal InputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.Nodes) { }
     
-    public void SetValue(BitValue value)
+    internal void SetValue(BitValue value)
     {
         if (value.Size.Value == Pins.Length)
         {

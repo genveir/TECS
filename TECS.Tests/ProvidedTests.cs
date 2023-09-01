@@ -81,7 +81,7 @@ public class ProvidedTests
 
             try
             {
-                chip.Inputs[group].SetValue(value);
+                chip.SetInput(group, value);
             }
             catch (Exception e)
             {
@@ -90,11 +90,11 @@ public class ProvidedTests
         }
 
         var allValues = new Dictionary<NamedNodeGroupName, BitValue>();
-        foreach (var input in chip.Inputs)
-            allValues.Add(input.Key, input.Value.GetValue());
+        foreach (var input in chip.InputNames)
+            allValues.Add(input, chip.GetInput(input));
 
-        foreach (var output in chip.Outputs)
-            allValues.Add(output.Key, output.Value.GetValue());
+        foreach (var output in chip.OutputNames)
+            allValues.Add(output, chip.GetOutput(output));
 
         for (int n = 0; n < groupsToCheck.Length; n++)
         {
