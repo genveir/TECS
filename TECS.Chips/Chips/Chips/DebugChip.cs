@@ -9,7 +9,7 @@ public class DebugChip : Chip
 {
     public ChipName Name { get; }
 
-    protected Dictionary<NamedNodeGroupName, OutputNodeGroup> Internals { get; }
+    private Dictionary<NamedNodeGroupName, OutputNodeGroup> Internals { get; }
 
     public DebugChip(
         ChipName name,
@@ -23,9 +23,16 @@ public class DebugChip : Chip
 
     public IEnumerable<NamedNodeGroupName> InternalNames => Internals.Keys.ToArray();
 
-    public BitValue GetInternal(NamedNodeGroupName name) =>
-        Internals[name].GetValue();
+    public DebugEvaluationResult DebugEvaluate()
+    {
+        var baseEval = Evaluate();
 
+        return new(
+            inputValues: baseEval.InputValues,
+            outputValues: baseEval.OutputValues,
+            internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(EvaluationId)));
+    }
+    
     public override string ToString()
     {
         return $"DebugChip {Name}";

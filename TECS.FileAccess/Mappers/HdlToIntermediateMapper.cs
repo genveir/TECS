@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
-using TECS.DataIntermediates.Names;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;

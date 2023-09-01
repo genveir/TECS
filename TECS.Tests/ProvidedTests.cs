@@ -74,6 +74,8 @@ public class ProvidedTests
 
     private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, BitValue[] valuesToCheck)
     {
+        TestContext.Out.WriteLine("New Test");
+        
         foreach (var setData in inputs.SetData)
         {
             var group = setData.Group;
@@ -89,12 +91,14 @@ public class ProvidedTests
             }
         }
 
+        var result = chip.Evaluate();
+        
         var allValues = new Dictionary<NamedNodeGroupName, BitValue>();
-        foreach (var input in chip.InputNames)
-            allValues.Add(input, chip.GetInput(input));
+        foreach (var input in result.InputValues)
+            allValues.Add(input.Key, input.Value);
 
-        foreach (var output in chip.OutputNames)
-            allValues.Add(output, chip.GetOutput(output));
+        foreach (var output in result.OutputValues)
+            allValues.Add(output.Key, output.Value);
 
         for (int n = 0; n < groupsToCheck.Length; n++)
         {

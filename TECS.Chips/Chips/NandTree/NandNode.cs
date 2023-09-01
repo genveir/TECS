@@ -9,14 +9,15 @@ internal class NandNode : INandTreeElement
 
     private readonly INandTreeElement _a;
     private readonly INandTreeElement _b;
-    
+
     public NandNode(INandTreeElement a, INandTreeElement b)
     {
         _a = a;
         _b = b;
     }
-    
+
     private long _validatedInRun = -1;
+
     public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationId)
     {
         if (_validatedInRun == validationId) return;
@@ -41,15 +42,28 @@ internal class NandNode : INandTreeElement
 
     public bool IsValidatedInRun(long validationId) => _validatedInRun == validationId;
 
-    public bool GetValue() => !(_a.GetValue() && _b.GetValue()); 
-    
+    private long _evaluationId = -1;
+    private bool _cachedValue;
+    public bool GetValue(long evaluationId)
+    {
+        if (_evaluationId != evaluationId)
+        {
+            _evaluationId = evaluationId;
+
+            _cachedValue = !(_a.GetValue(_evaluationId) && _b.GetValue(_evaluationId));
+        }
+
+        return _cachedValue;
+    }
+
     private long _cloneId = -1;
     private INandTreeElement? _cloneResult;
+
     public INandTreeElement Clone(long cloneId)
     {
         if (_cloneId == cloneId) return _cloneResult!;
         _cloneId = cloneId;
-        
+
         var newNand = new NandNode
         (
             _a.Clone(cloneId),
@@ -61,6 +75,7 @@ internal class NandNode : INandTreeElement
     }
 
     private long _fuseId = -1;
+
     public INandTreeElement Fuse(long fuseId)
     {
         if (_fuseId == fuseId) return this;

@@ -1,5 +1,3 @@
-using System;
-
 namespace TECS.DataIntermediates.Names;
 
 public class ExternalLinkName : NamedNodeGroupName

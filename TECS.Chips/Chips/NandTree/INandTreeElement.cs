@@ -8,7 +8,7 @@ internal interface INandTreeElement
     INandTreeElement Clone(long cloneId);
     
     // Get the value of this element
-    bool GetValue();
+    bool GetValue(long evaluationId);
 
     // Minimize tree size by fusing all pins upwards. Leaves output and inputs unchanged
     INandTreeElement Fuse(long fuseId);

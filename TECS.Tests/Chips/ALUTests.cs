@@ -13,6 +13,7 @@ namespace TECS.Tests.Chips;
 public class AluTests
 {
     private static DebugChip _alu = GetChip();
+    private static DebugEvaluationResult? _result;
 
     private const string Zero = "0000000000000000";
     private const string Ten = "0000000000001010";
@@ -128,13 +129,15 @@ public class AluTests
         _alu.SetInput(Inputs.NY, ny ? BitValue.True : BitValue.False);
         _alu.SetInput(Inputs.F, f ? BitValue.True : BitValue.False);
         _alu.SetInput(Inputs.NO, no ? BitValue.True : BitValue.False);
+
+        _result = _alu.DebugEvaluate();
     }
 
     private static string GetInternal(NamedNodeGroupName name) =>
-        ConvertBitValue(_alu.GetInternal(name));
+        ConvertBitValue(_result?.InternalValues[name] ?? throw new InvalidOperationException("set something before getting values"));
 
     private static string GetOutput(NamedNodeGroupName name) =>
-        ConvertBitValue(_alu.GetOutput(name));
+        ConvertBitValue(_result?.OutputValues[name] ?? throw new InvalidOperationException("set something before getting values"));
 
     private static BitValue ConvertString(string input) => new(input.Select(c => c == '1').Reverse().ToArray());
 

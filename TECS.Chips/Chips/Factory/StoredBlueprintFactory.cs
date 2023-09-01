@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Chip;
-using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
-using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Factory;
 

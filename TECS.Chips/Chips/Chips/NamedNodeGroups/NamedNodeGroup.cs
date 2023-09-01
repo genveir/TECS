@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
 using TECS.HDLSimulator.Chips.NandTree;
 
@@ -16,12 +15,12 @@ public abstract class NamedNodeGroup<TImplementingType>
         Name = name;
     }
     
-    public BitValue GetValue()
+    public BitValue GetValue(long evaluationId)
     {
         var value = new bool[Nodes.Length];
         for (int n = 0; n < Nodes.Length; n++)
         {
-            value[n] = Nodes[n].GetValue();
+            value[n] = Nodes[n].GetValue(evaluationId);
         }
 
         return new(value);

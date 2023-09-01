@@ -4,6 +4,7 @@ using TECS.DataIntermediates.Test;
 
 namespace TECS.Tests.FileAccess;
 
+// ReSharper disable RedundantArgumentDefaultValue
 internal static class HandMadeIntermediates
 {
     public static TestData NotTestIntermediate => new TestDataBuilder()
@@ -171,7 +172,7 @@ internal static class HandMadeIntermediates
         .AddOutGroup("out", 16)
         .AddPart("Simple")
             .AddLink()
-                .WithInternal("in", null, null)
+        .WithInternal("in", null, null)
                 .WithExternal("a", null, null)
                 .Build()
             .AddLink()

@@ -7,6 +7,8 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class Chip
 {
+    protected long EvaluationId;
+    
     private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
     
@@ -23,9 +25,12 @@ public class Chip
     public void SetInput(NamedNodeGroupName inputGroup, BitValue bitValue) => 
         Inputs[inputGroup].SetValue(bitValue);
 
-    public BitValue GetInput(NamedNodeGroupName inputGroup) =>
-        Inputs[inputGroup].GetValue();
-    
-    public BitValue GetOutput(NamedNodeGroupName outputGroup) => 
-        Outputs[outputGroup].GetValue();
+    public EvaluationResult Evaluate()
+    {
+        EvaluationId++;
+
+        return new(
+            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(EvaluationId)),
+            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(EvaluationId)));
+    }
 }
