@@ -22,15 +22,6 @@ public class ProvidedTests
         {
         }
     }
-
-    private class CustomTestAttribute : TestCaseSourceAttribute
-    {
-        public CustomTestAttribute(string name) : base(
-            typeof(TestDataFactory), nameof(TestDataFactory.EntryPoint),
-            new object?[] { Settings.Test2Folder, name })
-        {
-        }
-    }
     
     [ProvidedTest("And")]
     [ProvidedTest("And16")]
