@@ -7,7 +7,7 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class Chip
 {
-    protected Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
+    private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
     
     public Chip(Dictionary<NamedNodeGroupName, InputNodeGroup> inputs, 
