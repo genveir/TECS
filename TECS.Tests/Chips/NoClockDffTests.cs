@@ -5,6 +5,7 @@ using NUnit.Framework;
 using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Factory;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
+using TECS.DataIntermediates.Values;
 
 namespace TECS.DataIntermediates.Builders;
 
@@ -24,26 +25,21 @@ public class TestInputDataBuilder<TReceiver>
         _addTest = addTest;
     }
 
-    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, bool[] value)
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, bool[] value) => 
+        AddInput(inputToSet, new BitValue(value));
+
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, string value) => 
+        AddInput(inputToSet, new BitValue(value));
+
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, BitValue bitValue)
     {
         var group = new NamedNodeGroupName(inputToSet);
-        var bv = new BitValue(value);
-
-        var setData = new TestSetData(group, bv);
+        
+        var setData = new TestSetData(group, bitValue);
 
         _sets.Add(setData);
 
         return this;
-    }
-
-    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, string value)
-    {
-        if (!value.All(c => c is '0' or '1'))
-            throw new ArgumentException($"string value row {value} contains characters that are not 0 or 1");
-
-        var asBools = value.Select(c => c == '1').Reverse().ToArray();
-
-        return AddInput(inputToSet, asBools);
     }
 
     public TReceiver Build()

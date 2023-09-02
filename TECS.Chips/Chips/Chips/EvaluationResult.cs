@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 

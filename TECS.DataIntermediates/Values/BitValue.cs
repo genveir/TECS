@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 
-namespace TECS.DataIntermediates.Names;
+namespace TECS.DataIntermediates.Values;
 
-public class BitValue
+public class BitValue : INumberValue, IStringFormattableValue
 {
     public bool[] Value { get; }
     
@@ -12,6 +12,14 @@ public class BitValue
     public static BitValue True => new(new[] { true });
 
     public static BitValue False => new(new[] { false });
+
+    public BitValue(long value) : this(Convert.ToString(value, 2))
+    { }
+
+    public BitValue(string binaryString) : this(binaryString
+        .Select(c => c == '1')
+        .Reverse()
+        .ToArray()) { } 
     
     public BitValue(bool[] value)
     {
@@ -25,6 +33,18 @@ public class BitValue
         Size = new(value.Length);
     }
 
+    public string AsBinaryString() => 
+        new(Value.Reverse().Select(b => b ? '1' : '0').ToArray());
+
+    public BitValue AsBitValue() => this;
+
+    public LongValue AsLongValue() => new LongValue(this);
+    
+    public string FormatForOutput()
+    {
+        return AsBinaryString();
+    }
+    
     public override int GetHashCode()
     {
         return Value.GetHashCode();
@@ -37,5 +57,10 @@ public class BitValue
 
         if (other == null) return false;
         return other.Value.SequenceEqual(Value);
+    }
+
+    public override string ToString()
+    {
+        return "BitValue " + AsBinaryString();
     }
 }

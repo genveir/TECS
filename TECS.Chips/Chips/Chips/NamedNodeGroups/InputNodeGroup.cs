@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Factory;
 using TECS.HDLSimulator.Chips.NandTree;
 

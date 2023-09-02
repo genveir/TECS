@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 
 namespace TECS.HDLSimulator.Chips.Chips;

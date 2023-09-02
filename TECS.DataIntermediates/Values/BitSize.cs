@@ -1,6 +1,6 @@
 using System;
 
-namespace TECS.DataIntermediates.Names;
+namespace TECS.DataIntermediates.Values;
 
 public class BitSize
 {

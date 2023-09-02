@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.FileAccess;
 using TECS.FileAccess.Mappers;
 using TECS.HDLSimulator.Chips.Chips;

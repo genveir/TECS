@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.NandTree;
 

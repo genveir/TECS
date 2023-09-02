@@ -1,4 +1,5 @@
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Factory;
