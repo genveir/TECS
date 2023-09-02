@@ -26,3 +26,6 @@ output;
 set in 1
 tick,
 output;
+
+tock,
+output;
