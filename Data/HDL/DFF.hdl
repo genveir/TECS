@@ -1,0 +1,12 @@
+CHIP DFF {
+    IN d;
+    OUT out;
+
+    PARTS:
+    Not(in=d,out=nd);
+    Nand(a=d,b=clk,out=n0);
+    Nand(a=nd,b=clk,out=n1);
+    Nand(a=n0,b=n3,out=n2);
+    Nand(a=n2,b=n1,out=n3);
+    Pass(in=n2,out=out);
+}

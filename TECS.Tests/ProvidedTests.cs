@@ -50,6 +50,24 @@ public class ProvidedTests
     public void Chapter2(List<ValidationError> errors, Chip? chip, TestData? testData) =>
         RunTests(errors, chip, testData);
     
+    [ProvidedTest("DFF")]
+    public void Chapter3Custom(List<ValidationError> errors, Chip? chip, TestData? testData) =>
+        RunTests(errors, chip, testData);
+    
+    [ProvidedTest("Bit")]
+    [ProvidedTest("PC")]
+    [ProvidedTest("RAM8")]
+    [ProvidedTest("RAM64")]
+    [ProvidedTest("Register")]
+    public void Chapter3A(List<ValidationError> errors, Chip? chip, TestData? testData) =>
+        RunTests(errors, chip, testData);
+    
+    [ProvidedTest("RAM4K")]
+    [ProvidedTest("RAM16K")]
+    [ProvidedTest("RAM512")]
+    public void Chapter3B(List<ValidationError> errors, Chip? chip, TestData? testData) =>
+        RunTests(errors, chip, testData);
+    
     private void RunTests(List<ValidationError> errors, Chip? chip, TestData? testData)
     {
         errors.Should().BeEmpty();
@@ -74,8 +92,6 @@ public class ProvidedTests
 
     private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, BitValue[] valuesToCheck)
     {
-        TestContext.Out.WriteLine("New Test");
-        
         foreach (var setData in inputs.SetData)
         {
             var group = setData.Group;
