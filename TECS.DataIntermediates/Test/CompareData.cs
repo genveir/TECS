@@ -9,11 +9,9 @@ public class CompareData
 {
     public NamedNodeGroupName[] GroupsToCheck { get; }
     
-    public BitValue[][] Values { get; }
+    public IStringFormattableValue[][] Values { get; }
     
-    public BitSize[] ColumnSizes { get; }
-
-    internal CompareData(NamedNodeGroupName[] groupsToCheck, BitValue[][] values)
+    internal CompareData(NamedNodeGroupName[] groupsToCheck, IStringFormattableValue[][] values)
     {
         if (groupsToCheck.Length == 0)
             throw new ArgumentException("compare data has no groups to check");
@@ -22,16 +20,11 @@ public class CompareData
             throw new ArgumentException("compare data has no values to check");
         
         CheckGroupForDoubles(groupsToCheck, "compare targets");
-
-        ColumnSizes = values[0].Select(bv => bv.Size).ToArray();
+        
         foreach (var valueArray in values)
         {
             if (valueArray.Length != groupsToCheck.Length)
                 throw new ArgumentException("compare values do not have a value for every target");
-            
-            for (int n = 0; n < valueArray.Length; n++)
-                if (!valueArray[n].Size.Equals(ColumnSizes[n]))
-                    throw new ArgumentException("compare values are not consistently sized");
         }
         
         GroupsToCheck = groupsToCheck;

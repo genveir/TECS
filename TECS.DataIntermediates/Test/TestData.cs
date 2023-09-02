@@ -36,13 +36,6 @@ public class TestData
             if (!expectedValues.GroupsToCheck[n].Equals(outputList[n].Group))
                 throw new ArgumentException(
                     $"output list {outputList[n]} and compare target {expectedValues.GroupsToCheck[n]} do not match by name");
-
-            if (!outputList[n].BitSize.Equals(expectedValues.ColumnSizes[n]))
-                throw new ArgumentException(
-                    $"output list and compare targets do not match on bit size for {outputList[n].Group}");
-            
-            if (!bitSizes.ContainsKey(expectedValues.GroupsToCheck[n]))
-                bitSizes.Add(expectedValues.GroupsToCheck[n], expectedValues.ColumnSizes[n]);
         }
 
         if (expectedValues.Values.Length != tests.Length)

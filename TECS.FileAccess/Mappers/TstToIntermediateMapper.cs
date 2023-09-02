@@ -7,7 +7,7 @@ using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;
 
-public class TstToIntermediateMapper
+public static class TstToIntermediateMapper
 {
     private static readonly Dictionary<TestFile, TestData> Mapped = new();
 
@@ -24,8 +24,9 @@ public class TstToIntermediateMapper
             var builder = new TestDataBuilder();
 
             MapChipToTest(hdlFolder, builder, lines, ref index);
-            MapExpectedValues(hdlFolder, builder, lines, ref index);
-            MapOutputList(builder, lines, ref index);
+            var comparisonFile = GetComparisonFile(hdlFolder, lines, ref index);
+            var outputTypes = MapOutputList(builder, lines, ref index);
+            MapExpectedValues(builder, comparisonFile, outputTypes);
             MapTests(builder, lines, ref index);
 
             testData = builder.Build();
@@ -51,7 +52,7 @@ public class TstToIntermediateMapper
         builder.WithChipToTest(chipData);
     }
 
-    private static void MapExpectedValues(HdlFolder folder, TestDataBuilder builder, string[] lines, ref int index)
+    private static ComparisonFile GetComparisonFile(HdlFolder folder, string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("compare-to")))
             throw new MappingException("Test File contains no compare-to instruction");
@@ -62,23 +63,12 @@ public class TstToIntermediateMapper
         if (cmp == null)
             throw new MappingException("can not find CMP file to run tests against");
 
-        var cmpData = StringArraySanitizer.SanitizeInput(cmp.GetContents())
-            .Select(l => 
-                l.Split('|', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.Trim())
-                    .ToArray())
-            .ToArray();
-
-        var expectedBuilder = builder.SetExpectedValues()
-            .WithGroups(cmpData[0]);
-
-        for (int n = 1; n < cmpData.Length; n++)
-            expectedBuilder.AddValueRow(cmpData[n]);
-
-        expectedBuilder.Build();
+        return cmp;
     }
     
-    private static void MapOutputList(TestDataBuilder builder, string[] lines, ref int index)
+    private enum OutputType { Bit, Long, String }
+    
+    private static OutputType[] MapOutputList(TestDataBuilder builder, string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("output-list")))
             throw new MappingException("Test file contains no output list");
@@ -91,6 +81,26 @@ public class TstToIntermediateMapper
 
             builder.AddOutput(setterSplit[0], int.Parse(setterSplit[2]));
         }
+
+        return Array.Empty<OutputType>();
+    }
+    
+    private static void MapExpectedValues(TestDataBuilder builder, ComparisonFile cmp, OutputType[] outputTypes)
+    {
+        var cmpData = StringArraySanitizer.SanitizeInput(cmp.GetContents())
+            .Select(l => 
+                l.Split('|', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .ToArray())
+            .ToArray();
+
+        var expectedBuilder = builder.SetExpectedValues()
+            .WithColumns(cmpData[0]);
+
+        for (int n = 1; n < cmpData.Length; n++)
+            expectedBuilder.AddValueRow(cmpData[n]);
+
+        expectedBuilder.Build();
     }
 
     private static void MapTests(TestDataBuilder builder, string[] lines, ref int index)

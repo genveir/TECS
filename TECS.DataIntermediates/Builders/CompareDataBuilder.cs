@@ -12,7 +12,7 @@ public class CompareDataBuilder<TReceiver>
     private readonly Func<CompareData, TReceiver> _addExpected;
     private readonly List<bool[][]> _values = new();
     
-    private string[] _groupNames = Array.Empty<string>();
+    private string[] _columnNames = Array.Empty<string>();
 
     public static CompareDataBuilder<CompareData> CreateBasic() => new(cpd => cpd);
 
@@ -24,9 +24,9 @@ public class CompareDataBuilder<TReceiver>
         _addExpected = addExpected;
     }
 
-    public CompareDataBuilder<TReceiver> WithGroups(params string[] groupNames)
+    public CompareDataBuilder<TReceiver> WithColumns(params string[] groupNames)
     {
-        _groupNames = groupNames;
+        _columnNames = groupNames;
 
         return this;
     }
@@ -58,7 +58,7 @@ public class CompareDataBuilder<TReceiver>
 
     public TReceiver Build()
     {
-        var groups = _groupNames.Select(g => new NamedNodeGroupName(g)).ToArray();
+        var groups = _columnNames.Select(g => new NamedNodeGroupName(g)).ToArray();
         var values = _values.Select(bvs =>
             bvs.Select(bv => new BitValue(bv)).ToArray()
         ).ToArray();

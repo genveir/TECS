@@ -91,7 +91,7 @@ public class ProvidedTests
         }
     }
 
-    private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, BitValue[] valuesToCheck)
+    private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, IStringFormattableValue[] valuesToCheck)
     {
         foreach (var setData in inputs.SetData)
         {
@@ -124,7 +124,7 @@ public class ProvidedTests
 
             var actualValue = allValues[groupToCheck];
 
-            actualValue.Should().BeEquivalentTo(expectedValue);
+            actualValue.Should().Be(expectedValue);
         }
     }
 }
