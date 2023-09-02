@@ -7,12 +7,12 @@ public class NamedNodeGroupName : TypedName
 {
     private const string NodeGroupNameRegex = @$"^{RegularNameRegex}$";
     
-    public NamedNodeGroupName(string value, bool cannotBeBoolean = true) : base(value)
+    public NamedNodeGroupName(string value, bool cannotBeConstant = true) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
             throw new ArgumentException("named node group name can not be empty");
         
-        if (cannotBeBoolean && (value == "true" || value == "false"))
+        if (cannotBeConstant && value is "true" or "false" or "clk")
             throw new ArgumentException($"{value} is not a valid node group name");
         
         if (!Regex.IsMatch(value, NodeGroupNameRegex))

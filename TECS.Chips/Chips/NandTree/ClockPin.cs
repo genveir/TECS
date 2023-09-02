@@ -4,6 +4,10 @@ namespace TECS.HDLSimulator.Chips.NandTree;
 
 internal class ClockPin : INandTreeElement
 {
+    private ClockPin() { }
+    
+    public static readonly ClockPin Instance = new();
+    
     public INandTreeElement Clone(long cloneId)
     {
         return this;

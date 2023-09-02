@@ -44,6 +44,22 @@ internal class ConstructionPinBoards
 
         var externalName = link.External.Name as NamedNodeGroupName;
 
+        switch (externalName.Value)
+        {
+            case "true": 
+                LinkConstant(inputGroup, inputLowerBound, inputUpperBound, true);
+                break;
+            case "false":
+                LinkConstant(inputGroup, inputLowerBound, inputUpperBound, false);
+                break;
+            case "clk":
+                LinkClock(inputGroup, inputLowerBound, inputUpperBound);
+                break;
+            default:
+                LinkPinBoardInput(inputGroup, inputLowerBound, inputUpperBound, link.External);
+                break;
+        }
+        
         if (externalName.Value == "true" || externalName.Value == "false")
             LinkConstant(inputGroup, inputLowerBound, inputUpperBound, externalName.Value == "true");
         else
@@ -55,6 +71,14 @@ internal class ConstructionPinBoards
         for (int n = inputLowerBound; n <= inputUpperBound; n++)
         {
             inputGroup.Pins[n].Parent = constantValue ? ConstantPin.True : ConstantPin.False;
+        }
+    }
+
+    private void LinkClock(InputNodeGroup inputGroup, int inputLowerBound, int inputUpperBound)
+    {
+        for (int n = inputLowerBound; n <= inputUpperBound; n++)
+        {
+            inputGroup.Pins[n].Parent = ClockPin.Instance;
         }
     }
 
