@@ -13,10 +13,9 @@ internal class ClockPin : INandTreeElement
         return this;
     }
 
-    public bool GetValue(long evaluationId)
+    public bool GetValue(long clock)
     {
-        //TODO: be more explicit about clocks
-        return evaluationId % 2 == 0;
+        return clock % 2 == 0;
     }
 
     public INandTreeElement Fuse(long fuseId)

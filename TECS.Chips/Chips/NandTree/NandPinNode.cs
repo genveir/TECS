@@ -15,7 +15,7 @@ internal class NandPinNode : ISettableElement
     public INandTreeElement? Parent { get; set; }
 
     private bool _value;
-    public bool GetValue(long evaluationId) => Parent?.GetValue(evaluationId) ?? _value;
+    public bool GetValue(long clock) => Parent?.GetValue(clock) ?? _value;
     public void SetValue(bool value) => _value = value;
 
     private long _isInputForRun = -1;

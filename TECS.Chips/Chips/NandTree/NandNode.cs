@@ -44,13 +44,13 @@ internal class NandNode : INandTreeElement
 
     private long _evaluationId = -1;
     private bool _cachedValue;
-    public bool GetValue(long evaluationId)
+    public bool GetValue(long clock)
     {
-        if (_evaluationId != evaluationId)
+        if (_evaluationId != clock)
         {
-            _evaluationId = evaluationId;
+            _evaluationId = clock;
 
-            _cachedValue = !(_a.GetValue(_evaluationId) && _b.GetValue(_evaluationId));
+            _cachedValue = !_a.GetValue(_evaluationId) || !_b.GetValue(_evaluationId);
         }
 
         return _cachedValue;
