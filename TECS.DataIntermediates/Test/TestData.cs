@@ -33,9 +33,9 @@ public class TestData
         
         for (int n = 0; n < outputList.Length; n++)
         {
-            if (!expectedValues.GroupsToCheck[n].Equals(outputList[n].Group))
+            if (!expectedValues.ColumnsToCheck[n].Name.Equals(outputList[n].Group))
                 throw new ArgumentException(
-                    $"output list {outputList[n]} and compare target {expectedValues.GroupsToCheck[n]} do not match by name");
+                    $"output list {outputList[n]} and compare target {expectedValues.ColumnsToCheck[n]} do not match by name");
         }
 
         if (expectedValues.Values.Length != tests.Length)

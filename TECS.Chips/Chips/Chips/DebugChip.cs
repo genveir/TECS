@@ -30,7 +30,7 @@ public class DebugChip : Chip
         return new(
             inputValues: baseEval.InputValues,
             outputValues: baseEval.OutputValues,
-            internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(EvaluationId)));
+            internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(ClockCounter)));
     }
     
     public override string ToString()

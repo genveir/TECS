@@ -7,38 +7,39 @@ namespace TECS.DataIntermediates.Test;
 
 public class CompareData
 {
-    public NamedNodeGroupName[] GroupsToCheck { get; }
+    public ColumnData[] ColumnsToCheck { get; }
     
-    public IStringFormattableValue[][] Values { get; }
+    public string[][] Values { get; }
     
-    internal CompareData(NamedNodeGroupName[] groupsToCheck, IStringFormattableValue[][] values)
+    internal CompareData(ColumnData[] columnsToCheck, string[][] values)
     {
-        if (groupsToCheck.Length == 0)
+        if (columnsToCheck.Length == 0)
             throw new ArgumentException("compare data has no groups to check");
 
         if (values.Length == 0)
             throw new ArgumentException("compare data has no values to check");
         
-        CheckGroupForDoubles(groupsToCheck, "compare targets");
+        CheckGroupForDoubles(columnsToCheck, "compare targets");
         
         foreach (var valueArray in values)
         {
-            if (valueArray.Length != groupsToCheck.Length)
+            if (valueArray.Length != columnsToCheck.Length)
                 throw new ArgumentException("compare values do not have a value for every target");
         }
         
-        GroupsToCheck = groupsToCheck;
+        ColumnsToCheck = columnsToCheck;
         Values = values;
         
     }
     
-    private void CheckGroupForDoubles(NamedNodeGroupName[] group, string groupName)
+    private void CheckGroupForDoubles(ColumnData[] columns, string groupName)
     {
-        var distinctCount = group
+        var distinctCount = columns
+            .Select(c => c.Name)
             .Select(g => g.Value)
             .Distinct().Count();
 
-        if (distinctCount != group.Length)
+        if (distinctCount != columns.Length)
             throw new ArgumentException($"{groupName} contain double entry");
     }
 }

@@ -84,14 +84,14 @@ public class ProvidedTests
 
         for (int n = 0; n < inputs.Length; n++)
         {
-            var groupsToCheck = testData.ExpectedValues.GroupsToCheck;
+            var columnsToCheck = testData.ExpectedValues.ColumnsToCheck;
             var valuesToCheck = testData.ExpectedValues.Values[n];
             
-            RunTest(chip, ordered[n], groupsToCheck, valuesToCheck);
+            RunTest(chip, ordered[n], columnsToCheck, valuesToCheck);
         }
     }
 
-    private void RunTest(Chip chip, TestInputData inputs, NamedNodeGroupName[] groupsToCheck, IStringFormattableValue[] valuesToCheck)
+    private void RunTest(Chip chip, TestInputData inputs, ColumnData[] columnsToCheck, string[] valuesToCheck)
     {
         foreach (var setData in inputs.SetData)
         {
@@ -110,21 +110,39 @@ public class ProvidedTests
 
         var result = chip.Evaluate();
         
-        var allValues = new Dictionary<NamedNodeGroupName, BitValue>();
+        var allPinValues = new Dictionary<NamedNodeGroupName, BitValue>();
         foreach (var input in result.InputValues)
-            allValues.Add(input.Key, input.Value);
+            allPinValues.Add(input.Key, input.Value);
 
         foreach (var output in result.OutputValues)
-            allValues.Add(output.Key, output.Value);
+            allPinValues.Add(output.Key, output.Value);
 
-        for (int n = 0; n < groupsToCheck.Length; n++)
+        for (int n = 0; n < columnsToCheck.Length; n++)
         {
-            var groupToCheck = groupsToCheck[n];
+            var columnToCheck = columnsToCheck[n];
             var expectedValue = valuesToCheck[n];
 
-            var actualValue = allValues[groupToCheck];
-
-            actualValue.Should().Be(expectedValue);
+            switch (columnToCheck.Type)
+            {
+                case ColumnType.BinaryString:
+                    allPinValues[columnToCheck.Name].FormatForOutput().Should().Be(expectedValue);
+                    break;
+                case ColumnType.Number:
+                    allPinValues[columnToCheck.Name].AsLongValue().FormatForOutput().Should().Be(expectedValue);
+                    break;
+                case ColumnType.Clock:
+                    chip.Clock.Should().Be(expectedValue == "1");
+                    break;
+                case ColumnType.Time:
+                    chip.Time.Should().Be(expectedValue);
+                    break;
+            }
         }
+    }
+
+    private void CheckBinaryStringValue(Dictionary<NamedNodeGroupName, BitValue> allPinValues,
+        ColumnData columnData, string expected)
+    {
+        
     }
 }

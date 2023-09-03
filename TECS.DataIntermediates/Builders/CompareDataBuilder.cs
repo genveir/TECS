@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
-using TECS.DataIntermediates.Values;
 
 namespace TECS.DataIntermediates.Builders;
 
 public class CompareDataBuilder<TReceiver>
 {
     private readonly Func<CompareData, TReceiver> _addExpected;
-    private readonly List<bool[][]> _values = new();
-    
-    private string[] _columnNames = Array.Empty<string>();
+    private readonly List<string[]> _values = new();
+
+    private readonly List<ColumnData> _columns = new();
 
     public static CompareDataBuilder<CompareData> CreateBasic() => new(cpd => cpd);
 
@@ -24,44 +21,34 @@ public class CompareDataBuilder<TReceiver>
         _addExpected = addExpected;
     }
 
-    public CompareDataBuilder<TReceiver> WithColumns(params string[] groupNames)
+    public CompareDataBuilder<TReceiver> WithBinaryStringColumns(params string[] data)
     {
-        _columnNames = groupNames;
+        foreach (var datum in data)
+        {
+            AddColumn(datum, ColumnType.BinaryString);
+        }
 
         return this;
     }
-
-    public CompareDataBuilder<TReceiver> AddValueRow(bool[][] values)
+    
+    public CompareDataBuilder<TReceiver> AddColumn(string columnName, ColumnType columnType)
     {
-        _values.Add(values);
+        _columns.Add(new(new(columnName), columnType));
 
         return this;
     }
 
     public CompareDataBuilder<TReceiver> AddValueRow(params string[] values)
     {
-        bool[][] boolValues = new bool[values.Length][];
-        for (int n = 0; n < values.Length; n++)
-        {
-            var value = values[n];
+        _values.Add(values);
 
-            if (!value.All(c => c is '0' or '1'))
-                throw new ArgumentException($"string value row {value} contains characters that are not 0 or 1");
-
-            var asBools = value.Select(c => c == '1').Reverse().ToArray();
-
-            boolValues[n] = asBools;
-        }
-
-        return AddValueRow(boolValues);
+        return this;
     }
 
     public TReceiver Build()
     {
-        var groups = _columnNames.Select(g => new NamedNodeGroupName(g)).ToArray();
-        var values = _values.Select(bvs =>
-            bvs.Select(bv => new BitValue(bv)).ToArray()
-        ).ToArray();
+        var groups = _columns.ToArray();
+        var values = _values.ToArray();
 
         var compareData = new CompareData(groups, values);
 

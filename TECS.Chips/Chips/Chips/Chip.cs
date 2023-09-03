@@ -8,7 +8,10 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class Chip
 {
-    protected long EvaluationId;
+    protected long ClockCounter;
+    public bool Clock => ClockCounter % 2 == 0;
+    public string Time => (ClockCounter / 2) + "" + (Clock ? "" : "+");
+    
     
     private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
@@ -28,10 +31,10 @@ public class Chip
 
     public EvaluationResult Evaluate()
     {
-        EvaluationId++;
+        ClockCounter++;
 
         return new(
-            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(EvaluationId)),
-            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(EvaluationId)));
+            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(ClockCounter)),
+            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(ClockCounter)));
     }
 }

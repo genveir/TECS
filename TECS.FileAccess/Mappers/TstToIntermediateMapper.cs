@@ -95,7 +95,7 @@ public static class TstToIntermediateMapper
             .ToArray();
 
         var expectedBuilder = builder.SetExpectedValues()
-            .WithColumns(cmpData[0]);
+            .WithBinaryStringColumns(cmpData[0]);
 
         for (int n = 1; n < cmpData.Length; n++)
             expectedBuilder.AddValueRow(cmpData[n]);
