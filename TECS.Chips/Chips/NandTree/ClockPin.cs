@@ -25,7 +25,7 @@ internal class ClockPin : INandTreeElement
         return this;
     }
 
-    private bool _isValidated = false;
+    private bool _isValidated;
     public void Validate(List<ValidationError> errors, List<INandTreeElement> parentNodes, long validationRun)
     {
         _isValidated = true;

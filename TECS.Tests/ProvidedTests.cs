@@ -140,10 +140,4 @@ public class ProvidedTests
             }
         }
     }
-
-    private void CheckBinaryStringValue(Dictionary<NamedNodeGroupName, BitValue> allPinValues,
-        ColumnData columnData, string expected)
-    {
-        
-    }
 }

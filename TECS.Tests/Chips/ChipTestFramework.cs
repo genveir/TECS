@@ -20,7 +20,7 @@ public class ChipTestFramework
     {
         _chipName = chipName;
         
-        RefreshChip();
+        TestChip = GetChip(_chipName);
     }
 
     protected void RefreshChip()

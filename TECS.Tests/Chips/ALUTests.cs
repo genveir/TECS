@@ -1,9 +1,7 @@
-using System;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Values;
-using TECS.HDLSimulator.Chips.Chips;
 
 namespace TECS.Tests.Chips;
 
