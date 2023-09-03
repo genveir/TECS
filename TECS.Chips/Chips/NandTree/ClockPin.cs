@@ -18,6 +18,8 @@ internal class ClockPin : INandTreeElement
         return clock % 2 == 0;
     }
 
+    public INandTreeElement FindFuseElement() => this;
+    
     public INandTreeElement Fuse(long fuseId)
     {
         return this;

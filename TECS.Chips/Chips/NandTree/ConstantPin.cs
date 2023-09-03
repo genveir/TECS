@@ -21,6 +21,7 @@ internal class ConstantPin : INandTreeElement
 
     public bool GetValue(long clock) => _value;
 
+    public INandTreeElement FindFuseElement() => this;
     public INandTreeElement Fuse(long fuseId)
     {
         return this;

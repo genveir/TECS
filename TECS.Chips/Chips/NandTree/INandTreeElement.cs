@@ -10,6 +10,9 @@ internal interface INandTreeElement
     // Get the value of this element
     bool GetValue(long clock);
 
+    // Move upwards through the tree and find the first parent that can be a target for fusing
+    INandTreeElement FindFuseElement();
+
     // Minimize tree size by fusing all pins upwards. Leaves output and inputs unchanged
     INandTreeElement Fuse(long fuseId);
 

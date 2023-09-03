@@ -76,6 +76,7 @@ internal class NandNode : INandTreeElement
 
     private long _fuseId = -1;
 
+    public INandTreeElement FindFuseElement() => this;
     public INandTreeElement Fuse(long fuseId)
     {
         if (_fuseId != fuseId)

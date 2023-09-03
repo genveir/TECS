@@ -66,6 +66,13 @@ internal class NandPinNode : ISettableElement
         _cloneResult = newPin;
         return _cloneResult;
     }
+
+    public INandTreeElement FindFuseElement()
+    {
+        if (Parent == null) return this;
+        
+        return Parent.FindFuseElement();
+    }
     
     private long _fuseId = -1;
     private INandTreeElement _fuseResult;
@@ -74,7 +81,9 @@ internal class NandPinNode : ISettableElement
         if (_fuseId != fuseId)
         {
             _fuseId = fuseId;
-            _fuseResult = Parent?.Fuse(fuseId) ?? this;
+            _fuseResult = FindFuseElement();
+
+            _fuseResult.Fuse(fuseId);
         }
 
         return _fuseResult;
