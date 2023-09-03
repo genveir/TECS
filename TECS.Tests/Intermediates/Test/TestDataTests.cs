@@ -12,8 +12,6 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(NotIntermediate)
-            .AddOutput("in", 1)
-            .AddOutput("out", 1)
             .SetExpectedValues()
                 .WithBinaryStringColumns("in", "out")
                 .AddValueRow("1", "0")
@@ -29,33 +27,11 @@ public class TestDataTests
     }
 
     [Test]
-    public void CannotCreateTestDataWithEmptyOutputList()
-    {
-        Assert.Throws<ArgumentException>(() =>
-            _ = new TestDataBuilder()
-                .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
-                    .WithBinaryStringColumns("in", "out")
-                    .AddValueRow("1", "0")
-                    .AddValueRow("0", "1")
-                    .Build()
-                .AddTest(0)
-                    .AddInput("in", "1")
-                    .Build()
-                .AddTest(1)
-                    .AddInput("in", "0")
-                    .Build()
-                .Build());
-    }
-
-    [Test]
     public void CannotCreateTestDataWithEmptyTestSet()
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .AddOutput("in", 1)
-                .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
@@ -70,9 +46,6 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                    .AddOutput("in", 1)
-                    .AddOutput("in", 16)
-                    .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
@@ -89,35 +62,11 @@ public class TestDataTests
     }
 
     [Test]
-    public void CannotCreateTestDataWithMismatchedOutputListAndCompareColumns()
-    {
-        Assert.Throws<ArgumentException>(() =>
-            _ = new TestDataBuilder()
-                .WithChipToTest(AndIntermediate)
-                .AddOutput("a", 1)
-                .AddOutput("out", 1)
-                .SetExpectedValues()
-                    .WithBinaryStringColumns("a", "b")
-                    .AddValueRow("1", "0")
-                    .AddValueRow("0", "1")
-                    .Build()
-                .AddTest(0)
-                    .AddInput("a", "1")
-                    .Build()
-                .AddTest(1)
-                    .AddInput("a", "0")
-                    .Build()
-                .Build());
-    }
-
-    [Test]
     public void CannotCreateTestDataWithTestsWithEqualOrder()
     {
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .AddOutput("in", 1)
-                .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
@@ -137,9 +86,6 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(And16Intermediate)
-            .AddOutput("a", 16)
-            .AddOutput("b", 16)
-            .AddOutput("out", 16)
             .SetExpectedValues()
                 .WithBinaryStringColumns("a", "b", "out")
                 .AddValueRow("0000111100001111", "0000111100001111", "0000111100001111")
@@ -162,9 +108,6 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(AndIntermediate)
-                .AddOutput("a", 1)
-                .AddOutput("b", 1)
-                .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("a", "b", "out")
                     .AddValueRow("0", "0", "0")
@@ -189,8 +132,6 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .AddOutput("in", 1)
-                .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
@@ -210,8 +151,6 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .AddOutput("in", 1)
-                .AddOutput("out", 1)
                 .SetExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
@@ -228,35 +167,10 @@ public class TestDataTests
     }
 
     [Test]
-    public void CannotSetATestInputToTheWrongBitSize()
-    {
-        Assert.Throws<ArgumentException>(() =>
-            _ = new TestDataBuilder()
-                .WithChipToTest(NotIntermediate)
-                .AddOutput("in", 1)
-                .AddOutput("out", 1)
-                .SetExpectedValues()
-                    .WithBinaryStringColumns("in", "out")
-                    .AddValueRow("1", "0")
-                    .AddValueRow("0", "1")
-                    .Build()
-                .AddTest(0)
-                    .AddInput("in", "0000111100001111")
-                    .Build()
-                .AddTest(1)
-                    .AddInput("in", "1111000011110000")
-                    .Build()
-                .Build());
-    }
-
-    [Test]
     public void CanCreateTestWhereNotEveryValueIsSetEveryTest()
     {
         _ = new TestDataBuilder()
             .WithChipToTest(AndIntermediate)
-            .AddOutput("a", 1)
-            .AddOutput("b", 1)
-            .AddOutput("out", 1)
             .SetExpectedValues()
                 .WithBinaryStringColumns("a", "b", "out")
                 .AddValueRow("0", "0", "0")
@@ -286,7 +200,6 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(NotIntermediate)
-            .AddOutput("out", 1)
             .SetExpectedValues()
                 .WithBinaryStringColumns("out")
                 .AddValueRow("0")
@@ -306,8 +219,6 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(And16Intermediate)
-            .AddOutput("in", 1)
-            .AddOutput("out", 1)
             .SetExpectedValues()
                 .WithBinaryStringColumns("in", "out")
                 .AddValueRow("1", "0")

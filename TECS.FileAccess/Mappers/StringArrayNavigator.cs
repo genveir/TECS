@@ -5,6 +5,13 @@ namespace TECS.FileAccess.Mappers;
 
 public static class StringArrayNavigator
 {
+    public static bool GetNext(string[] lines, ref int index)
+    {
+        index++;
+
+        return index < lines.Length;
+    }
+    
     public static bool LoopForwardTo(string[] lines, ref int index, Func<string, bool> selector)
     {
         while (index < lines.Length && !selector(lines[index])) index++;

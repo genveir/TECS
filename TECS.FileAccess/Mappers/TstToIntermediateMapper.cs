@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Builders;
+using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
 using TECS.FileAccess.FileAccessors;
 
@@ -25,7 +26,7 @@ public static class TstToIntermediateMapper
 
             MapChipToTest(hdlFolder, builder, lines, ref index);
             var comparisonFile = GetComparisonFile(hdlFolder, lines, ref index);
-            var outputTypes = MapOutputList(builder, lines, ref index);
+            var outputTypes = MapOutputList(lines, ref index);
             MapExpectedValues(builder, comparisonFile, outputTypes);
             MapTests(builder, lines, ref index);
 
@@ -66,26 +67,34 @@ public static class TstToIntermediateMapper
         return cmp;
     }
     
-    private enum OutputType { Bit, Long, String }
-    
-    private static OutputType[] MapOutputList(TestDataBuilder builder, string[] lines, ref int index)
+    private static ColumnData[] MapOutputList(string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("output-list")))
             throw new MappingException("Test file contains no output list");
 
         var split = lines[index].Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
+        List<ColumnData> columns = new();
         for (int n = 1; n < split.Length; n++)
         {
             var setterSplit = split[n].Split(new[] { '%', '.' });
 
-            builder.AddOutput(setterSplit[0], int.Parse(setterSplit[2]));
+            var name = setterSplit[0];
+
+            ColumnType type;
+            if (name == "time") type = ColumnType.Time;
+            else if (name == "clock") type = ColumnType.Clock;
+            else if (setterSplit[1].StartsWith("B")) type = ColumnType.BinaryString;
+            else type = ColumnType.Number;
+
+            var nodeGroupName = new NamedNodeGroupName(name);
+            columns.Add(new(nodeGroupName, type));
         }
 
-        return Array.Empty<OutputType>();
+        return columns.ToArray();
     }
     
-    private static void MapExpectedValues(TestDataBuilder builder, ComparisonFile cmp, OutputType[] outputTypes)
+    private static void MapExpectedValues(TestDataBuilder builder, ComparisonFile cmp, ColumnData[] columns)
     {
         var cmpData = StringArraySanitizer.SanitizeInput(cmp.GetContents())
             .Select(l => 
@@ -94,8 +103,16 @@ public static class TstToIntermediateMapper
                     .ToArray())
             .ToArray();
 
-        var expectedBuilder = builder.SetExpectedValues()
-            .WithBinaryStringColumns(cmpData[0]);
+        var expectedBuilder = builder.SetExpectedValues();
+        for (int n = 0; n < cmpData[0].Length; n++)
+        {
+            if (!columns[n].Name.Equals(new NamedNodeGroupName(cmpData[0][n])))
+            {
+                throw new MappingException($"Mismatch in columns between {columns[n].Name} and {cmpData[0][n]}");
+            }
+
+            expectedBuilder.AddColumn(columns[n]);
+        }
 
         for (int n = 1; n < cmpData.Length; n++)
             expectedBuilder.AddValueRow(cmpData[n]);
@@ -107,7 +124,7 @@ public static class TstToIntermediateMapper
     {
         int order = 0;
 
-        while (StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("set")))
+        while (StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("set") || l.StartsWith("tock")))
         {
             MapTest(builder, lines, ref index, order++);
         }
@@ -116,7 +133,6 @@ public static class TstToIntermediateMapper
     private static void MapTest(TestDataBuilder builder, string[] lines, ref int index, int order)
     {
         var testBuilder = builder.AddTest(order);
-
         while (lines[index].StartsWith("set"))
         {
             var splitSetter = lines[index]
@@ -127,6 +143,8 @@ public static class TstToIntermediateMapper
             
             index++;
         }
+
+        index++;
 
         testBuilder.Build();
     }

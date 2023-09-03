@@ -13,4 +13,9 @@ public class ColumnData
         Name = name;
         Type = type;
     }
+
+    public override string ToString()
+    {
+        return $"{Type} {Name}";
+    }
 }

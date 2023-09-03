@@ -13,51 +13,21 @@ public class TestData
     
     public CompareData ExpectedValues { get; }
     
-    public OutputListData[] OutputList { get; }
-    
     public TestInputData[] Tests { get; }
 
-    internal TestData(ChipData chipToTest, CompareData expectedValues, OutputListData[] outputList, TestInputData[] tests)
+    internal TestData(ChipData chipToTest, CompareData expectedValues, TestInputData[] tests)
     {
-        if (outputList.Length == 0)
-            throw new ArgumentException("output list is empty");
-
         if (tests.Length == 0)
             throw new ArgumentException("test set is empty");
-
-        if (outputList.Length != outputList.Select(ol => ol.Group).Distinct().Count())
-            throw new ArgumentException("output list contains duplicate");
-        
-        Dictionary<NamedNodeGroupName, BitSize> bitSizes = 
-            outputList.ToDictionary(ol => ol.Group, ol => ol.BitSize);
-        
-        for (int n = 0; n < outputList.Length; n++)
-        {
-            if (!expectedValues.ColumnsToCheck[n].Name.Equals(outputList[n].Group))
-                throw new ArgumentException(
-                    $"output list {outputList[n]} and compare target {expectedValues.ColumnsToCheck[n]} do not match by name");
-        }
 
         if (expectedValues.Values.Length != tests.Length)
             throw new ArgumentException("expected values count differs from number of tests");
 
         if (tests.Length != tests.Select(t => t.Order).Distinct().Count())
             throw new ArgumentException("orders on tests must be distinct");
-        
-        var setters = tests.SelectMany(t => t.SetData).ToArray();
-        for (int n = 0; n < setters.Length; n++)
-        {
-            if (bitSizes.TryGetValue(setters[n].Group, out var size))
-            {
-                if (!size.Equals(setters[n].ValueToSet.Size))
-                    throw new ArgumentException(
-                        "cannot set an input to a size that is specified to be different in output list or expected values");
-            }            
-        }
 
         ChipToTest = chipToTest;
         ExpectedValues = expectedValues;
-        OutputList = outputList;
         Tests = tests;
     }
 }

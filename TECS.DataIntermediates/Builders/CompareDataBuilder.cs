@@ -30,6 +30,13 @@ public class CompareDataBuilder<TReceiver>
 
         return this;
     }
+
+    public CompareDataBuilder<TReceiver> AddColumn(ColumnData columnData)
+    {
+        _columns.Add(columnData);
+
+        return this;
+    }
     
     public CompareDataBuilder<TReceiver> AddColumn(string columnName, ColumnType columnType)
     {
