@@ -52,7 +52,7 @@ public class ProvidedTests
         RunTests(errors, chip, testData);
     
     [ProvidedTest("Latch")]
-    //[ProvidedTest("DFF")]
+    [ProvidedTest("DFF")]
     public void Chapter3Custom(List<ValidationError> errors, Chip? chip, TestData? testData) =>
         RunTests(errors, chip, testData);
     

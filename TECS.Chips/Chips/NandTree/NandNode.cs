@@ -14,6 +14,8 @@ internal class NandNode : INandTreeElement
     {
         _a = a;
         _b = b;
+
+        _cloneResult = this;
     }
 
     private long _validatedInRun = -1;
@@ -57,20 +59,21 @@ internal class NandNode : INandTreeElement
     }
 
     private long _cloneId = -1;
-    private INandTreeElement? _cloneResult;
+    private INandTreeElement _cloneResult;
 
     public INandTreeElement Clone(long cloneId)
     {
-        if (_cloneId == cloneId) return _cloneResult!;
-        _cloneId = cloneId;
+        if (_cloneId != cloneId)
+        {
+            _cloneId = cloneId;
 
-        var newNand = new NandNode
-        (
-            _a.Clone(cloneId),
-            _b.Clone(cloneId)
-        );
+            var newNand = new NandNode(_a, _b);
+            _cloneResult = newNand;
 
-        _cloneResult = newNand;
+            newNand._a = _a.Clone(cloneId);
+            newNand._b = _b.Clone(cloneId);
+        }
+
         return _cloneResult;
     }
 
