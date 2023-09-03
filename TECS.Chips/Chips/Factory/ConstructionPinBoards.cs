@@ -59,11 +59,6 @@ internal class ConstructionPinBoards
                 LinkPinBoardInput(inputGroup, inputLowerBound, inputUpperBound, link.External);
                 break;
         }
-        
-        if (externalName.Value == "true" || externalName.Value == "false")
-            LinkConstant(inputGroup, inputLowerBound, inputUpperBound, externalName.Value == "true");
-        else
-            LinkPinBoardInput(inputGroup, inputLowerBound, inputUpperBound, link.External);
     }
 
     private void LinkConstant(InputNodeGroup inputGroup, int inputLowerBound, int inputUpperBound, bool constantValue)
