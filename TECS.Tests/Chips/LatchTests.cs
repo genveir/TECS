@@ -12,8 +12,8 @@ public class LatchTests : ChipTestFramework
     // ReSharper disable InconsistentNaming
     private static class Inputs
     {
-        public static readonly NamedNodeGroupName A = new("a");
-        public static readonly NamedNodeGroupName B = new("b");
+        public static readonly NamedNodeGroupName S = new("s");
+        public static readonly NamedNodeGroupName R = new("r");
     }
 
     private static class Outputs
@@ -34,8 +34,8 @@ public class LatchTests : ChipTestFramework
     [Test]
     public void CanSetLatchToTrue()
     {
-        TestChip.SetInput(Inputs.A, BitValue.True);
-        TestChip.SetInput(Inputs.B, BitValue.False);
+        TestChip.SetInput(Inputs.S, BitValue.False);
+        TestChip.SetInput(Inputs.R, BitValue.True);
 
         Evaluate();
 
@@ -47,8 +47,8 @@ public class LatchTests : ChipTestFramework
     [Test]
     public void CanSetLatchToFalse()
     {
-        TestChip.SetInput(Inputs.A, BitValue.False);
-        TestChip.SetInput(Inputs.B, BitValue.False);
+        TestChip.SetInput(Inputs.S, BitValue.True);
+        TestChip.SetInput(Inputs.R, BitValue.False);
 
         Evaluate();
 
@@ -56,34 +56,68 @@ public class LatchTests : ChipTestFramework
         GetInternal(Internals.N1).Should().Be(TRUE);
         GetOutput(Outputs.OUT).Should().Be(FALSE);
     }
-
+    
     [TestCase(true)]
     [TestCase(false)]
-    public void NoChangeOnBothTrue(bool previousState)
+    public void NoChangeWhenBothInputsTrue(bool previousState)
     {
         if (previousState) CanSetLatchToTrue();
         else CanSetLatchToFalse();
         
-        TestChip.SetInput(Inputs.A, BitValue.True);
-        TestChip.SetInput(Inputs.B, BitValue.True);
+        TestChip.SetInput(Inputs.S, BitValue.True);
+        TestChip.SetInput(Inputs.R, BitValue.True);
 
         Evaluate();
 
         GetOutput(Outputs.OUT).Should().Be(previousState ? TRUE : FALSE);
     }
-    
+
     [TestCase(true)]
     [TestCase(false)]
-    public void NoChangeOnAFalseBTrue(bool previousState)
+    public void LatchReturnsSomethingOnInvalidState(bool previousState)
     {
         if (previousState) CanSetLatchToTrue();
         else CanSetLatchToFalse();
         
-        TestChip.SetInput(Inputs.A, BitValue.False);
-        TestChip.SetInput(Inputs.B, BitValue.True);
-
+        TestChip.SetInput(Inputs.S, BitValue.False);
+        TestChip.SetInput(Inputs.R, BitValue.False);
+        
         Evaluate();
 
-        GetOutput(Outputs.OUT).Should().Be(previousState ? TRUE : FALSE);
+        GetOutput(Outputs.OUT).Should().BeOneOf(TRUE, FALSE);
+    }
+
+    [Test]
+    public void ProvidedCase()
+    {
+        RefreshChip();
+        
+        TestChip.SetInput(Inputs.S, BitValue.False);
+        TestChip.SetInput(Inputs.R, BitValue.True);
+        
+        Evaluate();
+
+        GetOutput(Outputs.OUT).Should().Be(TRUE);
+        
+        TestChip.SetInput(Inputs.S, BitValue.True);
+        TestChip.SetInput(Inputs.R, BitValue.True);
+        
+        Evaluate();
+        
+        GetOutput(Outputs.OUT).Should().Be(TRUE);
+        
+        TestChip.SetInput(Inputs.S, BitValue.True);
+        TestChip.SetInput(Inputs.R, BitValue.False);
+        
+        Evaluate();
+
+        GetOutput(Outputs.OUT).Should().Be(FALSE);
+        
+        TestChip.SetInput(Inputs.S, BitValue.True);
+        TestChip.SetInput(Inputs.R, BitValue.True);
+        
+        Evaluate();
+        
+        GetOutput(Outputs.OUT).Should().Be(FALSE);
     }
 }

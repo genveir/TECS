@@ -207,4 +207,47 @@ internal static class HandMadeIntermediates
                 .Build()
             .Build()
         .Build();
+
+    public static ChipData LatchTestIntermediate => new ChipDataBuilder()
+        .WithName("Latch")
+        .AddInGroup("s", 1)
+        .AddInGroup("r", 1)
+        .AddOutGroup("out", 1)
+        .AddNand("s", "n1", "n0")
+        .AddNand("n0", "r", "n1")
+        .AddPass("n0", "out")
+        .Build();
+        
+
+    private static ChipDataBuilder AddNand(this ChipDataBuilder chipDataBuilder, string aExternal, string bExternal, string outExternal)
+    {
+        return chipDataBuilder.AddPart("Nand")
+            .AddLink()
+                .WithInternal("a")
+                .WithExternal(aExternal)
+                .Build()
+            .AddLink()
+                .WithInternal("b")
+                .WithExternal(bExternal)
+                .Build()
+            .AddLink()
+                .WithInternal("out")
+                .WithExternal(outExternal)
+                .Build()
+            .Build();
+    }
+
+    private static ChipDataBuilder AddPass(this ChipDataBuilder chipDataBuilder, string inExternal, string outExternal)
+    {
+        return chipDataBuilder.AddPart("Pass")
+            .AddLink()
+                .WithInternal("in")
+                .WithExternal(inExternal)
+                .Build()
+            .AddLink()
+                .WithInternal("out")
+                .WithExternal(outExternal)
+                .Build()
+            .Build();
+    }
 }

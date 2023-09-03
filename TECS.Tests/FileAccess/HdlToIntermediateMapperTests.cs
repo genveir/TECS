@@ -60,6 +60,16 @@ public class HdlToIntermediateMapperTests
         intermediate.Should().BeEquivalentTo(LinkTestIntermediate);
     }
 
+    [Test]
+    public void CanMapLatch()
+    {
+        var latchHdl = Get("Latch");
+
+        var intermediate = HdlToIntermediateMapper.Map(latchHdl);
+
+        intermediate.Should().BeEquivalentTo(LatchTestIntermediate);
+    }
+
     private HdlFile Get(string name)
     {
         var datafolder = new DataFolder(Settings.TestDataFolder);
@@ -75,4 +85,5 @@ public class HdlToIntermediateMapperTests
     private static ChipData And16Intermediate => HandMadeIntermediates.And16Intermediate;
     private static ChipData WeirdNotIntermediate => HandMadeIntermediates.WeirdNotIntermediate;
     private static ChipData LinkTestIntermediate => HandMadeIntermediates.LinkTestIntermediate;
+    private static ChipData LatchTestIntermediate => HandMadeIntermediates.LatchTestIntermediate;
 }

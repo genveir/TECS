@@ -51,6 +51,7 @@ public class ProvidedTests
     public void Chapter2(List<ValidationError> errors, Chip? chip, TestData? testData) =>
         RunTests(errors, chip, testData);
     
+    [ProvidedTest("Latch")]
     [ProvidedTest("DFF")]
     public void Chapter3Custom(List<ValidationError> errors, Chip? chip, TestData? testData) =>
         RunTests(errors, chip, testData);
