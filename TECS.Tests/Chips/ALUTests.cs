@@ -1,21 +1,14 @@
 using System;
-using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Values;
-using TECS.FileAccess;
-using TECS.FileAccess.Mappers;
 using TECS.HDLSimulator.Chips.Chips;
-using TECS.HDLSimulator.Chips.Factory;
 
 namespace TECS.Tests.Chips;
 
-public class AluTests
+public class AluTests : ChipTestFramework
 {
-    private static DebugChip _alu = GetChip();
-    private static DebugEvaluationResult? _result;
-
     private const string Zero = "0000000000000000";
     private const string Ten = "0000000000001010";
     private const string Ones = "1111111111111111";
@@ -24,6 +17,8 @@ public class AluTests
     private const string True = "1";
     private const string False = "0";
 
+    public AluTests() : base("ALU") { }
+    
     // ReSharper disable InconsistentNaming
     private static class Inputs
     {
@@ -63,14 +58,14 @@ public class AluTests
     [Test]
     public void CanConstructAluDebugChip()
     {
-        _alu.Should().NotBeNull();
-        _alu.InputNames.Should().HaveCount(8);
-        _alu.InputNames.Should().Contain(Inputs.All);
+        TestChip.Should().NotBeNull();
+        TestChip.InputNames.Should().HaveCount(8);
+        TestChip.InputNames.Should().Contain(Inputs.All);
 
-        _alu.OutputNames.Should().HaveCount(3);
-        _alu.OutputNames.Should().Contain(Outputs.All);
+        TestChip.OutputNames.Should().HaveCount(3);
+        TestChip.OutputNames.Should().Contain(Outputs.All);
 
-        _alu.InternalNames.Should().Contain(Internals.AllSpecified);
+        TestChip.InternalNames.Should().Contain(Internals.AllSpecified);
     }
 
     [Test]
@@ -122,53 +117,15 @@ public class AluTests
     private void SetValues(string x = "0000000000000000", string y = "0000000000000000", bool zx = false,
         bool nx = false, bool zy = false, bool ny = false, bool f = false, bool no = false)
     {
-        _alu.SetInput(Inputs.X, ConvertString(x));
-        _alu.SetInput(Inputs.Y, ConvertString(y));
-        _alu.SetInput(Inputs.ZX, zx ? BitValue.True : BitValue.False);
-        _alu.SetInput(Inputs.NX, nx ? BitValue.True : BitValue.False);
-        _alu.SetInput(Inputs.ZY, zy ? BitValue.True : BitValue.False);
-        _alu.SetInput(Inputs.NY, ny ? BitValue.True : BitValue.False);
-        _alu.SetInput(Inputs.F, f ? BitValue.True : BitValue.False);
-        _alu.SetInput(Inputs.NO, no ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.X, new(x));
+        TestChip.SetInput(Inputs.Y, new(y));
+        TestChip.SetInput(Inputs.ZX, zx ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.NX, nx ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.ZY, zy ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.NY, ny ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.F, f ? BitValue.True : BitValue.False);
+        TestChip.SetInput(Inputs.NO, no ? BitValue.True : BitValue.False);
 
-        _result = _alu.DebugEvaluate();
-    }
-
-    private static string GetInternal(NamedNodeGroupName name) =>
-        ConvertBitValue(_result?.InternalValues[name] ?? throw new InvalidOperationException("set something before getting values"));
-
-    private static string GetOutput(NamedNodeGroupName name) =>
-        ConvertBitValue(_result?.OutputValues[name] ?? throw new InvalidOperationException("set something before getting values"));
-
-    private static BitValue ConvertString(string input) => new(input.Select(c => c == '1').Reverse().ToArray());
-
-    private static string ConvertBitValue(BitValue value) =>
-        new(value.Value.Select(b => b ? '1' : '0').Reverse().ToArray());
-
-    private static DebugChip GetChip()
-    {
-        var dataFolder = new DataFolder(Settings.DataFolder);
-
-        var hdlFolder = dataFolder.HdlFolder;
-
-        var chipData = hdlFolder.HdlFiles.Select(HdlToIntermediateMapper.Map).ToArray();
-
-        var factory = new ChipBlueprintFactory(chipData);
-
-        var debugFac = new DebugChipFactory(factory);
-
-        var result = debugFac.Create(chipData.Single(cd => cd.Name.Value == "ALU"));
-
-        if (result.Success)
-        {
-            _alu = result.Result ?? throw new InvalidOperationException("huh");
-        }
-        else
-        {
-            result.Errors.Should().BeEmpty();
-            throw new InvalidOperationException("double huuuh");
-        }
-
-        return _alu;
+        Evaluate();
     }
 }

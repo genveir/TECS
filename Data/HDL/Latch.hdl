@@ -1,0 +1,9 @@
+CHIP Latch {
+    IN a,b;
+    OUT out;
+
+    PARTS:
+    Nand(a=a,b=n1,out=n0);
+    Nand(a=n0,b=b,out=n1);
+    Pass(in=n0,out=out);
+}

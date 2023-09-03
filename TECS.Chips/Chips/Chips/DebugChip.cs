@@ -23,8 +23,11 @@ public class DebugChip : Chip
 
     public IEnumerable<NamedNodeGroupName> InternalNames => Internals.Keys.ToArray();
 
-    public DebugEvaluationResult DebugEvaluate()
+    public DebugEvaluationResult DebugEvaluate(long? clock = null)
     {
+        if (clock != null)
+            ClockCounter = clock.Value;
+        
         var baseEval = Evaluate();
 
         return new(

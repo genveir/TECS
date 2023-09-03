@@ -16,6 +16,9 @@ public class BitValue : INumberValue, IStringFormattableValue
     public BitValue(long value) : this(Convert.ToString(value, 2))
     { }
 
+    public BitValue(bool value) : this(new[] { value }) 
+    { }
+
     public BitValue(string binaryString) : this(binaryString
         .Select(c => c == '1')
         .Reverse()

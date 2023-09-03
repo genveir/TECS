@@ -6,7 +6,5 @@ CHIP DFF {
     Not(in=in,out=nd);
     Nand(a=in,b=clk,out=n0);
     Nand(a=nd,b=clk,out=n1);
-    Nand(a=n0,b=n3,out=n2);
-    Nand(a=n2,b=n1,out=n3);
-    Pass(in=n2,out=out);
+    Latch(a=n0,b=n1,out=out);
 }
