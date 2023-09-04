@@ -10,6 +10,7 @@ public abstract class NamedNodeGroup<TImplementingType>
     public NamedNodeGroupName Name { get; }
     
     internal abstract ReadOnlySpan<INandTreeElement> Nodes { get; }
+    protected abstract BitSize Size { get; }
 
     internal NamedNodeGroup(NamedNodeGroupName name)
     {
@@ -24,7 +25,7 @@ public abstract class NamedNodeGroup<TImplementingType>
             value[n] = Nodes[n].GetValue(evaluationId);
         }
 
-        return new(value);
+        return new(value, Size);
     }
 
     // cloneId is used to not re-clone the inputs, but use the ones from the cloned tree

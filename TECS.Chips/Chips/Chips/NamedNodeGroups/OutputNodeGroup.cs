@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TECS.DataIntermediates.Names;
+using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Factory;
 using TECS.HDLSimulator.Chips.NandTree;
 
@@ -9,12 +10,14 @@ namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 public class OutputNodeGroup : NamedNodeGroup<OutputNodeGroup>
 {
     internal override ReadOnlySpan<INandTreeElement> Nodes => _nodes;
+    protected override BitSize Size { get; }
 
     private readonly INandTreeElement[] _nodes;
 
     private OutputNodeGroup(NamedNodeGroupName name, INandTreeElement[] nodes) : base(name)
     {
         _nodes = nodes;
+        Size = new(_nodes.Length);
     }
     
     internal OutputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.CopyNodesToElements()) { }

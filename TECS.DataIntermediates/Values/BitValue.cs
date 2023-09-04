@@ -9,22 +9,28 @@ public class BitValue : INumberValue, IStringFormattableValue
     
     public BitSize Size { get; }
 
-    public static BitValue True => new(new[] { true });
+    public static BitValue True => new(true);
 
-    public static BitValue False => new(new[] { false });
+    public static BitValue False => new(false);
 
-    public BitValue(long value) : this(Convert.ToString(value, 2))
+    public BitValue(bool value) : this(new[] { value }, new(1)) 
     { }
-
-    public BitValue(bool value) : this(new[] { value }) 
-    { }
-
-    public BitValue(string binaryString) : this(binaryString
-        .Select(c => c == '1')
-        .Reverse()
-        .ToArray()) { } 
     
-    public BitValue(bool[] value)
+    public BitValue(short value, int size) : this(Convert.ToString(value, 2), size)
+    { }
+
+    public BitValue(string binaryString, int size) : this(binaryString
+        .Replace("%B", "")
+        .Select(c =>
+        {
+            if (c == '1') return true;
+            if (c == '0') return false;
+            else throw new InvalidOperationException($"{binaryString} is not a binary string");
+        })
+        .Reverse()
+        .ToArray(), new(size)) { } 
+    
+    public BitValue(bool[] value, BitSize size)
     {
         if (value.Length == 0)
             throw new ArgumentException("bit value can not be empty");
@@ -32,8 +38,15 @@ public class BitValue : INumberValue, IStringFormattableValue
         if (value.Length > 16)
             throw new ArgumentException("bit value is probably too long, can not be larger than 16 right now");
 
-        Value = value;
-        Size = new(value.Length);
+        if (value.Length > size.Value)
+            throw new ArgumentException("passed value is larger than the alotted size");
+
+        var wellSizedValue = new bool[size.Value];
+        for (int n = 0; n < value.Length; n++)
+            wellSizedValue[n] = value[n];        
+            
+        Value = wellSizedValue;
+        Size = size;
     }
 
     public string AsBinaryString() => 

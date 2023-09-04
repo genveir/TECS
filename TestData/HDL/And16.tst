@@ -28,12 +28,12 @@ set b 21845,
 eval,
 output;
 
-set a 7777,
-set b 2040,
+set a 15555,
+set b 4080,
 eval,
 output;
 
-set a 2330,
-set b 19515,
+set a 4660,
+set b -26506,
 eval,
 output;

@@ -11,8 +11,8 @@ public class BitSize
         if (value < 1)
             throw new ArgumentException("bit size can not be 0 or empty");
 
-        if (value > 64)
-            throw new ArgumentException("bit size is probably too high, maxed at 64 right now");
+        if (value > 16)
+            throw new ArgumentException("bit size is probably too high, maxed at 16 right now");
 
         Value = value;
     }

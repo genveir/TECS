@@ -115,8 +115,8 @@ public class AluTests : ChipTestFramework
     private void SetValues(string x = "0000000000000000", string y = "0000000000000000", bool zx = false,
         bool nx = false, bool zy = false, bool ny = false, bool f = false, bool no = false)
     {
-        TestChip.SetInput(Inputs.X, new(x));
-        TestChip.SetInput(Inputs.Y, new(y));
+        TestChip.SetInput(Inputs.X, new(x, 16));
+        TestChip.SetInput(Inputs.Y, new(y, 16));
         TestChip.SetInput(Inputs.ZX, zx ? BitValue.True : BitValue.False);
         TestChip.SetInput(Inputs.NX, nx ? BitValue.True : BitValue.False);
         TestChip.SetInput(Inputs.ZY, zy ? BitValue.True : BitValue.False);

@@ -27,13 +27,16 @@ public class TestInputDataBuilder<TReceiver>
         _addTest = addTest;
     }
 
-    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, bool[] value) => 
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, bool value) =>
         AddInput(inputToSet, new BitValue(value));
 
-    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, string value) => 
-        AddInput(inputToSet, new BitValue(value));
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, string value, int size) => 
+        AddInput(inputToSet, new BitValue(value, size));
 
-    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, BitValue bitValue)
+    public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, short value, int size) =>
+        AddInput(inputToSet, new ShortValue(value, size).AsBitValue());
+
+    private TestInputDataBuilder<TReceiver> AddInput(string inputToSet, BitValue bitValue)
     {
         var group = new NamedNodeGroupName(inputToSet);
         

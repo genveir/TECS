@@ -18,10 +18,10 @@ public class TestDataTests
                 .AddValueRow("0", "1")
                 .Build()
             .AddTest(0)
-                .AddInput("in", "1")
+                .AddInput("in", true)
                 .Build()
             .AddTest(1)
-                .AddInput("in", "0")
+                .AddInput("in", false)
                 .Build()
             .Build();
     }
@@ -53,10 +53,10 @@ public class TestDataTests
                     .AddValueRow("0", "1")
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
+                    .AddInput("in", true)
                     .Build()
                 .AddTest(1)
-                    .AddInput("in", "0")
+                    .AddInput("in", false)
                     .Build()
                 .Build());
     }
@@ -73,10 +73,10 @@ public class TestDataTests
                     .AddValueRow("0", "1")
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
+                    .AddInput("in", true)
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "0")
+                    .AddInput("in", false)
                     .Build()
                 .Build());
     }
@@ -92,12 +92,12 @@ public class TestDataTests
                 .AddValueRow("0000111100001111", "1111000011110000", "0000000000000000")
                 .Build()
             .AddTest(0)
-                .AddInput("a", "0000111100001111")
-                .AddInput("b", "0000111100001111")
+                .AddInput("a", "%B0000111100001111", 16)
+                .AddInput("b", "%B0000111100001111", 16)
                 .Build()
             .AddTest(1)
-                .AddInput("a", "0000111100001111")
-                .AddInput("b", "1111000011110000")
+                .AddInput("a", "%B0000111100001111", 16)
+                .AddInput("b", "%B1111000011110000", 16)
                 .Build()
             .Build();
     }
@@ -116,12 +116,12 @@ public class TestDataTests
                     .AddValueRow("1", "1", "1")
                 .Build()
                 .AddTest(0)
-                    .AddInput("a", "0")
-                    .AddInput("b", "0")
+                    .AddInput("a", false)
+                    .AddInput("b", false)
                     .Build()
                 .AddTest(1)
-                    .AddInput("a", "0")
-                    .AddInput("b", "1")
+                    .AddInput("a", false)
+                    .AddInput("b", true)
                     .Build()
                 .Build());
     }
@@ -137,10 +137,10 @@ public class TestDataTests
                     .AddValueRow("1", "0")
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
+                    .AddInput("in", true)
                     .Build()
                 .AddTest(1)
-                    .AddInput("in", "0")
+                    .AddInput("in", false)
                     .Build()
                 .Build());
     }
@@ -157,11 +157,11 @@ public class TestDataTests
                     .AddValueRow("0", "1")
                     .Build()
                 .AddTest(0)
-                    .AddInput("in", "1")
-                    .AddInput("in", "0")
+                    .AddInput("in", true)
+                    .AddInput("in", false)
                     .Build()
                 .AddTest(1)
-                    .AddInput("in", "0")
+                    .AddInput("in", false)
                     .Build()
                 .Build());
     }
@@ -179,18 +179,18 @@ public class TestDataTests
                 .AddValueRow("1", "1", "1")
                 .Build()
             .AddTest(0)
-                .AddInput("a", "0")
-                .AddInput("b", "0")
+                .AddInput("a", false)
+                .AddInput("b", false)
                 .Build()
             .AddTest(1)
-                .AddInput("b", "1")
+                .AddInput("b", true)
                 .Build()
             .AddTest(2)
-                .AddInput("a", "1")
-                .AddInput("b", "0")
+                .AddInput("a", true)
+                .AddInput("b", false)
                 .Build()
             .AddTest(3)
-                .AddInput("b", "1")
+                .AddInput("b", true)
                 .Build()
             .Build();
     }
@@ -206,10 +206,10 @@ public class TestDataTests
                 .AddValueRow("1")
                 .Build()
             .AddTest(0)
-                .AddInput("in", "1")
+                .AddInput("in", true)
                 .Build()
             .AddTest(1)
-                .AddInput("in", "0")
+                .AddInput("in", false)
                 .Build()
             .Build();
     }
@@ -225,10 +225,10 @@ public class TestDataTests
                 .AddValueRow("0", "1")
                 .Build()
             .AddTest(0)
-                .AddInput("in", "1")
+                .AddInput("in", true)
                 .Build()
             .AddTest(1)
-                .AddInput("in", "0")
+                .AddInput("in", false)
                 .Build()
             .Build();
     }

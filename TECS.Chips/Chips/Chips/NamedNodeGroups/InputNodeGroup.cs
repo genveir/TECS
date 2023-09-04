@@ -10,12 +10,14 @@ namespace TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
 public class InputNodeGroup : NamedNodeGroup<InputNodeGroup>
 {
     internal override ReadOnlySpan<INandTreeElement> Nodes => Pins;
+    protected override BitSize Size { get; }
     
     internal readonly NandPinNode[] Pins;
     
     private InputNodeGroup(NamedNodeGroupName name, NandPinNode[] pins) : base(name)
     {
         Pins = pins;
+        Size = new(pins.Length);
     }
     
     internal InputNodeGroup(PinBoard pinBoard) : this(pinBoard.Name, pinBoard.Nodes) { }
