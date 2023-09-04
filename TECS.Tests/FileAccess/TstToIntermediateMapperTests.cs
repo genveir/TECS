@@ -41,7 +41,7 @@ public class TstToIntermediateMapperTests
     }
     
     [Test]
-    public void CanMap16BitAnd()
+    public void CanMap16BitAnd() // uses short inputs instead of binary
     {
         var (hdlFolder, testFile) = Get("And16");
 
