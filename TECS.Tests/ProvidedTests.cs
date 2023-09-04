@@ -75,6 +75,8 @@ public class ProvidedTests
     
     private void RunTests(List<ValidationError> errors, Chip? chip, TestData? testData)
     {
+        Clock.Instance.Reset();
+        
         errors.Should().BeEmpty();
 
         chip.Should().NotBeNull();
@@ -111,6 +113,9 @@ public class ProvidedTests
                 Assert.Fail(e.Message);
             }
         }
+        
+        for (int n = 0; n < inputs.NumClockIncrements; n++)
+            chip.IncrementClock();
 
         var result = chip.Evaluate();
         
@@ -135,10 +140,10 @@ public class ProvidedTests
                     allPinValues[columnToCheck.Name].AsShortValue().FormatForOutput().Should().Be(expectedValue);
                     break;
                 case ColumnType.Clock:
-                    chip.Clock.Should().Be(expectedValue == "1");
+                    Clock.Instance.Potential.Should().Be(expectedValue == "1");
                     break;
                 case ColumnType.Time:
-                    chip.Time.Should().Be(expectedValue);
+                    Clock.Instance.Time.Should().Be(expectedValue);
                     break;
             }
         }

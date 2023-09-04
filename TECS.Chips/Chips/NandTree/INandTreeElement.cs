@@ -8,7 +8,7 @@ internal interface INandTreeElement
     INandTreeElement Clone(long cloneId);
     
     // Get the value of this element
-    bool GetValue(long clock);
+    bool GetValue(long cachingCounter);
 
     // Move upwards through the tree and find the first parent that can be a target for fusing
     INandTreeElement FindFuseElement();

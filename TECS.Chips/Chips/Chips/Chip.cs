@@ -3,16 +3,12 @@ using System.Linq;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
+using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Chips;
 
 public class Chip
 {
-    protected long ClockCounter;
-    public bool Clock => ClockCounter % 2 == 0;
-    public string Time => (ClockCounter / 2) + "" + (Clock ? "" : "+");
-    
-    
     private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
     
@@ -29,12 +25,18 @@ public class Chip
     public void SetInput(NamedNodeGroupName inputGroup, BitValue bitValue) => 
         Inputs[inputGroup].SetValue(bitValue);
 
+    public void IncrementClock()
+    {
+        Clock.Instance.Increment();
+    }
+
+    protected long CachingCounter = -1;
     public EvaluationResult Evaluate()
     {
-        ClockCounter++;
-
+        CachingCounter++;
+        
         return new(
-            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(ClockCounter)),
-            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(ClockCounter)));
+            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(CachingCounter)),
+            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(CachingCounter)));
     }
 }

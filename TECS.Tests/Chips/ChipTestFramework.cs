@@ -34,9 +34,9 @@ public class ChipTestFramework
     protected string GetOutput(NamedNodeGroupName name) =>
         _result?.OutputValues[name].AsBinaryString() ?? throw new InvalidOperationException("set something before getting values");
 
-    protected void Evaluate(long? clock = null)
+    protected void Evaluate()
     {
-        _result = TestChip.DebugEvaluate(clock);
+        _result = TestChip.DebugEvaluate();
     }
     
     private static DebugChip GetChip(string name)

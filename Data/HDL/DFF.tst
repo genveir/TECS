@@ -16,14 +16,14 @@ output;
 tock,
 output;
 
-set in 0
+set in 0,
 tick,
 output;
 
 tock,
 output;
 
-set in 1
+set in 1,
 tick,
 output;
 

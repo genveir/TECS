@@ -5,7 +5,6 @@ using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
-using TECS.DataIntermediates.Values;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;
@@ -128,40 +127,44 @@ public static class TstToIntermediateMapper
     private static IEnumerable<TestInputData> MapTests(string[] lines, ref int index, NamedNodeGroupData[] inputs)
     {
         int order = 0;
-
         List<TestInputData> tests = new();
-        while (StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("set") || l.StartsWith("tock")))
+
+        var testBuilder = new SimpleTestInputDataBuilder(order++);
+        while (StringArrayNavigator.GetNext(lines, ref index))
         {
-            tests.Add(MapTest(lines, ref index, order++, inputs));
+            var line = lines[index];
+
+            if (line.StartsWith("set"))
+            {
+                var splitSetter = lines[index]
+                    .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var relevantInput = inputs
+                    .SingleOrDefault(inp => inp.Name.Value == splitSetter[1]);
+
+                var size = relevantInput?.Size.Value ??
+                           throw new MappingException($"setter is for {splitSetter[1]} which is not in the input set");
+
+                if (splitSetter[2].StartsWith("%B"))
+                    testBuilder.AddInput(splitSetter[1], splitSetter[2], size);
+                else
+                    testBuilder.AddInput(splitSetter[1], short.Parse(splitSetter[2]), size);
+            }
+            else if (line.StartsWith("tick") || line.StartsWith("tock"))
+            {
+                testBuilder.AddClockIncrement();
+            }
+            else if (line.StartsWith("eval"))
+            {
+                
+            }
+            else if (line.StartsWith("output"))
+            {
+                tests.Add(testBuilder.Build());
+                testBuilder = new SimpleTestInputDataBuilder(order++);
+            }
         }
 
         return tests;
-    }
-    
-    private static TestInputData MapTest(string[] lines, ref int index, int order, NamedNodeGroupData[] inputs)
-    {
-        var testBuilder = new SimpleTestInputDataBuilder(order);
-        while (lines[index].StartsWith("set"))
-        {
-            var splitSetter = lines[index]
-                .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-            var relevantInput = inputs
-                .SingleOrDefault(inp => inp.Name.Value == splitSetter[1]);
-
-            var size = relevantInput?.Size.Value ??
-                throw new MappingException($"setter is for {splitSetter[1]} which is not in the input set");
-
-            if (splitSetter[2].StartsWith("%B"))
-                testBuilder.AddInput(splitSetter[1], splitSetter[2], size);
-            else
-                testBuilder.AddInput(splitSetter[1], short.Parse(splitSetter[2]), size);
-
-            index++;
-        }
-
-        index++;
-
-        return testBuilder.Build();
     }
 }

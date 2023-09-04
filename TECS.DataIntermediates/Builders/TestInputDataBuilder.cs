@@ -15,6 +15,7 @@ public class TestInputDataBuilder<TReceiver>
 {
     private readonly int _order;
     private readonly Func<TestInputData, TReceiver> _addTest;
+    private int _numIncrements;
 
     private readonly List<TestSetData> _sets = new();
 
@@ -25,6 +26,7 @@ public class TestInputDataBuilder<TReceiver>
     {
         _order = order;
         _addTest = addTest;
+        _numIncrements = 0;
     }
 
     public TestInputDataBuilder<TReceiver> AddInput(string inputToSet, bool value) =>
@@ -47,9 +49,16 @@ public class TestInputDataBuilder<TReceiver>
         return this;
     }
 
+    public TestInputDataBuilder<TReceiver> AddClockIncrement()
+    {
+        _numIncrements++;
+
+        return this;
+    }
+
     public TReceiver Build()
     {
-        var testData = new TestInputData(_order, _sets.ToArray());
+        var testData = new TestInputData(_order, _sets.ToArray(), _numIncrements);
 
         return _addTest(testData);
     }

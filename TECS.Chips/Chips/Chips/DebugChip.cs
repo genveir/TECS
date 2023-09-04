@@ -23,17 +23,14 @@ public class DebugChip : Chip
 
     public IEnumerable<NamedNodeGroupName> InternalNames => Internals.Keys.ToArray();
 
-    public DebugEvaluationResult DebugEvaluate(long? clock = null)
+    public DebugEvaluationResult DebugEvaluate()
     {
-        if (clock != null)
-            ClockCounter = clock.Value;
-        
         var baseEval = Evaluate();
 
         return new(
             inputValues: baseEval.InputValues,
             outputValues: baseEval.OutputValues,
-            internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(ClockCounter)));
+            internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(CachingCounter)));
     }
     
     public override string ToString()
