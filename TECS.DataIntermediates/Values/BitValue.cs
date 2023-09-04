@@ -41,7 +41,7 @@ public class BitValue : INumberValue, IStringFormattableValue
 
     public BitValue AsBitValue() => this;
 
-    public ShortValue AsShortValue() => new ShortValue(this);
+    public ShortValue AsShortValue() => new(this);
     
     public string FormatForOutput()
     {
