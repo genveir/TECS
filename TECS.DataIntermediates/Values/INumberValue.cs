@@ -4,5 +4,5 @@ public interface INumberValue
 {
     BitValue AsBitValue();
 
-    LongValue AsLongValue();
+    ShortValue AsShortValue();
 }

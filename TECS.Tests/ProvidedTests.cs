@@ -129,7 +129,7 @@ public class ProvidedTests
                     allPinValues[columnToCheck.Name].FormatForOutput().Should().Be(expectedValue);
                     break;
                 case ColumnType.Number:
-                    allPinValues[columnToCheck.Name].AsLongValue().FormatForOutput().Should().Be(expectedValue);
+                    allPinValues[columnToCheck.Name].AsShortValue().FormatForOutput().Should().Be(expectedValue);
                     break;
                 case ColumnType.Clock:
                     chip.Clock.Should().Be(expectedValue == "1");

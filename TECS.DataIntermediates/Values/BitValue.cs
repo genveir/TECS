@@ -29,8 +29,8 @@ public class BitValue : INumberValue, IStringFormattableValue
         if (value.Length == 0)
             throw new ArgumentException("bit value can not be empty");
 
-        if (value.Length > 64)
-            throw new ArgumentException("bit value is probably too long, can not be larger than 64 right now");
+        if (value.Length > 16)
+            throw new ArgumentException("bit value is probably too long, can not be larger than 16 right now");
 
         Value = value;
         Size = new(value.Length);
@@ -41,7 +41,7 @@ public class BitValue : INumberValue, IStringFormattableValue
 
     public BitValue AsBitValue() => this;
 
-    public LongValue AsLongValue() => new LongValue(this);
+    public ShortValue AsShortValue() => new ShortValue(this);
     
     public string FormatForOutput()
     {

@@ -2,17 +2,17 @@ using System;
 
 namespace TECS.DataIntermediates.Values;
 
-public class LongValue : INumberValue, IStringFormattableValue
+public class ShortValue : INumberValue, IStringFormattableValue
 {
-    public long Value { get; }
+    public short Value { get; }
     
-    public LongValue(long value)
+    public ShortValue(short value)
     {
         Value = value;
     }
 
-    public LongValue(BitValue bitValue) : this(
-        Convert.ToInt64(
+    public ShortValue(BitValue bitValue) : this(
+        Convert.ToInt16(
             value: bitValue.AsBinaryString(), 
             fromBase: 2))
     {
@@ -21,7 +21,7 @@ public class LongValue : INumberValue, IStringFormattableValue
 
     public BitValue AsBitValue() => new(Value);
 
-    public LongValue AsLongValue() => this;
+    public ShortValue AsShortValue() => this;
 
     public string FormatForOutput() => Value.ToString();
 }
