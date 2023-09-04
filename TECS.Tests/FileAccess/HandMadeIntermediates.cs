@@ -9,7 +9,7 @@ internal static class HandMadeIntermediates
 {
     public static TestData NotTestIntermediate => new TestDataBuilder()
         .WithChipToTest(NotIntermediate)
-        .SetExpectedValues()
+        .WithExpectedValues()
             .WithBinaryStringColumns("in", "out")
             .AddValueRow("0", "1")
             .AddValueRow("1", "0")
@@ -35,7 +35,7 @@ internal static class HandMadeIntermediates
 
     public static TestData AndTestIntermediate => new TestDataBuilder()
         .WithChipToTest(AndIntermediate)
-        .SetExpectedValues()
+        .WithExpectedValues()
             .WithBinaryStringColumns("a", "b", "out")
             .AddValueRow("0", "0", "0")
             .AddValueRow("0", "1", "0")
@@ -91,7 +91,7 @@ internal static class HandMadeIntermediates
 
     public static TestData And16TestIntermediate => new TestDataBuilder()
         .WithChipToTest(And16Intermediate)
-        .SetExpectedValues()
+        .WithExpectedValues()
         .WithBinaryStringColumns("a", "b", "out")
             .AddValueRow("0000000000000000", "0000000000000000", "0000000000000000")
             .AddValueRow("0000000000000000", "1111111111111111", "0000000000000000")

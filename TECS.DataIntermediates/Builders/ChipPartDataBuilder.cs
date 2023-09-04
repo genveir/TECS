@@ -4,6 +4,11 @@ using TECS.DataIntermediates.Chip;
 
 namespace TECS.DataIntermediates.Builders;
 
+public class SimpleChipPartDataBuilder : ChipPartDataBuilder<ChipPartData>
+{
+    public SimpleChipPartDataBuilder(string name) : base(name, prt => prt) { }
+}
+
 public class ChipPartDataBuilder<TReceiver>
 {
     private readonly string _name;
@@ -11,13 +16,10 @@ public class ChipPartDataBuilder<TReceiver>
 
     private readonly Func<ChipPartData, TReceiver> _addPart;
 
-    public static ChipPartDataBuilder<ChipPartData> CreateBasic(string name) => 
-        new(name, cpd => cpd);
-
     public static ChipPartDataBuilder<TReceiver> WithReceiver(string name, Func<ChipPartData, TReceiver> receiver) =>
         new(name, receiver);
 
-    private ChipPartDataBuilder(string name, Func<ChipPartData, TReceiver> addPart)
+    protected ChipPartDataBuilder(string name, Func<ChipPartData, TReceiver> addPart)
     {
         _name = name;
         _addPart = addPart;

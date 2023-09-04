@@ -4,6 +4,11 @@ using TECS.DataIntermediates.Test;
 
 namespace TECS.DataIntermediates.Builders;
 
+public class SimpleCompareDataBuilder : CompareDataBuilder<CompareData>
+{
+    public SimpleCompareDataBuilder() : base(cpd => cpd) { }
+}
+
 public class CompareDataBuilder<TReceiver>
 {
     private readonly Func<CompareData, TReceiver> _addExpected;
@@ -11,12 +16,10 @@ public class CompareDataBuilder<TReceiver>
 
     private readonly List<ColumnData> _columns = new();
 
-    public static CompareDataBuilder<CompareData> CreateBasic() => new(cpd => cpd);
-
     public static CompareDataBuilder<TReceiver> 
         WithReceiver(Func<CompareData, TReceiver> receiver) => new(receiver);
     
-    private CompareDataBuilder(Func<CompareData, TReceiver> addExpected)
+    protected CompareDataBuilder(Func<CompareData, TReceiver> addExpected)
     {
         _addExpected = addExpected;
     }

@@ -17,13 +17,13 @@ public class TestDataBuilder
 
         return this;
     }
-
-    public CompareDataBuilder<TestDataBuilder> SetExpectedValues()
+    
+    public CompareDataBuilder<TestDataBuilder> WithExpectedValues()
     {
-        return CompareDataBuilder<TestDataBuilder>.WithReceiver(SetExpectedValues);
+        return CompareDataBuilder<TestDataBuilder>.WithReceiver(WithExpectedValues);
     }
 
-    private TestDataBuilder SetExpectedValues(CompareData compareData)
+    public TestDataBuilder WithExpectedValues(CompareData compareData)
     {
         _expectedValue = compareData;
 
@@ -35,9 +35,17 @@ public class TestDataBuilder
         return TestInputDataBuilder<TestDataBuilder>.WithReceiver(order, AddTest);
     }
 
-    private TestDataBuilder AddTest(TestInputData test)
+    public TestDataBuilder AddTest(TestInputData test)
     {
         _tests.Add(test);
+
+        return this;
+    }
+
+    public TestDataBuilder WithTests(IEnumerable<TestInputData> tests)
+    {
+        _tests.Clear();
+        _tests.AddRange(tests);
 
         return this;
     }

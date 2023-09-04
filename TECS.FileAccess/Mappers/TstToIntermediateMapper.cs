@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Builders;
+using TECS.DataIntermediates.Chip;
 using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Test;
 using TECS.FileAccess.FileAccessors;
@@ -21,23 +22,26 @@ public static class TstToIntermediateMapper
             lines = StringArraySanitizer.SanitizeInput(lines);
             lines = StringArraySanitizer.UnifyTestLines(lines);
             var index = 0;
-            
-            var builder = new TestDataBuilder();
 
-            MapChipToTest(hdlFolder, builder, lines, ref index);
+            var chip = GetChipToTest(hdlFolder, lines, ref index);
             var comparisonFile = GetComparisonFile(hdlFolder, lines, ref index);
             var outputTypes = MapOutputList(lines, ref index);
-            MapExpectedValues(builder, comparisonFile, outputTypes);
-            MapTests(builder, lines, ref index);
+            var expectedValues = MapExpectedValues(comparisonFile, outputTypes);
+            var tests = MapTests(lines, ref index);
 
-            testData = builder.Build();
+            testData = new TestDataBuilder()
+                .WithChipToTest(chip)
+                .WithExpectedValues(expectedValues)
+                .WithTests(tests)
+                .Build();
+
             Mapped[file] = testData;
         }
 
         return testData;
     }
 
-    private static void MapChipToTest(HdlFolder folder, TestDataBuilder builder, string[] lines, ref int index)
+    private static ChipData GetChipToTest(HdlFolder folder, string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("load")))
             throw new MappingException("Test File contains no load instruction");
@@ -50,7 +54,7 @@ public static class TstToIntermediateMapper
 
         var chipData = HdlToIntermediateMapper.Map(hdl);
 
-        builder.WithChipToTest(chipData);
+        return chipData;
     }
 
     private static ComparisonFile GetComparisonFile(HdlFolder folder, string[] lines, ref int index)
@@ -66,7 +70,7 @@ public static class TstToIntermediateMapper
 
         return cmp;
     }
-    
+
     private static ColumnData[] MapOutputList(string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("output-list")))
@@ -93,17 +97,17 @@ public static class TstToIntermediateMapper
 
         return columns.ToArray();
     }
-    
-    private static void MapExpectedValues(TestDataBuilder builder, ComparisonFile cmp, ColumnData[] columns)
+
+    private static CompareData MapExpectedValues(ComparisonFile cmp, ColumnData[] columns)
     {
         var cmpData = StringArraySanitizer.SanitizeInput(cmp.GetContents())
-            .Select(l => 
+            .Select(l =>
                 l.Split('|', StringSplitOptions.RemoveEmptyEntries)
                     .Select(s => s.Trim())
                     .ToArray())
             .ToArray();
 
-        var expectedBuilder = builder.SetExpectedValues();
+        var expectedBuilder = new SimpleCompareDataBuilder();
         for (int n = 0; n < cmpData[0].Length; n++)
         {
             if (!columns[n].Name.Equals(new NamedNodeGroupName(cmpData[0][n])))
@@ -117,22 +121,25 @@ public static class TstToIntermediateMapper
         for (int n = 1; n < cmpData.Length; n++)
             expectedBuilder.AddValueRow(cmpData[n]);
 
-        expectedBuilder.Build();
+        return expectedBuilder.Build();
     }
 
-    private static void MapTests(TestDataBuilder builder, string[] lines, ref int index)
+    private static IEnumerable<TestInputData> MapTests(string[] lines, ref int index)
     {
         int order = 0;
 
+        List<TestInputData> tests = new();
         while (StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("set") || l.StartsWith("tock")))
         {
-            MapTest(builder, lines, ref index, order++);
+            tests.Add(MapTest(lines, ref index, order++));
         }
+
+        return tests;
     }
 
-    private static void MapTest(TestDataBuilder builder, string[] lines, ref int index, int order)
+    private static TestInputData MapTest(string[] lines, ref int index, int order)
     {
-        var testBuilder = builder.AddTest(order);
+        var testBuilder = new SimpleTestInputDataBuilder(order);
         while (lines[index].StartsWith("set"))
         {
             var splitSetter = lines[index]
@@ -140,14 +147,12 @@ public static class TstToIntermediateMapper
                 .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             testBuilder.AddInput(splitSetter[1], splitSetter[2]);
-            
+
             index++;
         }
 
         index++;
 
-        testBuilder.Build();
+        return testBuilder.Build();
     }
-    
-    
 }

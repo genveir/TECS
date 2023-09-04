@@ -6,19 +6,22 @@ using TECS.DataIntermediates.Values;
 
 namespace TECS.DataIntermediates.Builders;
 
+public class SimpleTestInputDataBuilder : TestInputDataBuilder<TestInputData>
+{
+    public SimpleTestInputDataBuilder(int order) : base(order, tid => tid) { }
+}
+
 public class TestInputDataBuilder<TReceiver>
 {
     private readonly int _order;
     private readonly Func<TestInputData, TReceiver> _addTest;
 
     private readonly List<TestSetData> _sets = new();
-    
-    public static TestInputDataBuilder<TestInputData> CreateBasic(int order) => new(order, tid => tid);
 
     public static TestInputDataBuilder<TReceiver> 
         WithReceiver(int order, Func<TestInputData, TReceiver> receiver) => new(order, receiver);
     
-    private TestInputDataBuilder(int order, Func<TestInputData, TReceiver> addTest)
+    protected TestInputDataBuilder(int order, Func<TestInputData, TReceiver> addTest)
     {
         _order = order;
         _addTest = addTest;

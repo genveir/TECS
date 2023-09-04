@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TECS.DataIntermediates.Builders;
 using TECS.DataIntermediates.Chip;
+using TECS.DataIntermediates.Names;
 using TECS.FileAccess.FileAccessors;
 
 namespace TECS.FileAccess.Mappers;
@@ -20,31 +21,35 @@ public static class HdlToIntermediateMapper
             lines = StringArraySanitizer.SanitizeInput(lines);
             var index = 0;
 
-            var builder = new ChipDataBuilder();
+            var chipName = MapChipName(lines, ref index);
+            var inGroups = MapIn(lines, ref index);
+            var outGroups = MapOut(lines, ref index);
+            var parts = MapParts(lines, ref index);
 
-            MapChipName(lines, ref index, builder);
-            MapIn(lines, ref index, builder);
-            MapOut(lines, ref index, builder);
-            MapParts(lines, ref index, builder);
-
-            chipData = builder.Build();
+            chipData = new ChipDataBuilder()
+                .WithName(chipName)
+                .WithInGroups(inGroups)
+                .WithOutGroups(outGroups)
+                .WithParts(parts)
+                .Build();
+            
             Mapped[file] = chipData;
         }
 
         return chipData;
     }
 
-    private static void MapChipName(string[] lines, ref int index, ChipDataBuilder builder)
+    private static ChipName MapChipName(string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("CHIP")))
             throw new MappingException("HDL file has no defined chip");
         
         var split = lines[index].Split(' ');
 
-        builder.WithName(split[1]);
+        return new ChipName(split[1]);
     }
 
-    private static void MapIn(string[] lines, ref int index, ChipDataBuilder builder)
+    private static IEnumerable<NamedNodeGroupData> MapIn(string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("IN")) ||
             !StringArrayNavigator.GrabArray(lines, ref index, out string[] elements))
@@ -52,15 +57,10 @@ public static class HdlToIntermediateMapper
             throw new MappingException("HDL file has no defined inputs");
         }
 
-        foreach (var element in elements)
-        {
-            var (name, size) = MapGroup(element);
-
-            builder.AddInGroup(name, size);
-        }
+        return MapGroups(elements);
     }
 
-    private static void MapOut(string[] lines, ref int index, ChipDataBuilder builder)
+    private static IEnumerable<NamedNodeGroupData> MapOut(string[] lines, ref int index)
     {
         if (!StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("OUT")) ||
             !StringArrayNavigator.GrabArray(lines, ref index, out string[] elements))
@@ -68,12 +68,20 @@ public static class HdlToIntermediateMapper
             throw new MappingException("HDL file has no defined outputs");
         }
 
+        return MapGroups(elements);
+    }
+
+    private static IEnumerable<NamedNodeGroupData> MapGroups(string[] elements)
+    {
+        List<NamedNodeGroupData> groups = new();
         foreach (var element in elements)
         {
             var (name, size) = MapGroup(element);
-
-            builder.AddOutGroup(name, size);
+            
+            groups.Add(new(new(name), new(size)));
         }
+
+        return groups;
     }
 
     private static (string name, int size) MapGroup(string element)
@@ -88,8 +96,9 @@ public static class HdlToIntermediateMapper
         };
     }
 
-    private static void MapParts(string[] lines, ref int index, ChipDataBuilder builder)
+    private static IEnumerable<ChipPartData> MapParts(string[] lines, ref int index)
     {
+        List<ChipPartData> parts = new();
         if (StringArrayNavigator.LoopForwardTo(lines, ref index, l => l.StartsWith("PARTS:")))
         {
             string fullPartArray = "";
@@ -102,19 +111,21 @@ public static class HdlToIntermediateMapper
                 .Replace(" ", "");
 
             var splitPartArray = fullPartArray.Split(';', StringSplitOptions.RemoveEmptyEntries);
-
+            
             foreach (var partInfo in splitPartArray)
             {
-                MapPart(partInfo, builder);
+                parts.Add(MapPart(partInfo));
             }
         }
+
+        return parts;
     }
 
-    private static void MapPart(string partInfo, ChipDataBuilder builder)
+    private static ChipPartData MapPart(string partInfo)
     {
         var splitPartInfo = partInfo.Split(new[] { '(', ',', ')' }, StringSplitOptions.RemoveEmptyEntries);
 
-        var partBuilder = builder.AddPart(splitPartInfo[0]);
+        var partBuilder = new SimpleChipPartDataBuilder(splitPartInfo[0]);
 
         var links = splitPartInfo.Skip(1).ToArray();
 
@@ -123,10 +134,10 @@ public static class HdlToIntermediateMapper
             MapLink(link, partBuilder);
         }
 
-        partBuilder.Build();
+        return partBuilder.Build();
     }
 
-    private static void MapLink(string linkInfo, ChipPartDataBuilder<ChipDataBuilder> builder)
+    private static void MapLink(string linkInfo, SimpleChipPartDataBuilder builder)
     {
         var splitLink = linkInfo.Split('=');
 

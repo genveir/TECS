@@ -12,7 +12,7 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(NotIntermediate)
-            .SetExpectedValues()
+            .WithExpectedValues()
                 .WithBinaryStringColumns("in", "out")
                 .AddValueRow("1", "0")
                 .AddValueRow("0", "1")
@@ -32,7 +32,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
                     .AddValueRow("0", "1")
@@ -46,7 +46,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
                     .AddValueRow("1", "0")
@@ -67,7 +67,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
                     .AddValueRow("0", "1")
@@ -86,7 +86,7 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(And16Intermediate)
-            .SetExpectedValues()
+            .WithExpectedValues()
                 .WithBinaryStringColumns("a", "b", "out")
                 .AddValueRow("0000111100001111", "0000111100001111", "0000111100001111")
                 .AddValueRow("0000111100001111", "1111000011110000", "0000000000000000")
@@ -108,7 +108,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(AndIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("a", "b", "out")
                     .AddValueRow("0", "0", "0")
                     .AddValueRow("0", "1", "0")
@@ -132,7 +132,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
                     .Build()
@@ -151,7 +151,7 @@ public class TestDataTests
         Assert.Throws<ArgumentException>(() =>
             _ = new TestDataBuilder()
                 .WithChipToTest(NotIntermediate)
-                .SetExpectedValues()
+                .WithExpectedValues()
                     .WithBinaryStringColumns("in", "out")
                     .AddValueRow("1", "0")
                     .AddValueRow("0", "1")
@@ -171,7 +171,7 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(AndIntermediate)
-            .SetExpectedValues()
+            .WithExpectedValues()
                 .WithBinaryStringColumns("a", "b", "out")
                 .AddValueRow("0", "0", "0")
                 .AddValueRow("0", "1", "0")
@@ -200,7 +200,7 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(NotIntermediate)
-            .SetExpectedValues()
+            .WithExpectedValues()
                 .WithBinaryStringColumns("out")
                 .AddValueRow("0")
                 .AddValueRow("1")
@@ -219,7 +219,7 @@ public class TestDataTests
     {
         _ = new TestDataBuilder()
             .WithChipToTest(And16Intermediate)
-            .SetExpectedValues()
+            .WithExpectedValues()
                 .WithBinaryStringColumns("in", "out")
                 .AddValueRow("1", "0")
                 .AddValueRow("0", "1")
