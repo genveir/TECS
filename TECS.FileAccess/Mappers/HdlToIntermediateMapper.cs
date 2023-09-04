@@ -161,7 +161,7 @@ public static class HdlToIntermediateMapper
             1 => (splitInfo[0], null, null),
             2 => (splitInfo[0], int.Parse(splitInfo[1]), int.Parse(splitInfo[1])),
             3 => (splitInfo[0], int.Parse(splitInfo[1]), int.Parse(splitInfo[2])),
-            _ => throw new MappingException("link {link} is not formatted correctly")
+            _ => throw new MappingException($"link {link} is not formatted correctly")
         };
     }
 }
