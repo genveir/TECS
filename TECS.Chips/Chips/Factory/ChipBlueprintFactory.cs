@@ -6,6 +6,7 @@ using TECS.DataIntermediates.Names;
 using TECS.DataIntermediates.Values;
 using TECS.HDLSimulator.Chips.Chips;
 using TECS.HDLSimulator.Chips.Chips.NamedNodeGroups;
+using TECS.HDLSimulator.Chips.Factory.Builtins;
 using TECS.HDLSimulator.Chips.NandTree;
 
 namespace TECS.HDLSimulator.Chips.Factory;
@@ -22,8 +23,8 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
         _allChipData = allChipData;
         _storedBlueprintFactory = new(this);
 
-        _blueprints.Add(new("Nand"), NandByHand());
-        _blueprints.Add(new("Pass"), PassByHand());
+        _blueprints.Add(new("Nand"), NandBuiltIn.GetBlueprint());
+        _blueprints.Add(new("Pass"), PassBuiltIn.GetBlueprint());
     }
 
     public FactoryResult<ChipBlueprint> GetBlueprint(ChipName name)
@@ -56,46 +57,5 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
 
         return
             FactoryResult<ChipBlueprint>.Succeed(blueprint.CopyToBlueprintInstance());
-    }
-
-    private static StoredBlueprint NandByHand()
-    {
-        var aInput = new InputNodeGroup(new(new("a"), new BitSize(1)));
-        var bInput = new InputNodeGroup(new(new("b"), new BitSize(1)));
-
-        var nandNode = new NandNode(aInput.Nodes[0], bInput.Nodes[0]);
-
-        var outputGroup = OutputNodeGroup.NandGroup(nandNode);
-
-        var inputs = new Dictionary<NamedNodeGroupName, InputNodeGroup>
-        {
-            { new("a"), aInput },
-            { new("b"), bInput }
-        };
-        var outputs = new Dictionary<NamedNodeGroupName, OutputNodeGroup>
-        {
-            { new("out"), outputGroup }
-        };
-
-        return new(new("Nand"), inputs, outputs);
-    }
-
-    private static StoredBlueprint PassByHand()
-    {
-        var input = new InputNodeGroup(new(new("in"), new BitSize(1)));
-        var outPin = new PinBoard(new("out"), new BitSize(1));
-        outPin.Nodes[0].Parent = input.Nodes[0];
-        var output = new OutputNodeGroup(outPin);
-
-        var inputs = new Dictionary<NamedNodeGroupName, InputNodeGroup>
-        {
-            { new("in"), input }
-        };
-        var outputs = new Dictionary<NamedNodeGroupName, OutputNodeGroup>
-        {
-            { new("out"), output }
-        };
-
-        return new(new("Pass"), inputs, outputs);
     }
 }
