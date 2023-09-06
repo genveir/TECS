@@ -41,7 +41,7 @@ public class ChipTestFramework
             TestChip.IncrementClock();
         
         if (incrementClock == IncrementMode.Double)
-            TestChip.IncrementClock();;
+            TestChip.IncrementClock();
         
         _result = TestChip.DebugEvaluate();
     }

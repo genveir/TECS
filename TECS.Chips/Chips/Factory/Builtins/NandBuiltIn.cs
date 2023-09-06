@@ -19,8 +19,14 @@ internal static class NandBuiltIn
             var bInput = new InputNodeGroup(new(new("b"), new BitSize(1)));
 
             var nandNode = new NandNode(aInput.Nodes[0], bInput.Nodes[0]);
+            var outPin = new NandPinNode()
+            {
+                Parent = nandNode
+            };
+            var pinBoard = new PinBoard(new("out"), new BitSize(1));
+            pinBoard.Nodes[0] = outPin;
 
-            var outputGroup = OutputNodeGroup.NandGroup(nandNode);
+            var outputGroup = new OutputNodeGroup(pinBoard);
 
             var inputs = new Dictionary<NamedNodeGroupName, InputNodeGroup>
             {

@@ -7,6 +7,7 @@ public class NamedNodeGroupName : TypedName
 {
     private const string NodeGroupNameRegex = @$"^{RegularNameRegex}$";
     
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
     public NamedNodeGroupName(string value, bool cannotBeConstant = true) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value)) 
