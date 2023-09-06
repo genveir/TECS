@@ -29,13 +29,20 @@ public class ChipTestFramework
     }
     
     protected string GetInternal(NamedNodeGroupName name) =>
-        _result?.InternalValues[name].AsBinaryString() ?? throw new InvalidOperationException("set something before getting values");
+        _result?.InternalValues[name].AsBinaryString() ?? throw new InvalidOperationException("evaluate before getting values");
 
     protected string GetOutput(NamedNodeGroupName name) =>
-        _result?.OutputValues[name].AsBinaryString() ?? throw new InvalidOperationException("set something before getting values");
+        _result?.OutputValues[name].AsBinaryString() ?? throw new InvalidOperationException("evaluate before getting values");
 
-    protected void Evaluate()
+    public enum IncrementMode { None, Single, Double }
+    protected void Evaluate(IncrementMode incrementClock = IncrementMode.Double)
     {
+        if (incrementClock is IncrementMode.Single or IncrementMode.Double) 
+            TestChip.IncrementClock();
+        
+        if (incrementClock == IncrementMode.Double)
+            TestChip.IncrementClock();;
+        
         _result = TestChip.DebugEvaluate();
     }
     
