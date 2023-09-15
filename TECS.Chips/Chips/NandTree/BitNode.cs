@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TECS.HDLSimulator.Chips.Chips;
 
 namespace TECS.HDLSimulator.Chips.NandTree;
 
@@ -77,7 +78,7 @@ internal class BitNode : INandTreeElement
             _evaluationId = cachingCounter;
             _cachedValue = _value;
             
-            if (_load.GetValue(cachingCounter))
+            if (_load.GetValue(cachingCounter) && !Clock.Instance.Potential)
                 _value = _input.GetValue(cachingCounter);
         }
 
