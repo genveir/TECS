@@ -5,9 +5,9 @@ using TECS.DataIntermediates.Values;
 
 namespace TECS.Tests.Chips;
 
-public class PcTests : ChipTestFramework
+public class SinglePcTests : ChipTestFramework
 {
-    public PcTests() : base("PC") { }
+    public SinglePcTests() : base("PCSingle") { }
     
     // ReSharper disable InconsistentNaming
     private static class Inputs
@@ -35,9 +35,6 @@ public class PcTests : ChipTestFramework
 
     private const string FALSE = "0";
     private const string TRUE = "1";
-
-    private const string ZERO = "0000000000000000";
-    private const string ONE = "0000000000000001";
     // ReSharper enable InconsistentNaming
 
     [SetUp]
@@ -46,76 +43,64 @@ public class PcTests : ChipTestFramework
         RefreshChip();
     }
 
-    [TestCase(0)]
-    [TestCase(1)]
-    [TestCase(-1)]
-    public void CanLeaveAtZero(int inValue)
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CanLeaveAtZero(bool inValue)
     {
-        var inAsBinaryString = To16BitString(inValue);
-        
         SetInputs(inValue, load: false, inc: false, reset: false);
 
         for (int n = 0; n < 10; n++)
         {
             var result = EvalAll();
 
-            result.MRES.Should().Be(inAsBinaryString);
-            result.MRI.Should().Be(inAsBinaryString);
-            result.MINC.Should().Be(ONE);
+            result.MRES.Should().Be(inValue ? TRUE : FALSE);
+            result.MRI.Should().Be(inValue ? TRUE : FALSE);
+            result.MINC.Should().Be(TRUE);
             result.MLOADRI.Should().Be(FALSE);
             result.MLOAD.Should().Be(FALSE);
-            result.OUT.Should().Be(ZERO);
+            result.OUT.Should().Be(FALSE);
         }
     }
     
-    [TestCase(1)]
-    [TestCase(-1)]
-    public void CanSetToValue(int inValue)
+    [Test]
+    public void CanSetToValue()
     {
-        var inAsBinaryString = To16BitString(inValue);
-        var plusOne = To16BitString(inValue + 1);
-        
-        SetInputs(inValue, load: true, inc: false, reset: false);
+        SetInputs(true, load: true, inc: false, reset: false);
         
         for (int n = 0; n < 10; n++)
         {
             var result = EvalAll();
 
-            result.MRES.Should().Be(inAsBinaryString);
-            result.MRI.Should().Be(inAsBinaryString);
-            result.MINC.Should().Be(n == 0 ? ONE : plusOne);
+            result.MRES.Should().Be(TRUE);
+            result.MRI.Should().Be(TRUE);
+            result.MINC.Should().Be(n == 0 ? TRUE : FALSE);
             result.MLOADRI.Should().Be(FALSE);
             result.MLOAD.Should().Be(TRUE);
-            result.OUT.Should().Be(n == 0 ? ZERO : inAsBinaryString);
+            result.OUT.Should().Be(n == 0 ? FALSE : TRUE);
         }
     }
 
     [Test]
     public void CanIncrement()
     {
-        SetInputs(0, load: false, inc: true, reset: false);
+        SetInputs(false, load: false, inc: true, reset: false);
 
         for (int n = 0; n < 10; n++)
         {
             var result = EvalAll();
-
-            var current = To16BitString(n);
-            var next = To16BitString(n + 1);
             
-            result.MRES.Should().Be(ZERO);
-            result.MRI.Should().Be(next);
-            result.MINC.Should().Be(next);
+            result.MRES.Should().Be(FALSE);
+            result.MRI.Should().Be(TRUE);
+            result.MINC.Should().Be(TRUE);
             result.MLOADRI.Should().Be(TRUE);
             result.MLOAD.Should().Be(TRUE);
-            result.OUT.Should().Be(current);
+            result.OUT.Should().Be(FALSE);
         }
     }
-
-    private string To16BitString(int shortValue) => new BitValue((short)shortValue, 16).AsBinaryString();
     
-    private void SetInputs(int @in, bool load, bool inc, bool reset)
+    private void SetInputs(bool @in, bool load, bool inc, bool reset)
     {
-        TestChip.SetInput(Inputs.IN, new((short)@in, 16));
+        TestChip.SetInput(Inputs.IN, new(@in));
         TestChip.SetInput(Inputs.LOAD, new(load));
         TestChip.SetInput(Inputs.INC, new(inc));
         TestChip.SetInput(Inputs.RESET, new(reset));
