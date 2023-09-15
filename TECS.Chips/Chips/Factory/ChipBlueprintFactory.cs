@@ -23,6 +23,7 @@ public class ChipBlueprintFactory : IChipBlueprintFactory
 
         _blueprints.Add(new("Nand"), NandBuiltIn.GetBlueprint());
         _blueprints.Add(new("Pass"), PassBuiltIn.GetBlueprint());
+        _blueprints.Add(new("Bit"), BitBuiltin.GetBlueprint());
     }
 
     public FactoryResult<ChipBlueprint> GetBlueprint(ChipName name)
