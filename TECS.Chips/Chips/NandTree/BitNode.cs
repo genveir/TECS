@@ -78,7 +78,7 @@ internal class BitNode : INandTreeElement
             _evaluationId = cachingCounter;
             _cachedValue = _value;
             
-            if (_load.GetValue(cachingCounter) && !Clock.Instance.Potential)
+            if (_load.GetValue(cachingCounter) && Clock.Instance.Potential)
                 _value = _input.GetValue(cachingCounter);
         }
 
