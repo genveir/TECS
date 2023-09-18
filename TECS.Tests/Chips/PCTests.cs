@@ -25,21 +25,19 @@ public class PcTests : ChipTestFramework
 
     private static class Internals
     {
-        public static readonly NamedNodeGroupName MRES = new("mres");
-        public static readonly NamedNodeGroupName MRI = new("mri");
+        public static readonly NamedNodeGroupName M0 = new("m0");
         public static readonly NamedNodeGroupName MINC = new("minc");
-        public static readonly NamedNodeGroupName MLOADRI = new("mloadri");
         public static readonly NamedNodeGroupName MLOAD = new("mload");
+        public static readonly NamedNodeGroupName MRESET = new("mreset");
         public static readonly NamedNodeGroupName MOUT = new("mout");
     }
 
-    private const string FALSE = "0";
-    private const string TRUE = "1";
-
     private const string ZERO = "0000000000000000";
     private const string ONE = "0000000000000001";
+    private const string TWO = "0000000000000010";
+    private const string THREE = "0000000000000011";
     // ReSharper enable InconsistentNaming
-
+    
     [SetUp]
     public void Setup()
     {
@@ -51,62 +49,89 @@ public class PcTests : ChipTestFramework
     [TestCase(-1)]
     public void CanLeaveAtZero(int inValue)
     {
-        var inAsBinaryString = To16BitString(inValue);
-        
         SetInputs(inValue, load: false, inc: false, reset: false);
 
         for (int n = 0; n < 10; n++)
         {
             var result = EvalAll();
 
-            result.MRES.Should().Be(inAsBinaryString);
-            result.MRI.Should().Be(inAsBinaryString);
-            result.MINC.Should().Be(ONE);
-            result.MLOADRI.Should().Be(FALSE);
-            result.MLOAD.Should().Be(FALSE);
+            result.M0.Should().Be(ONE);
+            result.MINC.Should().Be(ZERO);
+            result.MLOAD.Should().Be(ZERO);
+            result.MRESET.Should().Be(ZERO);
             result.OUT.Should().Be(ZERO);
         }
     }
     
-    [TestCase(1)]
-    [TestCase(-1)]
-    public void CanSetToValue(int inValue)
+    [Test]
+    public void CanSetToValue()
     {
-        var inAsBinaryString = To16BitString(inValue);
-        var plusOne = To16BitString(inValue + 1);
-        
-        SetInputs(inValue, load: true, inc: false, reset: false);
-        
-        for (int n = 0; n < 10; n++)
+        for (int n = -10; n < 10; n += 2)
         {
+            var inAsBinaryString = To16BitString(n);
+            var plusOne = To16BitString(n + 1);
+        
+            SetInputs(n, load: true, inc: false, reset: false);
+            
             var result = EvalAll();
 
-            result.MRES.Should().Be(inAsBinaryString);
-            result.MRI.Should().Be(inAsBinaryString);
-            result.MINC.Should().Be(n == 0 ? ONE : plusOne);
-            result.MLOADRI.Should().Be(FALSE);
-            result.MLOAD.Should().Be(TRUE);
-            result.OUT.Should().Be(n == 0 ? ZERO : inAsBinaryString);
+            result.M0.Should().Be(plusOne);
+            result.MINC.Should().Be(inAsBinaryString);
+            result.MLOAD.Should().Be(inAsBinaryString);
+            result.MRESET.Should().Be(inAsBinaryString);
+            result.OUT.Should().Be(inAsBinaryString);
         }
+    }
+
+    [Test]
+    public void ValueDoesNotChangeUntilClockTocks()
+    {
+        SetInputs(2, load: true, inc: false, reset: false);
+        
+        Evaluate(IncrementMode.None);
+        var result = ToDiagnostics();
+        
+        result.M0.Should().Be(ONE);
+        result.MINC.Should().Be(ZERO);
+        result.MLOAD.Should().Be(TWO);
+        result.MRESET.Should().Be(TWO);
+        result.OUT.Should().Be(ZERO);
+        
+        Evaluate(IncrementMode.Single);
+        result = ToDiagnostics();
+        
+        result.M0.Should().Be(ONE);
+        result.MINC.Should().Be(ZERO);
+        result.MLOAD.Should().Be(TWO);
+        result.MRESET.Should().Be(TWO);
+        result.OUT.Should().Be(ZERO);
+        
+        Evaluate(IncrementMode.Single);
+        result = ToDiagnostics();
+        
+        result.M0.Should().Be(THREE);
+        result.MINC.Should().Be(TWO);
+        result.MLOAD.Should().Be(TWO);
+        result.MRESET.Should().Be(TWO);
+        result.OUT.Should().Be(TWO);
     }
 
     [Test]
     public void CanIncrement()
     {
         SetInputs(0, load: false, inc: true, reset: false);
-
-        for (int n = 0; n < 10; n++)
+        
+        for (int n = 1; n < 10; n++)
         {
             var result = EvalAll();
 
             var current = To16BitString(n);
             var next = To16BitString(n + 1);
-            
-            result.MRES.Should().Be(ZERO);
-            result.MRI.Should().Be(next);
+
+            result.M0.Should().Be(next);
             result.MINC.Should().Be(next);
-            result.MLOADRI.Should().Be(TRUE);
-            result.MLOAD.Should().Be(TRUE);
+            result.MLOAD.Should().Be(next);
+            result.MRESET.Should().Be(next);
             result.OUT.Should().Be(current);
         }
     }
@@ -124,37 +149,37 @@ public class PcTests : ChipTestFramework
     private PCDiagnostics EvalAll()
     {
         Evaluate(IncrementMode.Single);
-        var midwayOut = GetOutput(Outputs.OUT);
+        GetOutput(Outputs.OUT);
         Evaluate(IncrementMode.Single);
 
         GetInternal(Internals.MOUT).Should().Be(GetOutput(Outputs.OUT));
-        
-        return new(
-            mres: GetInternal(Internals.MRES),
-            mri: GetInternal(Internals.MRI),
+
+        return ToDiagnostics();
+    }
+
+    private PCDiagnostics ToDiagnostics() =>
+        new(
+            m0: GetInternal(Internals.M0),
             minc: GetInternal(Internals.MINC),
-            mloadri: GetInternal(Internals.MLOADRI),
             mload: GetInternal(Internals.MLOAD),
+            mreset: GetInternal(Internals.MRESET),
             @out: GetOutput(Outputs.OUT)
         );
-    }
 
     private class PCDiagnostics
     {
-        public string MRES;
-        public string MRI;
+        public string M0;
         public string MINC;
-        public string MLOADRI;
         public string MLOAD;
+        public string MRESET;
         public string OUT;
 
-        public PCDiagnostics(string mres, string mri, string minc, string mloadri, string mload, string @out)
+        public PCDiagnostics(string m0, string minc, string mload, string mreset, string @out)
         {
-            MRES = mres;
-            MRI = mri;
+            M0 = m0;
             MINC = minc;
-            MLOADRI = mloadri;
             MLOAD = mload;
+            MRESET = mreset;
             OUT = @out;
         }
     }
