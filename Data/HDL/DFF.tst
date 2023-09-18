@@ -29,3 +29,8 @@ output;
 
 tock,
 output;
+
+// if you do not increment the clock, a DFF can update immediately
+set in 0,
+eval,
+output;

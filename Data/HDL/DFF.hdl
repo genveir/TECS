@@ -4,7 +4,8 @@ CHIP DFF {
 
     PARTS:
     Not(in=in,out=nd);
-    Nand(a=in,b=clk,out=n0);
-    Nand(a=nd,b=clk,out=n1);
+    Not(in=clk,out=nclk);
+    Nand(a=in,b=nclk,out=n0);
+    Nand(a=nd,b=nclk,out=n1);
     Latch(s=n0,r=n1,out=out);
 }

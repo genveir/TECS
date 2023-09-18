@@ -2,18 +2,18 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 internal class Clock
 {
-    public long ClockCounter { get; private set; }
+    private long ClockCounter { get; set; }
     
-    public bool Potential => ClockCounter % 2 == 0;
+    public bool Potential => ClockCounter % 2 != 0;
     
-    public string Time => (ClockCounter / 2) + "" + (Potential ? "" : "+");
+    public string Time => (ClockCounter / 2) + "" + (Potential ? "+" : "");
     
     private Clock()
     {
         ClockCounter = 0;
     }
 
-    public static Clock Instance = new();
+    public static readonly Clock Instance = new();
 
     public void Reset()
     {
