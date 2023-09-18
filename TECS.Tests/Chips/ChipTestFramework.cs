@@ -38,9 +38,12 @@ public class ChipTestFramework
     public enum IncrementMode { None, Single, Double }
     protected void Evaluate(IncrementMode incrementClock = IncrementMode.Double)
     {
-        if (incrementClock is IncrementMode.Single or IncrementMode.Double) 
+        if (incrementClock is IncrementMode.Single or IncrementMode.Double)
+        {
             TestChip.IncrementClock();
-        
+            TestChip.DebugEvaluate(); // no propagation without evaluation
+        }
+
         if (incrementClock == IncrementMode.Double)
             TestChip.IncrementClock();
         
