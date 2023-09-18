@@ -22,7 +22,7 @@ public class ChipBlueprint
 
     public Chip Fabricate()
     {
-        return new(Inputs, Outputs);
+        return new(_name, Inputs, Outputs);
     }
 
     public override string ToString()

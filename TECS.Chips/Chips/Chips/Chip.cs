@@ -8,12 +8,19 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class Chip
 {
+    private static long _idCounter;
+    private readonly long _id = _idCounter++;
+
+    private readonly ChipName _name;
     private Dictionary<NamedNodeGroupName, InputNodeGroup> Inputs { get; }
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Outputs { get; }
     
-    public Chip(Dictionary<NamedNodeGroupName, InputNodeGroup> inputs, 
+    
+    public Chip(ChipName chipName,
+        Dictionary<NamedNodeGroupName, InputNodeGroup> inputs, 
         Dictionary<NamedNodeGroupName, OutputNodeGroup> outputs)
     {
+        _name = chipName;
         Inputs = inputs;
         Outputs = outputs;
     }
@@ -33,9 +40,27 @@ public class Chip
     public EvaluationResult Evaluate()
     {
         CachingCounter++;
+
+        Dictionary<NamedNodeGroupName, BitValue> inputResult = new();
+        foreach (var input in Inputs)
+        {
+            var name = input.Key;
+            var value = input.Value.GetValue(CachingCounter);
+            
+            inputResult.Add(name, value);
+        }
+
+        Dictionary<NamedNodeGroupName, BitValue> outputResult = new();
+        foreach (var output in Outputs)
+        {
+            var name = output.Key;
+            var value = output.Value.GetValue(CachingCounter);
+            
+            outputResult.Add(name, value);
+        }
         
-        return new(
-            inputValues: Inputs.ToDictionary(inp => inp.Key, inp => inp.Value.GetValue(CachingCounter)),
-            outputValues: Outputs.ToDictionary(op => op.Key, op => op.Value.GetValue(CachingCounter)));
+        return new(inputValues: inputResult, outputValues: outputResult);
     }
+
+    public override string ToString() => $"Chip {_name} {_id}";
 }

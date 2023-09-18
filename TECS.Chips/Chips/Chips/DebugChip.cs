@@ -7,17 +7,14 @@ namespace TECS.HDLSimulator.Chips.Chips;
 
 public class DebugChip : Chip
 {
-    public ChipName Name { get; }
-
     private Dictionary<NamedNodeGroupName, OutputNodeGroup> Internals { get; }
 
     public DebugChip(
         ChipName name,
         Dictionary<NamedNodeGroupName, InputNodeGroup> inputs,
         Dictionary<NamedNodeGroupName, OutputNodeGroup> outputs,
-        Dictionary<NamedNodeGroupName, OutputNodeGroup> internals) : base(inputs, outputs)
+        Dictionary<NamedNodeGroupName, OutputNodeGroup> internals) : base(name, inputs, outputs)
     {
-        Name = name;
         Internals = internals;
     }
 
@@ -31,10 +28,5 @@ public class DebugChip : Chip
             inputValues: baseEval.InputValues,
             outputValues: baseEval.OutputValues,
             internalValues: Internals.ToDictionary(ig => ig.Key, ig => ig.Value.GetValue(CachingCounter)));
-    }
-    
-    public override string ToString()
-    {
-        return $"DebugChip {Name}";
     }
 }
