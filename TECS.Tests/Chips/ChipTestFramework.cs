@@ -21,6 +21,7 @@ public class ChipTestFramework
         _chipName = chipName;
         
         TestChip = GetChip(_chipName);
+        Clock.Instance.Reset();
     }
 
     protected void RefreshChip()
