@@ -67,7 +67,7 @@ internal class BitNode : INandTreeElement
 
     public bool IsValidatedInRun(long validationId) => _validatedInRun == validationId;
 
-    private bool _value = false;
+    private bool _value;
     
     private long _evaluationId = -1;
     private bool _cachedValue;
